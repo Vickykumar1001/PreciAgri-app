@@ -1,20 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AppNavigator from './AppNavigator';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const App = () => {
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  useEffect(() => {
+    const checkFirstLaunch = async () => {
+      try {
+        const hasLaunched = await AsyncStorage.getItem('hasLaunched');
+        if (hasLaunched === null) {
+          setIsFirstLaunch(true);
+          await AsyncStorage.setItem('hasLaunched', 'true');
+        } else {
+          setIsFirstLaunch(false);
+        }
+      } catch (error) {
+        console.error('Error checking launch status', error);
+      }
+    };
+
+    checkFirstLaunch();
+  }, []);
+
+  if (isFirstLaunch === null) {
+    return null; // Add a loading spinner here if necessary
+  }
+
+  return <AppNavigator isFirstLaunch={isFirstLaunch} setIsFirstLaunch={setIsFirstLaunch} />;
+};
+
+export default App;
