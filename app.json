@@ -4,12 +4,12 @@
     "slug": "MizoFarm-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/splash4.jpg",
+      "resizeMode": "cover",
+      "backgroundColor": "#82e98e"
     },
     "ios": {
       "supportsTablet": true
