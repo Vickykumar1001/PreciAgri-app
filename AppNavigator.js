@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import OnboardingScreen from './src/screens/OnBoradingScreen.js';
-import HomeScreen from './src/screens/HomeScreen';
+import HomeScreen from './src/screens/Dashboard.js';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/ResigterScreen.js';
 
@@ -10,7 +10,6 @@ const Stack = createStackNavigator();
 
 const AppNavigator = ({ isFirstLaunch, setIsFirstLaunch, isAuthenticated }) => {
     return (
-      <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {isFirstLaunch ? (
             <Stack.Screen name="Onboarding">
@@ -27,7 +26,6 @@ const AppNavigator = ({ isFirstLaunch, setIsFirstLaunch, isAuthenticated }) => {
             </>
           )}
         </Stack.Navigator>
-      </NavigationContainer>
     );
   };
   

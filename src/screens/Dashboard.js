@@ -6,7 +6,7 @@ const HomeScreen = ({ navigation }) => {
   const handleLogout = async () => {
     // Clear the token from AsyncStorage
     await AsyncStorage.removeItem('userToken');
-    navigation.replace('Login'); // Navigate back to the Login screen
+    navigation.replace('LoginScreen'); // Navigate back to the Login screen
   };
 
   return (

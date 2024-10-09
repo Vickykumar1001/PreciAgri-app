@@ -1,27 +1,41 @@
-import React, { useState, useEffect,useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AppNavigator from './AppNavigator';
+import { Provider } from 'react-native-paper';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { theme } from './src/core/theme';
+import {
+  StartScreen,
+  LoginScreen,
+  RegisterScreen,
+  ResetPasswordScreen,
+  Dashboard,
+} from './src/screens';
+import AppNavigator from './AppNavigator';
 
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
 
 const loadFonts = async () => {
   await Font.loadAsync({
-    'Lobster-Regular': require('./src/assets/fonts/Lobster-Regular.ttf'), // Load your font here
+    'Lobster-Regular': require('./src/assets/fonts/Lobster-Regular.ttf'),
   });
 };
+
+const Stack = createStackNavigator();
+
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleFontsLoaded = useCallback(async () => {
     await loadFonts();
     setFontsLoaded(true);
-    await SplashScreen.hideAsync(); // Hide the splash screen once fonts are loaded
+    await SplashScreen.hideAsync();
   }, []);
-  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication state
 
   useEffect(() => {
     const checkFirstLaunch = async () => {
@@ -34,9 +48,9 @@ const App = () => {
           setIsFirstLaunch(false);
         }
 
-        // Check authentication status from AsyncStorage (or API if needed)
+        // Check authentication status (you can also use an API call if needed)
         const userToken = await AsyncStorage.getItem('userToken');
-        setIsAuthenticated(userToken); // Set auth status based on token presence
+        setIsAuthenticated(!!userToken); // Set based on the token presence
       } catch (error) {
         console.error('Error checking launch or authentication status', error);
       }
@@ -44,19 +58,42 @@ const App = () => {
 
     checkFirstLaunch();
   }, []);
+
   if (!fontsLoaded) {
     handleFontsLoaded();
-    return null; // Prevent rendering anything while fonts are loading
+    return null; // Prevent rendering until fonts are loaded
   }
+
   if (isFirstLaunch === null) {
     return null; // Add a loading spinner here if necessary
   }
+
   return (
-    <AppNavigator
-      isFirstLaunch={isFirstLaunch}
-      setIsFirstLaunch={setIsFirstLaunch}
-      isAuthenticated={isAuthenticated}
-    />
+    <Provider theme={theme}>
+      <NavigationContainer>
+        {isFirstLaunch ? (
+          <AppNavigator
+            isFirstLaunch={isFirstLaunch}
+            setIsFirstLaunch={setIsFirstLaunch}
+            isAuthenticated={isAuthenticated}
+          />
+        ) : (
+          <Stack.Navigator
+            initialRouteName={isAuthenticated ? 'Dashboard' : 'StartScreen'}
+            screenOptions={{ headerShown: false }}
+          >
+            <Stack.Screen name="StartScreen" component={StartScreen} />
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
+            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+            <Stack.Screen name="Dashboard" component={Dashboard} />
+            <Stack.Screen
+              name="ResetPasswordScreen"
+              component={ResetPasswordScreen}
+            />
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
+    </Provider>
   );
 };
 
