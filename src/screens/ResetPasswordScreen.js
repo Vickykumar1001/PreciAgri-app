@@ -16,7 +16,7 @@ export default function ResetPasswordScreen({ navigation }) {
       setEmail({ ...email, error: emailError })
       return
     }
-    navigation.navigate('LoginScreen')
+    navigation.navigate('VerifyEmail')
   }
 
   return (
@@ -42,7 +42,7 @@ export default function ResetPasswordScreen({ navigation }) {
         onPress={sendResetPasswordEmail}
         style={{ marginTop: 16 }}
       >
-        Send Instructions
+        Send Email
       </Button>
     </Background>
   )

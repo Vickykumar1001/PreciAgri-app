@@ -12,6 +12,8 @@ import {
   RegisterScreen,
   ResetPasswordScreen,
   Dashboard,
+  VerifyEmail,
+  ChangePassword
 } from './src/screens';
 import AppNavigator from './AppNavigator';
 
@@ -85,6 +87,8 @@ const App = () => {
             <Stack.Screen name="StartScreen" component={StartScreen} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+            <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+            <Stack.Screen name="ChangePassword" component={ChangePassword} />
             <Stack.Screen name="Dashboard" component={Dashboard} />
             <Stack.Screen
               name="ResetPasswordScreen"

@@ -9,9 +9,9 @@ export default function StartScreen({ navigation }) {
   return (
     <Background>
       <Logo />
-      <Header>Login Template</Header>
+      <Header>MizoFarm</Header>
       <Paragraph>
-        The easiest way to start with your amazing application.
+      Connect, trade, and grow—Log in or sign up now!
       </Paragraph>
       <Button
         mode="contained"
