@@ -13,7 +13,9 @@ import {
   ResetPasswordScreen,
   Dashboard,
   VerifyEmail,
-  ChangePassword
+  VerifyEmailonRegister,
+  ChangePassword,
+  HomePage
 } from './src/screens';
 import AppNavigator from './AppNavigator';
 
@@ -88,8 +90,10 @@ const App = () => {
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
             <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+            <Stack.Screen name="VerifyEmailonRegister" component={VerifyEmailonRegister} />
             <Stack.Screen name="ChangePassword" component={ChangePassword} />
-            <Stack.Screen name="Dashboard" component={Dashboard} />
+            <Stack.Screen name="Dashboard" component={HomePage} />
+            <Stack.Screen name="HomePage" component={HomePage} />
             <Stack.Screen
               name="ResetPasswordScreen"
               component={ResetPasswordScreen}
