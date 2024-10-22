@@ -67,7 +67,6 @@ export default function RegisterScreen({ navigation }) {
           setRole({ value: item.value, error: '' })
         }
         }
-        required
         error={!!role.error}
         errorText={role.error}
       />
