@@ -9,9 +9,9 @@ export default function StartScreen({ navigation }) {
   return (
     <Background>
       <Logo />
-      <Header>MizoFarm</Header>
+      <Header>PRECIAGRI</Header>
       <Paragraph>
-      Connect, trade, and grow—Log in or sign up now!
+        Connect, trade, and grow—Log in or sign up now!
       </Paragraph>
       <Button
         mode="contained"
