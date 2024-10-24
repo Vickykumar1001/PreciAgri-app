@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Provider } from 'react-native-paper';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { theme } from './src/core/theme';
+
 import {
   StartScreen,
   LoginScreen,
@@ -15,7 +18,8 @@ import {
   VerifyEmail,
   VerifyEmailonRegister,
   ChangePassword,
-  HomePage
+  HomePage,
+  ShopPage
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
 import AppNavigator from './AppNavigator';
@@ -34,7 +38,7 @@ const Stack = createStackNavigator();
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const handleFontsLoaded = useCallback(async () => {
     await loadFonts();
@@ -56,6 +60,7 @@ const App = () => {
         // Check authentication status (you can also use an API call if needed)
         const userToken = await AsyncStorage.getItem('userToken');
         setIsAuthenticated(!!userToken); // Set based on the token presence
+        setIsAuthenticated(true)
       } catch (error) {
         console.error('Error checking launch or authentication status', error);
       }
@@ -74,36 +79,40 @@ const App = () => {
   }
 
   return (
-    <Provider theme={theme}>
-      <NavigationContainer>
-        {isFirstLaunch ? (
-          <AppNavigator
-            isFirstLaunch={isFirstLaunch}
-            setIsFirstLaunch={setIsFirstLaunch}
-            isAuthenticated={isAuthenticated}
-          />
-        ) : (
-          <Stack.Navigator
-            initialRouteName={isAuthenticated ? 'Dashboard' : 'StartScreen'}
-            screenOptions={{ headerShown: false }}
-          >
-            <Stack.Screen name="StartScreen" component={StartScreen} />
-            <Stack.Screen name="LoginScreen" component={LoginScreen} />
-            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-            <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
-            <Stack.Screen name="VerifyEmailonRegister" component={VerifyEmailonRegister} />
-            <Stack.Screen name="ChangePassword" component={ChangePassword} />
-            <Stack.Screen name="Dashboard" component={Dashboard} />
-            <Stack.Screen name="HomePage" component={HomePage} />
-            <Stack.Screen
-              name="ResetPasswordScreen"
-              component={ResetPasswordScreen}
-            />
-          </Stack.Navigator>
-        )}
-      </NavigationContainer>
-    </Provider>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+        <Provider theme={theme}>
+          <NavigationContainer>
+            {isFirstLaunch ? (
+              <AppNavigator
+                isFirstLaunch={isFirstLaunch}
+                setIsFirstLaunch={setIsFirstLaunch}
+                isAuthenticated={isAuthenticated}
+              />
+            ) : (
+              <Stack.Navigator
+                initialRouteName={isAuthenticated ? 'HomePage' : 'StartScreen'}
+                screenOptions={{ headerShown: false }}
+              >
+                <Stack.Screen name="StartScreen" component={StartScreen} />
+                <Stack.Screen name="LoginScreen" component={LoginScreen} />
+                <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+                <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+                <Stack.Screen name="VerifyEmailonRegister" component={VerifyEmailonRegister} />
+                <Stack.Screen name="ChangePassword" component={ChangePassword} />
+                <Stack.Screen name="Dashboard" component={Dashboard} />
+                <Stack.Screen name="HomePage" component={HomePage} />
+                <Stack.Screen name="Shop" component={ShopPage} />
+                <Stack.Screen
+                  name="ResetPasswordScreen"
+                  component={ResetPasswordScreen}
+                />
+              </Stack.Navigator>
+            )}
+          </NavigationContainer>
+        </Provider>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
-
 export default App;

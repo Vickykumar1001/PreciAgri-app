@@ -8,22 +8,40 @@ const HomePage = ({ navigation }) => {
     const [search, setSearch] = useState('');
 
     const categories = [
-        { id: '1', name: 'Vegetables', image: require('../assets/images/veg.png') },
-        { id: '2', name: 'Fruits', image: require('../assets/images/fruit.png') },
-        { id: '3', name: 'Grains', image: require('../assets/images/grain.webp') },
-        { id: '4', name: 'Dairy', image: require('../assets/images/dairy.png') },
+        { id: '1', name: 'Vegetables', image: require('../assets/images/veg.png'), link: 'vegetables', },
+        { id: '2', name: 'Fruits', image: require('../assets/images/fruit.png'), link: 'vegetables', },
+        { id: '3', name: 'Grains', image: require('../assets/images/grain.webp'), link: 'vegetables', },
+        { id: '4', name: 'Dairy', image: require('../assets/images/dairy.png'), link: 'vegetables', },
+        { id: '5', name: 'Fruits', image: require('../assets/images/fruit.png'), link: 'vegetables', },
+        { id: '6', name: 'Grains', image: require('../assets/images/grain.webp'), link: 'vegetables', },
+        { id: '7', name: 'Dairy', image: require('../assets/images/dairy.png'), link: 'vegetables', },
+    ];
+    const services = [
+        { id: '1', name: 'Weather', image: require('../assets/images/veg.png'), link: 'vegetables', },
+        { id: '2', name: 'Loan', image: require('../assets/images/fruit.png'), link: 'vegetables', },
+        { id: '3', name: 'Shop', image: require('../assets/images/grain.webp'), link: 'vegetables', },
+        { id: '4', name: 'Farming Tips', image: require('../assets/images/dairy.png'), link: 'vegetables', },
+        { id: '5', name: 'Fruits', image: require('../assets/images/fruit.png'), link: 'vegetables', },
+        { id: '6', name: 'Grains', image: require('../assets/images/grain.webp'), link: 'vegetables', },
+        { id: '7', name: 'Dairy', image: require('../assets/images/dairy.png'), link: 'vegetables', },
     ];
 
     const featuredProducts = [
         { id: '1', name: 'Organic Tomatoes', price: '₹50/kg', image: require('../assets/images/tomatoes.png') },
         { id: '2', name: 'Fresh Mangoes', price: '₹120/kg', image: require('../assets/images/mango.png') },
+        { id: '3', name: 'Organic Tomatoes', price: '₹50/kg', image: require('../assets/images/tomatoes.png') },
+        { id: '4', name: 'Fresh Mangoes', price: '₹120/kg', image: require('../assets/images/mango.png') },
+        { id: '5', name: 'Organic Tomatoes', price: '₹50/kg', image: require('../assets/images/tomatoes.png') },
+        { id: '6', name: 'Fresh Mangoes', price: '₹120/kg', image: require('../assets/images/mango.png') },
     ];
 
     const farmers = [
         { id: '1', name: 'Farmer Ram Singh', location: 'Maharashtra' },
         { id: '2', name: 'Farmer Priya Patel', location: 'Gujarat' },
     ];
-
+    const handleCategoryPress = (category) => {
+        navigation.navigate('Shop', { category: category.name });
+    };
     const handleProductPress = (product) => {
         navigation.navigate('ProductDetails', { product });
     };
@@ -32,14 +50,26 @@ const HomePage = ({ navigation }) => {
         <View style={styles.container}>
             {/* Top Bar with Cart Icon */}
             <View style={styles.topBar}>
-                <Text style={styles.appTitle}>PreciAgri</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
-                    <Ionicons name="cart-outline" size={28} color="#333" />
+                <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('search')}>
+                    <Ionicons name="menu" size={28} color="#333" />
                 </TouchableOpacity>
+                <Text style={[styles.appTitle, { color: '#4A90E2' }]}>Preci</Text>
+                <Text style={[styles.appTitle, { color: '#4CAF50' }]}>Agri</Text>
+                <View style={styles.icons}>
+                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('search')}>
+                        <Ionicons name="search" size={28} color="#333" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('notification')}>
+                        <Ionicons name="notifications" size={28} color="#333" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Cart')}>
+                        <Ionicons name="cart" size={28} color="#333" />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             {/* Search Bar */}
-            <View style={styles.searchContainer}>
+            {/* <View style={styles.searchContainer}>
                 <Ionicons name="search" size={20} color="#777" />
                 <TextInput
                     style={styles.searchInput}
@@ -47,15 +77,9 @@ const HomePage = ({ navigation }) => {
                     value={search}
                     onChangeText={(text) => setSearch(text)}
                 />
-            </View>
-            <Banner />
-            {/* <ScrollView> */}
-            {/* <View> */}
-
-            {/* <Button title="Logout" onPress={handleLogout} /> */}
-            {/* </View> */}
-            {/* </ScrollView> */}
+            </View> */}
             <ScrollView>
+                <Banner />
                 {/* Categories Section */}
                 <Text style={styles.sectionTitle}>Categories</Text>
                 <FlatList
@@ -64,7 +88,20 @@ const HomePage = ({ navigation }) => {
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
-                        <TouchableOpacity style={styles.categoryCard}>
+                        <TouchableOpacity style={styles.categoryCard} onPress={() => handleCategoryPress(item)}>
+                            <Image source={item.image} style={styles.categoryImage} />
+                            <Text style={styles.categoryName}>{item.name}</Text>
+                        </TouchableOpacity>
+                    )}
+                />
+                <Text style={styles.sectionTitle}>Services</Text>
+                <FlatList
+                    data={services}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={styles.categoryCard} onPress={() => handleCategoryPress(item)}>
                             <Image source={item.image} style={styles.categoryImage} />
                             <Text style={styles.categoryName}>{item.name}</Text>
                         </TouchableOpacity>
@@ -73,6 +110,34 @@ const HomePage = ({ navigation }) => {
 
                 {/* Featured Products Section */}
                 <Text style={styles.sectionTitle}>Featured Products</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {featuredProducts.map((product) => (
+                        <TouchableOpacity
+                            key={product.id}
+                            style={styles.productCard}
+                            onPress={() => handleProductPress(product)}
+                        >
+                            <Image source={product.image} style={styles.productImage} />
+                            <Text style={styles.productName}>{product.name}</Text>
+                            <Text style={styles.productPrice}>{product.price}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+                <Text style={styles.sectionTitle}>Featured Products</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {featuredProducts.map((product) => (
+                        <TouchableOpacity
+                            key={product.id}
+                            style={styles.productCard}
+                            onPress={() => handleProductPress(product)}
+                        >
+                            <Image source={product.image} style={styles.productImage} />
+                            <Text style={styles.productName}>{product.name}</Text>
+                            <Text style={styles.productPrice}>{product.price}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+                <Text style={styles.sectionTitle}>Farming Tips</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     {featuredProducts.map((product) => (
                         <TouchableOpacity
@@ -103,15 +168,15 @@ const HomePage = ({ navigation }) => {
             {/* Footer Navigation */}
             <View style={styles.footer}>
                 <TouchableOpacity>
-                    <Ionicons name="home-outline" size={28} color="#4CAF50" />
+                    <Ionicons name="home" size={28} onPress={() => navigation.navigate('HomePage')} color="#4CAF50" />
                     <Text style={styles.footerText}>Home</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
-                    <Ionicons name="cart-outline" size={28} color="#777" />
-                    <Text style={styles.footerText}>Cart</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Shop')}>
+                    <Ionicons name="storefront" size={28} color="#777" />
+                    <Text style={styles.footerText}>Shop</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                    <Ionicons name="person-outline" size={28} color="#777" />
+                    <Ionicons name="person" size={28} color="#777" />
                     <Text style={styles.footerText}>Profile</Text>
                 </TouchableOpacity>
             </View>
@@ -126,12 +191,21 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     topBar: {
+        width: '100%', // Full width
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        justifyContent: 'space-between', // Distribute space between title and icons
+        alignItems: 'center', // Align items vertically
         marginBottom: 10,
+        paddingHorizontal: 10, // Optional: Add some horizontal padding
+    },
+    icons: {
+        padding: 5,
+        flexDirection: 'row',
+        justifyContent: 'center',
     },
     appTitle: {
+        marginLeft: -70,
+        marginHorizontal: 0,
         fontSize: 24,
         fontWeight: 'bold',
         color: '#4CAF50',
@@ -159,8 +233,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     categoryImage: {
-        width: 50,
-        height: 50,
+        width: 40,
+        height: 40,
         borderRadius: 8,
         marginBottom: 5,
     },
