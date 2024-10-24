@@ -44,7 +44,7 @@ export default function VerifyEmailonRegister({ navigation }) {
             // Perform OTP verification logic here
             navigation.reset({
                 index: 0,
-                routes: [{ name: 'Dashboard' }],
+                routes: [{ name: 'HomePage' }],
             })
         }
     };

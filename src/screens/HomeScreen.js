@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import {
-    View, Text, TextInput, Image, FlatList, ScrollView, TouchableOpacity, StyleSheet
+    View, Text, TextInput, Image, Button, FlatList, ScrollView, TouchableOpacity, StyleSheet
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-
+import Banner from "../Shared/Banner"
 const HomePage = ({ navigation }) => {
     const [search, setSearch] = useState('');
 
@@ -32,7 +32,7 @@ const HomePage = ({ navigation }) => {
         <View style={styles.container}>
             {/* Top Bar with Cart Icon */}
             <View style={styles.topBar}>
-                <Text style={styles.appTitle}>FarmFresh</Text>
+                <Text style={styles.appTitle}>PreciAgri</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
                     <Ionicons name="cart-outline" size={28} color="#333" />
                 </TouchableOpacity>
@@ -48,7 +48,13 @@ const HomePage = ({ navigation }) => {
                     onChangeText={(text) => setSearch(text)}
                 />
             </View>
+            <Banner />
+            {/* <ScrollView> */}
+            {/* <View> */}
 
+            {/* <Button title="Logout" onPress={handleLogout} /> */}
+            {/* </View> */}
+            {/* </ScrollView> */}
             <ScrollView>
                 {/* Categories Section */}
                 <Text style={styles.sectionTitle}>Categories</Text>
@@ -153,8 +159,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     categoryImage: {
-        width: 80,
-        height: 80,
+        width: 50,
+        height: 50,
         borderRadius: 8,
         marginBottom: 5,
     },
