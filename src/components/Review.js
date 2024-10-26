@@ -2,10 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'; // Make sure to install react-native-vector-icons or @expo/vector-icons
 
-const ReviewComponent = () => {
-    const rating = 4.3;
-    const totalRatings = 20;
-    const stars = [1, 2, 3, 4, 5];
+const ReviewComponent = ({ starCounts }) => {
+    starCounts = [4, 1, 0, 1, 9]
+    const totalRatings = starCounts.reduce((sum, count) => sum + count, 0);
+    const rating = (
+        starCounts.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRatings
+    ).toFixed(1);
 
     return (
         <View style={styles.container}>
@@ -22,15 +24,20 @@ const ReviewComponent = () => {
                     <Text style={styles.totalRatings}>{totalRatings} Satisfied Ratings</Text>
                 </View>
                 <View style={styles.starsContainer}>
-                    {stars.map((star, index) => (
-                        <View key={index} style={styles.starRow}>
-                            <FontAwesome name="star" size={16} color="black" />
-                            <View style={styles.progressBar}>
-                                <View style={index === 0 ? styles.progressBarFilled : styles.progressBarEmpty} />
+                    {[...starCounts].reverse().map((count, index) => {
+                        const starLevel = 5 - index; // Start with 5 stars at the top
+                        const percentage = totalRatings > 0 ? (count / totalRatings) * 100 : 0;
+                        return (
+                            <View key={index} style={styles.starRow}>
+                                <Text style={styles.starLabel}>{starLevel}</Text>
+                                <FontAwesome name="star" size={16} color="black" />
+                                <View style={styles.progressBar}>
+                                    <View style={[styles.progressBarFilled, { width: `${percentage}%` }]} />
+                                </View>
+                                <Text style={styles.starCount}>{count}</Text>
                             </View>
-                            <Text style={styles.starCount}>{index === 0 ? totalRatings : 0}</Text>
-                        </View>
-                    ))}
+                        );
+                    })}
                 </View>
             </View>
         </View>
@@ -96,6 +103,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 4,
     },
+    starLabel: {
+        paddingRight: 10,
+        fontWeight: 'bold',
+    },
     progressBar: {
         flex: 1,
         height: 8,
@@ -104,15 +115,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 8,
     },
     progressBarFilled: {
-        width: '100%',
         height: '100%',
         backgroundColor: '#4CAF50',
-        borderRadius: 4,
-    },
-    progressBarEmpty: {
-        width: '30%',
-        backgroundColor: '#4CAF50',
-        height: '100%',
         borderRadius: 4,
     },
     starCount: {
