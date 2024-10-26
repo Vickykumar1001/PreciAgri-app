@@ -8,10 +8,13 @@ import {
     TextInput,
     StyleSheet,
     Dimensions,
+    FlatList
 } from 'react-native';
 import { Icon, Rating } from 'react-native-elements';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { BarChart } from 'react-native-chart-kit';
 import ReviewComponent from '../components/Review';
+import ProductCardMini from './ProductCardMini'; // Reuse ProductCard for consistency
 // Dummy product data
 const product = {
     name: 'V Hume - Bio-Stimulant',
@@ -33,9 +36,90 @@ const product = {
     ],
 };
 
-const ProductDetailScreen = () => {
+const ProductDetailScreen = ({ navigation }) => {
     const [quantity, setQuantity] = useState(product.quantity);
-
+    const allProducts = [
+        {
+            id: '1',
+            image: 'https://images.pexels.com/photos/3952232/pexels-photo-3952232.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Organic Fertilizer',
+            rating: 4.6,
+            reviews: 88,
+            currentPrice: 300,
+            originalPrice: 450,
+            category: 'fertilizer',
+        },
+        {
+            id: '2',
+            image: 'https://images.pexels.com/photos/7210131/pexels-photo-7210131.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Manual Sprayer Pump',
+            rating: 4.3,
+            reviews: 43,
+            currentPrice: 799,
+            originalPrice: 950,
+            category: 'tool',
+        },
+        {
+            id: '3',
+            image: 'https://images.pexels.com/photos/7210230/pexels-photo-7210230.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Farming Tool Set',
+            rating: 4.0,
+            reviews: 18,
+            currentPrice: 1299,
+            originalPrice: 1600,
+            category: 'tool',
+        },
+        {
+            id: '4',
+            image: 'https://images.unsplash.com/photo-1626335842811-2b2e08c51f1c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=250&h=250&q=80',
+            name: 'Insecticide Spray',
+            rating: 4.5,
+            reviews: 54,
+            currentPrice: 500,
+            originalPrice: 650,
+            category: 'tool',
+        },
+        {
+            id: '5',
+            image: 'https://images.pexels.com/photos/3952232/pexels-photo-3952232.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Organic Fertilizer',
+            rating: 4.6,
+            reviews: 88,
+            currentPrice: 300,
+            originalPrice: 450,
+            category: 'fertilizer',
+        },
+        {
+            id: '6',
+            image: 'https://images.pexels.com/photos/7210131/pexels-photo-7210131.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Manual Sprayer Pump',
+            rating: 4.3,
+            reviews: 43,
+            currentPrice: 799,
+            originalPrice: 950,
+            category: 'tool',
+        },
+        {
+            id: '7',
+            image: 'https://images.pexels.com/photos/7210230/pexels-photo-7210230.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Farming Tool Set',
+            rating: 4.0,
+            reviews: 18,
+            currentPrice: 1299,
+            originalPrice: 1600,
+            category: 'tool',
+        },
+        {
+            id: '8',
+            image: 'https://images.unsplash.com/photo-1626335842811-2b2e08c51f1c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=250&h=250&q=80',
+            name: 'Insecticide Spray',
+            rating: 4.5,
+            reviews: 54,
+            currentPrice: 500,
+            originalPrice: 650,
+            category: 'tool',
+        },
+    ];
     const handleQuantityChange = (type) => {
         setQuantity((prev) => (type === 'inc' ? prev + 1 : Math.max(1, prev - 1)));
     };
@@ -48,6 +132,9 @@ const ProductDetailScreen = () => {
                     <Image key={index} source={{ uri: url }} style={styles.productImage} />
                 ))}
             </ScrollView>
+            <TouchableOpacity style={styles.backIcon} onPress={() => navigation.goBack()}>
+                <Ionicons name="arrow-back" size={28} color="#333" />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.wishlistIcon}>
                 <Icon name="heart" type="feather" color="red" />
             </TouchableOpacity>
@@ -113,7 +200,12 @@ const ProductDetailScreen = () => {
                     <Text>{review.comment}</Text>
                 </View>
             ))}
-
+            <Text style={styles.sectionTitle}>Similar Products</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {allProducts.map((product) => (
+                    <ProductCardMini product={product} />
+                ))}
+            </ScrollView>
             {/* Footer Buttons */}
             <View style={styles.footer}>
                 <TouchableOpacity style={styles.addToCartButton}>
@@ -128,9 +220,10 @@ const ProductDetailScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#f5f5f5' },
+    container: { flex: 1, backgroundColor: '#f5f5f5', padding: 5, },
     productImage: { width: Dimensions.get('window').width, height: 300, resizeMode: 'contain' },
     wishlistIcon: { position: 'absolute', top: 20, right: 10 },
+    backIcon: { position: 'absolute', top: 20, left: 10 },
     productInfo: { padding: 16 },
     productName: { fontSize: 20, fontWeight: 'bold', marginBottom: 8 },
     priceSection: { flexDirection: 'row', alignItems: 'center', marginVertical: 8 },
@@ -148,6 +241,12 @@ const styles = StyleSheet.create({
     addToCartButton: { backgroundColor: 'green', padding: 16, borderRadius: 8, flex: 1, marginRight: 8 },
     buyNowButton: { backgroundColor: 'orange', padding: 16, borderRadius: 8, flex: 1 },
     buttonText: { color: '#fff', textAlign: 'center' },
+    sectionTitle: {
+        paddingLeft: 8,
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
 });
 
 export default ProductDetailScreen;

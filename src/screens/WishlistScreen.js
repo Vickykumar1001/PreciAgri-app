@@ -1,30 +1,16 @@
-import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ProductCard from './ProductCard2'; // Reuse ProductCard for consistency
 
-import SearchTopBar from '../components/SearchTopBar';
+import WishlistTopBar from '../components/WishListTopBar';
 import ProductFilterSort from './ProductFilterSort';
+import ProductCardWishlist from './ProductCardWishlist';
 
 const ShopPage = ({ navigation, route }) => {
-    console.log(route.params)
-    const [category, setCategory] = useState(route.params.category);
+    const [category, setCategory] = useState(route.params);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [wishlist, setWishlist] = useState([]); // Track wishlist
-    const inputRef = useRef(null); // Create a ref to the TextInput
-
-    const { focusInput } = route.params || {}; // Extract parameter from route
-
-    // Conditionally focus the TextInput based on 'focusInput' parameter
-    useEffect(() => {
-        if (focusInput) {
-            const timeout = setTimeout(() => {
-                inputRef.current?.focus();
-            }, 300); // Slight delay for smoother navigation
-
-            return () => clearTimeout(timeout); // Cleanup timeout
-        }
-    }, [focusInput]);
     const allProducts = [
         {
             id: '1',
@@ -74,7 +60,7 @@ const ShopPage = ({ navigation, route }) => {
             reviews: 88,
             currentPrice: 300,
             originalPrice: 450,
-            category: 'Vegetables',
+            category: 'fertilizer',
         },
         {
             id: '6',
@@ -135,18 +121,15 @@ const ShopPage = ({ navigation, route }) => {
 
     // Memoized ProductCard for better performance
     const MemoizedProductCard = memo(({ item }) => (
-        <ProductCard
-            navigation={navigation}
+        <ProductCardWishlist
             product={item}
-            isInWishlist={isInWishlist(item.id)}
-            toggleWishlist={() => toggleWishlist(item.id)}
 
         />
     ));
 
     return (
         <View style={styles.container}>
-            <SearchTopBar navigation={navigation} setCategory={setCategory} inputRef={inputRef} />
+            <WishlistTopBar navigation={navigation} />
             {/* <ProductFilterSort products={filteredProducts} setFilteredProducts={setFilteredProducts} /> */}
             <FlatList
                 data={filteredProducts}

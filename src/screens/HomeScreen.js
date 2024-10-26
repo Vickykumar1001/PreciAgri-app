@@ -44,7 +44,7 @@ const HomePage = ({ navigation }) => {
         navigation.navigate('Shop', { category: category.name });
     };
     const handleProductPress = (product) => {
-        navigation.navigate('ProductDetails', { product });
+        navigation.navigate('ProductDetail', { product });
     };
 
     return (
@@ -71,7 +71,7 @@ const HomePage = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View> */}
-            <TopBar />
+            <TopBar navigation={navigation} />
 
             {/* Search Bar */}
             {/* <View style={styles.searchContainer}>
@@ -176,7 +176,7 @@ const HomePage = ({ navigation }) => {
                     <Ionicons name="home" size={28} onPress={() => navigation.navigate('HomePage')} color="#4CAF50" />
                     <Text style={styles.footerText}>Home</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Shop')}>
+                <TouchableOpacity onPress={() => navigation.navigate('Shop', { category: '' })}>
                     <Ionicons name="storefront" size={28} color="#777" />
                     <Text style={styles.footerText}>Shop</Text>
                 </TouchableOpacity>
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F5F5F5',
-        padding: 10,
+        padding: 5,
     },
     topBar: {
         width: '100%', // Full width
@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     sectionTitle: {
+        paddingLeft: 8,
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,

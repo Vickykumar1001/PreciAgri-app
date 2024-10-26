@@ -17,7 +17,7 @@ const TopBar = ({ navigation }) => {
 
             {/* Action Icons */}
             <View style={styles.icons}>
-                <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('search')}>
+                <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Shop', { focusInput: true })}>
                     <Ionicons name="search" size={28} color="#333" />
                 </TouchableOpacity>
                 <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('notification')}>

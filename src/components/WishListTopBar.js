@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-const SearchTopBar = ({ navigation, setCategory, inputRef }) => {
+const WishlistTopBar = ({ navigation, setCategory }) => {
     const [searchText, setSearchText] = useState('');
     const handleSearch = (text) => {
         setSearchText(text);
@@ -15,24 +15,26 @@ const SearchTopBar = ({ navigation, setCategory, inputRef }) => {
                 <Ionicons name="arrow-back" size={28} color="#333" />
             </TouchableOpacity>
 
-            {/* Search Input Field */}
+            <Text style={styles.sectionTitle}>
+                My WishList
+            </Text>
+            {/* Search Input Field
             <View style={styles.searchContainer}>
                 <Ionicons name="search" size={20} color="#333" style={{ marginHorizontal: 5 }} />
                 <TextInput
-                    ref={inputRef}
                     style={styles.searchInput}
                     placeholder="Search for items..."
                     value={searchText}
                     onChangeText={handleSearch}
                     placeholderTextColor="#999"
                 />
-            </View>
+            </View> */}
 
             {/* Action Icons */}
             <View style={styles.icons}>
-                <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('wishlist')}>
+                {/* <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('wishlist')}>
                     <Ionicons name="heart" size={28} color="#333" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Cart')}>
                     <Ionicons name="cart" size={28} color="#333" />
                 </TouchableOpacity>
@@ -41,7 +43,7 @@ const SearchTopBar = ({ navigation, setCategory, inputRef }) => {
     );
 };
 
-export default SearchTopBar;
+export default WishlistTopBar;
 
 const styles = StyleSheet.create({
     topBar: {
@@ -76,4 +78,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row', // Arrange icons in a row
         alignItems: 'center', // Align icons vertically
     },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    }
 });
