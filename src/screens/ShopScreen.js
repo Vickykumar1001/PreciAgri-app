@@ -1,77 +1,195 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import React, { useState, useEffect, useCallback, memo } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import ProductCard from './ProductCard2'; // Reuse ProductCard for consistency
+import SearchTopBar from '../components/SearchTopBar';
+import ProductFilterSort from './ProductFilterSort';
 
 const ShopPage = ({ navigation, route }) => {
-    const { category } = route.params || {}; // Get the passed category
+    const [category, setCategory] = useState(route.params);
     const [filteredProducts, setFilteredProducts] = useState([]);
-
+    const [wishlist, setWishlist] = useState([]); // Track wishlist
     const allProducts = [
-        { id: '1', name: 'Organic Tomatoes', category: 'Vegetables', price: '₹50/kg', image: require('../assets/images/tomatoes.png') },
-        { id: '2', name: 'Fresh Mangoes', category: 'Fruits', price: '₹120/kg', image: require('../assets/images/mango.png') },
-        { id: '3', name: 'Rice', category: 'Grains', price: '₹40/kg', image: require('../assets/images/grain.webp') },
-        { id: '4', name: 'Milk', category: 'Dairy', price: '₹60/litre', image: require('../assets/images/dairy.png') },
+        {
+            id: '1',
+            image: 'https://images.pexels.com/photos/3952232/pexels-photo-3952232.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Organic Fertilizer',
+            rating: 4.6,
+            reviews: 88,
+            currentPrice: 300,
+            originalPrice: 450,
+            category: 'fertilizer',
+        },
+        {
+            id: '2',
+            image: 'https://images.pexels.com/photos/7210131/pexels-photo-7210131.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Manual Sprayer Pump',
+            rating: 4.3,
+            reviews: 43,
+            currentPrice: 799,
+            originalPrice: 950,
+            category: 'tool',
+        },
+        {
+            id: '3',
+            image: 'https://images.pexels.com/photos/7210230/pexels-photo-7210230.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Farming Tool Set',
+            rating: 4.0,
+            reviews: 18,
+            currentPrice: 1299,
+            originalPrice: 1600,
+            category: 'tool',
+        },
+        {
+            id: '4',
+            image: 'https://images.unsplash.com/photo-1626335842811-2b2e08c51f1c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=250&h=250&q=80',
+            name: 'Insecticide Spray',
+            rating: 4.5,
+            reviews: 54,
+            currentPrice: 500,
+            originalPrice: 650,
+            category: 'tool',
+        },
+        {
+            id: '5',
+            image: 'https://images.pexels.com/photos/3952232/pexels-photo-3952232.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Organic Fertilizer',
+            rating: 4.6,
+            reviews: 88,
+            currentPrice: 300,
+            originalPrice: 450,
+            category: 'fertilizer',
+        },
+        {
+            id: '6',
+            image: 'https://images.pexels.com/photos/7210131/pexels-photo-7210131.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Manual Sprayer Pump',
+            rating: 4.3,
+            reviews: 43,
+            currentPrice: 799,
+            originalPrice: 950,
+            category: 'tool',
+        },
+        {
+            id: '7',
+            image: 'https://images.pexels.com/photos/7210230/pexels-photo-7210230.jpeg?auto=compress&cs=tinysrgb&w=250&h=250',
+            name: 'Farming Tool Set',
+            rating: 4.0,
+            reviews: 18,
+            currentPrice: 1299,
+            originalPrice: 1600,
+            category: 'tool',
+        },
+        {
+            id: '8',
+            image: 'https://images.unsplash.com/photo-1626335842811-2b2e08c51f1c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=250&h=250&q=80',
+            name: 'Insecticide Spray',
+            rating: 4.5,
+            reviews: 54,
+            currentPrice: 500,
+            originalPrice: 650,
+            category: 'tool',
+        },
     ];
 
+    // Filter products based on the selected category
     useEffect(() => {
-        if (category) {
-            const filtered = allProducts.filter((product) => product.category === category);
-            setFilteredProducts(filtered);
-        } else {
-            setFilteredProducts(allProducts); // Show all products if no category is selected
-        }
+        const filtered = category
+            ? allProducts.filter((product) =>
+                product.name.toLowerCase().includes(category.toLowerCase()) ||
+                product.category.toLowerCase() === category.toLowerCase()
+            )
+            : allProducts;
+        setFilteredProducts(filtered);
     }, [category]);
+    // Toggle product in/out of wishlist
+    const toggleWishlist = (productId) => {
+        setWishlist((prevWishlist) =>
+            prevWishlist.includes(productId)
+                ? prevWishlist.filter((id) => id !== productId)
+                : [...prevWishlist, productId]
+        );
+    };
+
+    // Check if product is in wishlist
+    const isInWishlist = useCallback(
+        (productId) => wishlist.includes(productId),
+        [wishlist]
+    );
+
+    // Memoized ProductCard for better performance
+    const MemoizedProductCard = memo(({ item }) => (
+        <ProductCard
+            navigation={navigation}
+            product={item}
+            isInWishlist={isInWishlist(item.id)}
+            toggleWishlist={() => toggleWishlist(item.id)}
+
+        />
+    ));
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Products: {category || 'All'}</Text>
+            <SearchTopBar navigation={navigation} setCategory={setCategory} />
+            {/* <ProductFilterSort products={filteredProducts} setFilteredProducts={setFilteredProducts} /> */}
             <FlatList
                 data={filteredProducts}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <View style={styles.productCard}>
-                        <Image source={item.image} style={styles.productImage} />
-                        <Text style={styles.productName}>{item.name}</Text>
-                        <Text style={styles.productPrice}>{item.price}</Text>
-                    </View>
-                )}
+                renderItem={({ item }) => <MemoizedProductCard item={item} />}
+                numColumns={2}
+                columnWrapperStyle={styles.row}
             />
+
             {/* Footer Navigation */}
-            <View style={styles.footer}>
-                <TouchableOpacity onPress={() => navigation.navigate('HomePage')}>
-                    <Ionicons name="home" color="#777" size={28} />
-                    <Text style={styles.footerText}>Home</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Shop')} >
-                    <Ionicons name="storefront" size={28} color="#4CAF50" />
-                    <Text style={styles.footerText}>Shop</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                    <Ionicons name="person" size={28} color="#777" />
-                    <Text style={styles.footerText}>Profile</Text>
-                </TouchableOpacity>
-            </View>
+            {/* <View style={styles.footer}>
+                <FooterButton
+                    icon="home"
+                    label="Home"
+                    onPress={() => navigation.navigate('HomePage')}
+                    isActive={false}
+                />
+                <FooterButton
+                    icon="storefront"
+                    label="Shop"
+                    onPress={() => navigation.navigate('Shop')}
+                    isActive={true}
+                />
+                <FooterButton
+                    icon="person"
+                    label="Profile"
+                    onPress={() => navigation.navigate('Profile')}
+                    isActive={false}
+                />
+            </View> */}
         </View>
     );
 };
 
+// FooterButton Component to simplify footer UI
+const FooterButton = ({ icon, label, onPress, isActive }) => (
+    <TouchableOpacity onPress={onPress} style={styles.footerButton}>
+        <Ionicons name={icon} size={28} color={isActive ? '#4CAF50' : '#777'} />
+        <Text style={[styles.footerText, isActive && { color: '#4CAF50' }]}>{label}</Text>
+    </TouchableOpacity>
+);
+
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 10 },
-    title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
-    productCard: { marginBottom: 15, alignItems: 'center' },
-    productImage: { width: 100, height: 100, marginBottom: 10 },
-    productName: { fontSize: 18, fontWeight: 'bold' },
-    productPrice: { fontSize: 16, color: '#777' },
+    container: { flex: 1, padding: 10, backgroundColor: '#f5f5f5' },
+    title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' },
+    row: {
+        justifyContent: 'space-evenly',
+        maragin: 0,
+    },
     footer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         paddingVertical: 10,
         backgroundColor: '#FFF',
+        borderTopWidth: 1,
+        borderColor: '#ddd',
     },
-    footerText: {
-        fontSize: 14,
-        color: '#777',
-    },
+    footerButton: { alignItems: 'center' },
+    footerText: { fontSize: 14, color: '#777', marginTop: 4 },
 });
 
 export default ShopPage;

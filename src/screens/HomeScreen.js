@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import Banner from "../Shared/Banner"
+import TopBar from '../components/TopBar';
 const HomePage = ({ navigation }) => {
     const [search, setSearch] = useState('');
 
@@ -49,8 +50,8 @@ const HomePage = ({ navigation }) => {
     return (
         <View style={styles.container}>
             {/* Top Bar with Cart Icon */}
-            <View style={styles.topBar}>
-                <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('search')}>
+            {/* <View style={styles.topBar}>
+                <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.openDrawer()}>
                     <Ionicons name="menu" size={28} color="#333" />
                 </TouchableOpacity>
                 <Text style={[styles.appTitle, { color: '#4A90E2' }]}>Preci</Text>
@@ -62,11 +63,15 @@ const HomePage = ({ navigation }) => {
                     <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('notification')}>
                         <Ionicons name="notifications" size={28} color="#333" />
                     </TouchableOpacity>
+                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('wishlist')}>
+                        <Ionicons name="heart" size={28} color="#333" />
+                    </TouchableOpacity>
                     <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Cart')}>
                         <Ionicons name="cart" size={28} color="#333" />
                     </TouchableOpacity>
                 </View>
-            </View>
+            </View> */}
+            <TopBar />
 
             {/* Search Bar */}
             {/* <View style={styles.searchContainer}>

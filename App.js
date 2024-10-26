@@ -19,7 +19,8 @@ import {
   VerifyEmailonRegister,
   ChangePassword,
   HomePage,
-  ShopPage
+  ShopPage,
+  ProductDetailPage
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
 import AppNavigator from './AppNavigator';
@@ -103,6 +104,7 @@ const App = () => {
                 <Stack.Screen name="Dashboard" component={Dashboard} />
                 <Stack.Screen name="HomePage" component={HomePage} />
                 <Stack.Screen name="Shop" component={ShopPage} />
+                <Stack.Screen name="ProductDetail" component={ProductDetailPage} />
                 <Stack.Screen
                   name="ResetPasswordScreen"
                   component={ResetPasswordScreen}
