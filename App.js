@@ -21,7 +21,9 @@ import {
   HomePage,
   ShopPage,
   ProductDetailPage,
-  Wishlist
+  Wishlist,
+  CartPage,
+  AddAddressPage
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
 import AppNavigator from './AppNavigator';
@@ -107,6 +109,8 @@ const App = () => {
                 <Stack.Screen name="Shop" component={ShopPage} />
                 <Stack.Screen name="ProductDetail" component={ProductDetailPage} />
                 <Stack.Screen name="wishlist" component={Wishlist} />
+                <Stack.Screen name="Cart" component={CartPage} />
+                <Stack.Screen name="AddAddress" component={AddAddressPage} />
                 <Stack.Screen
                   name="ResetPasswordScreen"
                   component={ResetPasswordScreen}

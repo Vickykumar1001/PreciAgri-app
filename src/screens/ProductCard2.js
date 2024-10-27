@@ -17,7 +17,7 @@ const ProductCard = ({ navigation, product, isInWishlist, toggleWishlist }) => {
                 <Ionicons
                     name="heart"
                     size={28}
-                    color={isInWishlist ? 'red' : 'grey'}
+                    color={isInWishlist ? 'red' : 'red'}
                     style={styles.outline}
 
                 />
@@ -39,7 +39,6 @@ const ProductCard = ({ navigation, product, isInWishlist, toggleWishlist }) => {
             <Text style={styles.productName}>{product.name}</Text>
 
             {/* Ratings and Review Count */}
-
 
             {/* Price and Discount */}
             <View style={styles.priceContainer}>

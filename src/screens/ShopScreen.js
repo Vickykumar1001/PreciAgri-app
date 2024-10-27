@@ -1,30 +1,20 @@
-import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
+import React, { useState, useEffect, useRef, memo, useCallback } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import ProductCard from './ProductCard2'; // Reuse ProductCard for consistency
-
+import ProductCard from './ProductCard2';
+import { Picker } from '@react-native-picker/picker';
 import SearchTopBar from '../components/SearchTopBar';
-import ProductFilterSort from './ProductFilterSort';
 
 const ShopPage = ({ navigation, route }) => {
-    console.log(route.params)
-    const [category, setCategory] = useState(route.params.category);
+    const [category, setCategory] = useState(route.params?.category || '');
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const [wishlist, setWishlist] = useState([]); // Track wishlist
-    const inputRef = useRef(null); // Create a ref to the TextInput
+    const [sortOption, setSortOption] = useState('');
+    const [showSortDropdown, setShowSortDropdown] = useState(false);
+    const [wishlist, setWishlist] = useState([]);
+    const inputRef = useRef(null);
 
-    const { focusInput } = route.params || {}; // Extract parameter from route
+    const { focusInput } = route.params || {};
 
-    // Conditionally focus the TextInput based on 'focusInput' parameter
-    useEffect(() => {
-        if (focusInput) {
-            const timeout = setTimeout(() => {
-                inputRef.current?.focus();
-            }, 300); // Slight delay for smoother navigation
-
-            return () => clearTimeout(timeout); // Cleanup timeout
-        }
-    }, [focusInput]);
     const allProducts = [
         {
             id: '1',
@@ -108,105 +98,133 @@ const ShopPage = ({ navigation, route }) => {
         },
     ];
 
-    // Filter products based on the selected category
+    // Focus input field if focusInput is true
     useEffect(() => {
-        const filtered = category
-            ? allProducts.filter((product) =>
-                product.name.toLowerCase().includes(category.toLowerCase()) ||
-                product.category.toLowerCase().includes(category.toLowerCase())
-            )
-            : allProducts;
+        if (focusInput) {
+            const timeout = setTimeout(() => inputRef.current?.focus(), 300);
+            return () => clearTimeout(timeout);
+        }
+    }, [focusInput]);
+
+    // Filter products based on the selected category
+    const filterProducts = useCallback(() => {
+        let filtered = allProducts;
+
+        if (category) {
+            filtered = allProducts.filter(
+                (product) =>
+                    product.category.toLowerCase().includes(category.toLowerCase()) ||
+                    product.name.toLowerCase().includes(category.toLowerCase())
+            );
+        }
+
+        // Apply sorting
+        if (sortOption === 'priceHighToLow') {
+            filtered.sort((a, b) => b.currentPrice - a.currentPrice);
+        } else if (sortOption === 'priceLowToHigh') {
+            filtered.sort((a, b) => a.currentPrice - b.currentPrice);
+        } else if (sortOption === 'popularity') {
+            filtered.sort((a, b) => b.rating - a.rating);
+        }
+
         setFilteredProducts(filtered);
-    }, [category]);
-    // Toggle product in/out of wishlist
+    }, [category, sortOption]);
+
+    // Trigger filtering whenever category or sort option changes
+    useEffect(() => {
+        filterProducts();
+    }, [filterProducts]);
+
     const toggleWishlist = (productId) => {
-        setWishlist((prevWishlist) =>
-            prevWishlist.includes(productId)
-                ? prevWishlist.filter((id) => id !== productId)
-                : [...prevWishlist, productId]
+        setWishlist((prev) =>
+            prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
         );
     };
 
-    // Check if product is in wishlist
-    const isInWishlist = useCallback(
-        (productId) => wishlist.includes(productId),
-        [wishlist]
-    );
-
-    // Memoized ProductCard for better performance
     const MemoizedProductCard = memo(({ item }) => (
         <ProductCard
             navigation={navigation}
             product={item}
-            isInWishlist={isInWishlist(item.id)}
+            isInWishlist={wishlist.includes(item.id)}
             toggleWishlist={() => toggleWishlist(item.id)}
-
         />
     ));
 
     return (
         <View style={styles.container}>
             <SearchTopBar navigation={navigation} setCategory={setCategory} inputRef={inputRef} />
-            {/* <ProductFilterSort products={filteredProducts} setFilteredProducts={setFilteredProducts} /> */}
+
+            <View style={styles.sortFilterContainer}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => setShowSortDropdown((prev) => !prev)}
+                >
+                    <Text style={styles.buttonText}>Sort</Text>
+                    <Ionicons name="caret-down" size={20} />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => console.log('Filter button pressed')}
+                >
+                    <Text style={styles.buttonText}>Filter</Text>
+                    <Ionicons name="filter" size={20} />
+                </TouchableOpacity>
+            </View>
+
+            {showSortDropdown && (
+                <View style={styles.pickerContainer}>
+                    <Picker
+                        selectedValue={sortOption}
+                        onValueChange={(value) => {
+                            setSortOption(value);
+                            setShowSortDropdown(false);
+                        }}
+                    >
+                        <Picker.Item label="Relevance" value="relevance" />
+                        <Picker.Item label="Popularity" value="popularity" />
+                        <Picker.Item label="Price (High to Low)" value="priceHighToLow" />
+                        <Picker.Item label="Price (Low to High)" value="priceLowToHigh" />
+                    </Picker>
+                </View>
+            )}
+
             <FlatList
                 data={filteredProducts}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => <MemoizedProductCard item={item} />}
                 numColumns={2}
                 columnWrapperStyle={styles.row}
+                ListEmptyComponent={<Text style={styles.emptyText}>No products available</Text>}
             />
-
-
-            {/* Footer Navigation */}
-            {/* <View style={styles.footer}>
-                <FooterButton
-                    icon="home"
-                    label="Home"
-                    onPress={() => navigation.navigate('HomePage')}
-                    isActive={false}
-                />
-                <FooterButton
-                    icon="storefront"
-                    label="Shop"
-                    onPress={() => navigation.navigate('Shop')}
-                    isActive={true}
-                />
-                <FooterButton
-                    icon="person"
-                    label="Profile"
-                    onPress={() => navigation.navigate('Profile')}
-                    isActive={false}
-                />
-            </View> */}
         </View>
     );
 };
 
-// FooterButton Component to simplify footer UI
-const FooterButton = ({ icon, label, onPress, isActive }) => (
-    <TouchableOpacity onPress={onPress} style={styles.footerButton}>
-        <Ionicons name={icon} size={28} color={isActive ? '#4CAF50' : '#777'} />
-        <Text style={[styles.footerText, isActive && { color: '#4CAF50' }]}>{label}</Text>
-    </TouchableOpacity>
-);
-
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 5, backgroundColor: '#f5f5f5' },
-    title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' },
-    row: {
-        justifyContent: 'space-evenly',
-        maragin: 0,
-    },
-    footer: {
+    row: { justifyContent: 'space-evenly', marginVertical: 5 },
+    sortFilterContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        paddingVertical: 10,
-        backgroundColor: '#FFF',
-        borderTopWidth: 1,
-        borderColor: '#ddd',
+        justifyContent: 'space-between',
+        marginVertical: 10,
+        paddingHorizontal: 10,
     },
-    footerButton: { alignItems: 'center' },
-    footerText: { fontSize: 14, color: '#777', marginTop: 4 },
+    button: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 8,
+        backgroundColor: '#4CAF50',
+        borderRadius: 5,
+    },
+    buttonText: { color: '#fff', fontSize: 16, marginRight: 5 },
+    pickerContainer: {
+        marginHorizontal: 10,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        elevation: 3,
+    },
+    emptyText: { textAlign: 'center', marginTop: 20, fontSize: 18, color: '#777' },
 });
 
 export default ShopPage;
