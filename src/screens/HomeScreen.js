@@ -5,35 +5,110 @@ import {
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import Banner from "../Shared/Banner"
 import TopBar from '../components/TopBar';
+import ProductCardMini from './ProductCardMini';
 const HomePage = ({ navigation }) => {
     const [search, setSearch] = useState('');
 
     const categories = [
-        { id: '1', name: 'Vegetables', image: require('../assets/images/veg.png'), link: 'vegetables', },
-        { id: '2', name: 'Fruits', image: require('../assets/images/fruit.png'), link: 'vegetables', },
-        { id: '3', name: 'Grains', image: require('../assets/images/grain.webp'), link: 'vegetables', },
-        { id: '4', name: 'Dairy', image: require('../assets/images/dairy.png'), link: 'vegetables', },
-        { id: '5', name: 'Fruits', image: require('../assets/images/fruit.png'), link: 'vegetables', },
-        { id: '6', name: 'Grains', image: require('../assets/images/grain.webp'), link: 'vegetables', },
-        { id: '7', name: 'Dairy', image: require('../assets/images/dairy.png'), link: 'vegetables', },
+        { id: '1', name: 'Vegetables', image: require('../assets/images/veg.png'), },
+        { id: '2', name: 'Fruits', image: require('../assets/images/fruit.png'), },
+        { id: '3', name: 'Grains', image: require('../assets/images/grain.webp'), },
+        { id: '4', name: 'Seeds', image: require('../assets/images/seed.png'), },
+        { id: '5', name: 'Fertilizers', image: require('../assets/images/fertilizer.png'), },
+        { id: '6', name: 'Pesticides', image: require('../assets/images/pesticide.png'), },
     ];
     const services = [
-        { id: '1', name: 'Weather', image: require('../assets/images/veg.png'), link: 'vegetables', },
-        { id: '2', name: 'Loan', image: require('../assets/images/fruit.png'), link: 'vegetables', },
-        { id: '3', name: 'Shop', image: require('../assets/images/grain.webp'), link: 'vegetables', },
-        { id: '4', name: 'Farming Tips', image: require('../assets/images/dairy.png'), link: 'vegetables', },
-        { id: '5', name: 'Fruits', image: require('../assets/images/fruit.png'), link: 'vegetables', },
-        { id: '6', name: 'Grains', image: require('../assets/images/grain.webp'), link: 'vegetables', },
-        { id: '7', name: 'Dairy', image: require('../assets/images/dairy.png'), link: 'vegetables', },
+        { id: '1', name: 'Weather', image: require('../assets/images/weather.png') },
+        { id: '2', name: 'Loans ', image: require('../assets/images/loan.png') },
+        { id: '3', name: 'Market-price', image: require('../assets/images/market.png') },
+        { id: '4', name: 'Crop Insurance', image: require('../assets/images/insurance.png') },
+        { id: '5', name: 'Shop', image: require('../assets/images/shop.png') },
+        { id: '7', name: 'Farming Tips', image: require('../assets/images/tips.png') },
+        { id: '9', name: 'Soil Testing', image: require('../assets/images/soil.png') },
     ];
 
-    const featuredProducts = [
-        { id: '1', name: 'Organic Tomatoes', price: '₹50/kg', image: require('../assets/images/tomatoes.png') },
-        { id: '2', name: 'Fresh Mangoes', price: '₹120/kg', image: require('../assets/images/mango.png') },
-        { id: '3', name: 'Organic Tomatoes', price: '₹50/kg', image: require('../assets/images/tomatoes.png') },
-        { id: '4', name: 'Fresh Mangoes', price: '₹120/kg', image: require('../assets/images/mango.png') },
-        { id: '5', name: 'Organic Tomatoes', price: '₹50/kg', image: require('../assets/images/tomatoes.png') },
-        { id: '6', name: 'Fresh Mangoes', price: '₹120/kg', image: require('../assets/images/mango.png') },
+
+    const allProducts = [
+        {
+            id: '1',
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQENlWkwP3PHLtWQo4RiBg5r_cUCqCCw-bH1w&s',
+            name: 'Fresh Tomatoes',
+            rating: 4.7,
+            reviews: 120,
+            currentPrice: 60,
+            originalPrice: 80,
+            category: 'vegetables',
+        },
+        {
+            id: '2',
+            image: 'https://cdn.pixabay.com/photo/2017/09/26/13/21/apples-2788599_1280.jpg',
+            name: 'Apples (1 Kg)',
+            rating: 4.5,
+            reviews: 92,
+            currentPrice: 180,
+            originalPrice: 220,
+            category: 'fruits',
+        },
+        {
+            id: '3',
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkSrCZTZcv8qCqHOIpl9VEw9B4VvD2XFL4Tg&s',
+            name: 'Basmati Rice (5 Kg)',
+            rating: 4.3,
+            reviews: 48,
+            currentPrice: 500,
+            originalPrice: 600,
+            category: 'grains',
+        },
+        {
+            id: '4',
+            image: 'https://m.media-amazon.com/images/I/71xuH19n5YL._AC_UF1000,1000_QL80_.jpg',
+            name: 'Wheat Seeds (2 Kg)',
+            rating: 4.6,
+            reviews: 66,
+            currentPrice: 350,
+            originalPrice: 400,
+            category: 'seeds',
+        },
+        {
+            id: '5',
+            image: 'https://nutritionsource.hsph.harvard.edu/wp-content/uploads/2018/08/bananas-1354785_1920.jpg',
+            name: 'Bananas (Dozen)',
+            rating: 4.8,
+            reviews: 110,
+            currentPrice: 50,
+            originalPrice: 70,
+            category: 'fruits',
+        },
+        {
+            id: '6',
+            image: 'https://www.purepunjabi.co.uk/wp-content/uploads/2017/01/Chickpeas.png',
+            name: 'Chickpeas (1 Kg)',
+            rating: 4.2,
+            reviews: 35,
+            currentPrice: 120,
+            originalPrice: 150,
+            category: 'grains',
+        },
+        {
+            id: '7',
+            image: 'https://cdn.mos.cms.futurecdn.net/iC7HBvohbJqExqvbKcV3pP-1200-80.jpg',
+            name: 'Potatoes (2 Kg)',
+            rating: 4.5,
+            reviews: 78,
+            currentPrice: 50,
+            originalPrice: 70,
+            category: 'vegetables',
+        },
+        {
+            id: '8',
+            image: 'https://static.wixstatic.com/media/5f378b_cfc7fbfd9df74b8aae0393776b9416f4~mv2.jpg',
+            name: 'Sunflower Seeds (1 Kg)',
+            rating: 4.3,
+            reviews: 28,
+            currentPrice: 200,
+            originalPrice: 250,
+            category: 'seeds',
+        },
     ];
 
     const farmers = [
@@ -88,6 +163,7 @@ const HomePage = ({ navigation }) => {
                 {/* Categories Section */}
                 <Text style={styles.sectionTitle}>Categories</Text>
                 <FlatList
+                    style={styles.iconList}
                     data={categories}
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -103,6 +179,7 @@ const HomePage = ({ navigation }) => {
                 <FlatList
                     data={services}
                     horizontal
+                    style={styles.iconList}
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
@@ -116,19 +193,28 @@ const HomePage = ({ navigation }) => {
                 {/* Featured Products Section */}
                 <Text style={styles.sectionTitle}>Featured Products</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {featuredProducts.map((product) => (
+                    {allProducts.map((product) => (
                         <TouchableOpacity
                             key={product.id}
-                            style={styles.productCard}
+
                             onPress={() => handleProductPress(product)}
                         >
-                            <Image source={product.image} style={styles.productImage} />
-                            <Text style={styles.productName}>{product.name}</Text>
-                            <Text style={styles.productPrice}>{product.price}</Text>
+                            <ProductCardMini product={product} />
                         </TouchableOpacity>
                     ))}
                 </ScrollView>
-                <Text style={styles.sectionTitle}>Featured Products</Text>
+                <Text style={styles.sectionTitle}>Most Selling Products</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {allProducts.map((product) => (
+                        <TouchableOpacity
+                            key={product.id}
+                            onPress={() => handleProductPress(product)}
+                        >
+                            <ProductCardMini product={product} />
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+                {/* <Text style={styles.sectionTitle}>Farming Tips</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     {featuredProducts.map((product) => (
                         <TouchableOpacity
@@ -141,21 +227,7 @@ const HomePage = ({ navigation }) => {
                             <Text style={styles.productPrice}>{product.price}</Text>
                         </TouchableOpacity>
                     ))}
-                </ScrollView>
-                <Text style={styles.sectionTitle}>Farming Tips</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {featuredProducts.map((product) => (
-                        <TouchableOpacity
-                            key={product.id}
-                            style={styles.productCard}
-                            onPress={() => handleProductPress(product)}
-                        >
-                            <Image source={product.image} style={styles.productImage} />
-                            <Text style={styles.productName}>{product.name}</Text>
-                            <Text style={styles.productPrice}>{product.price}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView>
+                </ScrollView> */}
 
                 {/* Farmer Section */}
                 {/* <Text style={styles.sectionTitle}>Meet the Farmers</Text>
@@ -229,23 +301,33 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     sectionTitle: {
+        marginTop: 15,
         paddingLeft: 8,
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
     },
+    iconList: {
+        backgroundColor: '#F0FDF0',
+        paddingVertical: 14,
+    },
     categoryCard: {
+        width: 95,
         marginRight: 15,
         alignItems: 'center',
+        backgroundColor: "#DAF9DA",
+        paddingHorizontal: 3,
+        paddingVertical: 7,
+        borderRadius: 15,
     },
     categoryImage: {
-        width: 40,
-        height: 40,
+        width: 45,
+        height: 45,
         borderRadius: 8,
         marginBottom: 5,
     },
     categoryName: {
-        fontSize: 16,
+        fontSize: 15,
     },
     productCard: {
         width: 150,

@@ -12,12 +12,22 @@ const ProductCard = ({ navigation, product, isInWishlist, toggleWishlist }) => {
             {/* <View style={styles.discountBadge}>
                 
             </View> */}
-            {/* Wishlist Icon */}
             <TouchableOpacity style={styles.wishlistIcon} onPress={toggleWishlist}>
+                {/* Outer grey heart outline */}
                 <Ionicons
-                    name={isInWishlist ? 'heart' : 'heart-outline'}
-                    size={24}
-                    color={isInWishlist ? 'red' : '#333'}
+                    name="heart"
+                    size={28}
+                    color={isInWishlist ? 'red' : 'grey'}
+                    style={styles.outline}
+
+                />
+                {/* Inner heart, conditionally red or white based on wishlist state */}
+                <Ionicons
+                    name="heart"
+                    size={22}
+                    color={isInWishlist ? 'red' : 'white'}
+                    style={styles.innerHeart}
+                    aria-hidden="true"
                 />
             </TouchableOpacity>
 
@@ -93,11 +103,24 @@ const styles = StyleSheet.create({
         top: 10,
         right: 10,
         zIndex: 2,
+        width: 30, // Adjusting width and height to fit the icons perfectly
+        height: 30,
+    },
+    outline: {
+        fontWeight: 800,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+    },
+    innerHeart: {
+        position: 'absolute',
+        top: 3, // Adjust for alignment inside the outline
+        left: 3,
     },
     productImage: {
         width: '100%',
         height: 120,
-        resizeMode: 'contain',
+        resizeMode: 'cover',
         marginBottom: 10,
     },
     productName: {

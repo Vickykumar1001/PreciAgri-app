@@ -2,11 +2,10 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'; // Make sure to install react-native-vector-icons or @expo/vector-icons
 
-const ReviewComponent = ({ starCounts }) => {
-    starCounts = [4, 1, 0, 1, 9]
-    const totalRatings = starCounts.reduce((sum, count) => sum + count, 0);
+const ReviewComponent = ({ reviewCount }) => {
+    const totalRatings = reviewCount.reduce((sum, count) => sum + count, 0);
     const rating = (
-        starCounts.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRatings
+        reviewCount.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRatings
     ).toFixed(1);
 
     return (
@@ -24,7 +23,7 @@ const ReviewComponent = ({ starCounts }) => {
                     <Text style={styles.totalRatings}>{totalRatings} Satisfied Ratings</Text>
                 </View>
                 <View style={styles.starsContainer}>
-                    {[...starCounts].reverse().map((count, index) => {
+                    {[...reviewCount].reverse().map((count, index) => {
                         const starLevel = 5 - index; // Start with 5 stars at the top
                         const percentage = totalRatings > 0 ? (count / totalRatings) * 100 : 0;
                         return (
