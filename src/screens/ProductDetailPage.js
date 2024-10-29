@@ -145,13 +145,13 @@ const ProductDetailScreen = ({ navigation }) => {
         },
     ];
     const [wishlist, setWishlist] = useState([]); // Track wishlist
-    const isInWishlist = useCallback(
-        (productId) => wishlist.includes(productId),
-        [wishlist]
-    );
-    const handleQuantityChange = (type) => {
-        setQuantity((prev) => (type === 'inc' ? prev + 1 : Math.max(1, prev - 1)));
-    };
+    // const isInWishlist = useCallback(
+    //     (productId) => wishlist.includes(productId),
+    //     [wishlist]
+    // );
+    // const handleQuantityChange = (type) => {
+    //     setQuantity((prev) => (type === 'inc' ? prev + 1 : Math.max(1, prev - 1)));
+    // };
 
     return (
         <View style={styles.container}>
@@ -173,14 +173,14 @@ const ProductDetailScreen = ({ navigation }) => {
                     <Ionicons
                         name="heart"
                         size={28}
-                        color={isInWishlist ? 'red' : 'grey'}
+                        color={'red'}
                         style={styles.outline}
                     />
                     {/* Inner heart */}
                     <Ionicons
                         name="heart"
                         size={22}
-                        color={isInWishlist ? 'red' : 'white'}
+                        color={'red'}
                         style={styles.innerHeart}
                     />
                 </TouchableOpacity>
@@ -201,11 +201,11 @@ const ProductDetailScreen = ({ navigation }) => {
                     </View>
                     <Text>Order Qty:</Text>
                     <View style={styles.quantitySection}>
-                        <TouchableOpacity onPress={() => handleQuantityChange('dec')}>
+                        <TouchableOpacity >
                             <Ionicons name="remove" size={24} />
                         </TouchableOpacity>
                         <TextInput value={String(quantity)} style={styles.quantityInput} editable={false} />
-                        <TouchableOpacity onPress={() => handleQuantityChange('inc')}>
+                        <TouchableOpacity >
                             <Ionicons name="add" size={24} />
                         </TouchableOpacity>
                     </View>
@@ -250,7 +250,10 @@ const ProductDetailScreen = ({ navigation }) => {
                 <TouchableOpacity style={styles.addToCartButton}>
                     <Text style={styles.buttonText}>ADD TO CART</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buyNowButton}>
+                <TouchableOpacity style={styles.buyNowButton} onPress={() => {
+                    navigation.navigate('Cart')
+                }
+                }>
                     <Text style={styles.buttonText}>BUY NOW</Text>
                 </TouchableOpacity>
             </View>

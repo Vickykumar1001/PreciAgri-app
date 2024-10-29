@@ -124,7 +124,7 @@ const CartPage = ({ navigation }) => {
             </View>
             <View style={styles.checkoutContainer}>
                 <Text style={styles.totalAmountText}>₹ {totalSellingPrice.toFixed(2)}</Text>
-                <TouchableOpacity style={styles.checkoutButton} onPress={navigation.navigate('AddAddress')}>
+                <TouchableOpacity style={styles.checkoutButton} onPress={() => navigation.navigate('AddAddress')}>
                     <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
                 </TouchableOpacity>
             </View>
