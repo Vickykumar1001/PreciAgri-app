@@ -116,6 +116,12 @@ const HomePage = ({ navigation }) => {
         { id: '2', name: 'Farmer Priya Patel', location: 'Gujarat' },
     ];
     const handleCategoryPress = (category) => {
+        console.log(category)
+        if (category.name === 'Weather') {
+
+            navigation.navigate('Weather');
+            return
+        }
         navigation.navigate('Shop', { category: category.name });
     };
     const handleProductPress = (product) => {
