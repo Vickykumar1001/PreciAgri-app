@@ -13,13 +13,14 @@ export default function WeatherPage({ navigation }) {
     const [forecast, setForecast] = useState([]);
     const [selectedDay, setSelectedDay] = useState(null);
     const [detailedForecast, setDetailedForecast] = useState([]);
-
+    const [isloading, setIsLoading] = useState(true);
     const fetchWeatherData = async (lat, lon) => {
         try {
             const response = await axios.get(
                 `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
             );
             setWeatherData(response.data);
+            setIsLoading(false);
 
             const forecastResponse = await axios.get(
                 `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
@@ -69,6 +70,7 @@ export default function WeatherPage({ navigation }) {
             const forecastResponse = await axios.get(
                 `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${API_KEY}`
             );
+            setIsLoading(false);
             const groupedForecast = groupForecastByDay(forecastResponse.data.list);
             setForecast(groupedForecast);
             setSelectedDay(Object.keys(groupedForecast)[0]);
@@ -110,6 +112,9 @@ export default function WeatherPage({ navigation }) {
                 <Text style={styles.locationButtonText}>Use My Location</Text>
             </TouchableOpacity>
 
+            {isloading && <View style={styles.weatherCard}>
+                <Text style={styles.cityName}> Loading...</Text>
+            </View>}
             {/* Current Weather Display */}
             {weatherData && (
                 <View style={styles.weatherCard}>
