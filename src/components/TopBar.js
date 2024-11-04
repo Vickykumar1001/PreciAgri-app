@@ -23,7 +23,7 @@ const TopBar = ({ navigation }) => {
                 <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('notification')}>
                     <Ionicons name="notifications" size={28} color="#333" />
                 </TouchableOpacity>
-                <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('wishlist')}>
+                <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Wishlist')}>
                     <Ionicons name="heart" size={28} color="#333" />
                 </TouchableOpacity>
                 <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Cart')}>

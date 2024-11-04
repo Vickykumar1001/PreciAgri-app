@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-const SearchTopBar = ({ navigation, setCategory, inputRef }) => {
+const WeatherTopBar = ({ navigation, city, setCity, fetchWeatherByCity }) => {
     const [searchText, setSearchText] = useState('');
     const handleSearch = (text) => {
         setSearchText(text);
@@ -19,29 +19,19 @@ const SearchTopBar = ({ navigation, setCategory, inputRef }) => {
             <View style={styles.searchContainer}>
                 <Ionicons name="search" size={20} color="#333" style={{ marginHorizontal: 5 }} />
                 <TextInput
-                    ref={inputRef}
                     style={styles.searchInput}
-                    placeholder="Search for items..."
-                    value={searchText}
-                    onChangeText={handleSearch}
-                    placeholderTextColor="#999"
+                    placeholder="Search for a city..."
+                    placeholderTextColor="#A5D6A7"
+                    value={city}
+                    onChangeText={setCity}
+                    onSubmitEditing={fetchWeatherByCity}
                 />
-            </View>
-
-            {/* Action Icons */}
-            <View style={styles.icons}>
-                <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Wishlist')}>
-                    <Ionicons name="heart" size={28} color="#333" />
-                </TouchableOpacity>
-                <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Cart')}>
-                    <Ionicons name="cart" size={28} color="#333" />
-                </TouchableOpacity>
             </View>
         </View>
     );
 };
 
-export default SearchTopBar;
+export default WeatherTopBar;
 
 const styles = StyleSheet.create({
     topBar: {
@@ -56,6 +46,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
+        marginBottom: 15, // Space below input field
     },
     searchContainer: {
         flex: 1, // Allow search input to take available space
@@ -65,6 +56,12 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: 5,
         marginHorizontal: 10, // Space around search field
+    },
+    input: {
+        flex: 1,
+        marginLeft: 10,
+        fontSize: 16,
+        color: '#4CAF50',
     },
     searchInput: {
         flex: 1, // Input field should take all remaining space

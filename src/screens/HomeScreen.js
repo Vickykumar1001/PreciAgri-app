@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
     View, Text, TextInput, Image, Button, FlatList, ScrollView, TouchableOpacity, StyleSheet
 } from 'react-native';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import Banner from "../Shared/Banner"
 import TopBar from '../components/TopBar';
 import ProductCardMini from './ProductCardMini';
@@ -144,7 +144,7 @@ const HomePage = ({ navigation }) => {
                     <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('notification')}>
                         <Ionicons name="notifications" size={28} color="#333" />
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('wishlist')}>
+                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Wishlist')}>
                         <Ionicons name="heart" size={28} color="#333" />
                     </TouchableOpacity>
                     <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Cart')}>

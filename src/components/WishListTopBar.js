@@ -32,7 +32,7 @@ const WishlistTopBar = ({ navigation, setCategory }) => {
 
             {/* Action Icons */}
             <View style={styles.icons}>
-                {/* <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('wishlist')}>
+                {/* <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Wishlist')}>
                     <Ionicons name="heart" size={28} color="#333" />
                 </TouchableOpacity> */}
                 <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Cart')}>
