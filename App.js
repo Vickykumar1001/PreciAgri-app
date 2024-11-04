@@ -23,11 +23,13 @@ import {
   ProductDetailPage,
   Wishlist,
   CartPage,
-  AddAddressPage
+  AddAddressPage,
+  ProfilePage,
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
 import AppNavigator from './AppNavigator';
 import WeatherPage from './src/screens/WeatherPage';
+import EditProfilePage from './src/screens/EditProfilePage';
 
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -109,10 +111,12 @@ const App = () => {
                 <Stack.Screen name="HomePage" component={HomePage} />
                 <Stack.Screen name="Shop" component={ShopPage} />
                 <Stack.Screen name="ProductDetail" component={ProductDetailPage} />
-                <Stack.Screen name="wishlist" component={Wishlist} />
+                <Stack.Screen name="Wishlist" component={Wishlist} />
                 <Stack.Screen name="Cart" component={CartPage} />
                 <Stack.Screen name="AddAddress" component={AddAddressPage} />
                 <Stack.Screen name="Weather" component={WeatherPage} />
+                <Stack.Screen name="Profile" component={ProfilePage} />
+                <Stack.Screen name="EditProfile" component={EditProfilePage} />
                 <Stack.Screen
                   name="ResetPasswordScreen"
                   component={ResetPasswordScreen}
