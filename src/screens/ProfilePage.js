@@ -25,9 +25,9 @@ export default function ProfilePage({ navigation }) {
                     <Ionicons name="person" size={24} color="#777" />
                     <Text style={styles.optionText}>Edit Profile</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.optionItem}>
-                    <FontAwesome name="lock" size={24} color="#777" />
-                    <Text style={styles.optionText}>Change Password</Text>
+                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('ShowAddress')} >
+                    <Ionicons name="location" size={24} color="#777" />
+                    <Text style={styles.optionText}>My Address</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.optionItem}>
                     <FontAwesome name="file-text" size={24} color="#777" />
@@ -40,6 +40,10 @@ export default function ProfilePage({ navigation }) {
                 <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Wishlist')}>
                     <FontAwesome name="shopping-bag" size={24} color="#777" />
                     <Text style={styles.optionText}>My Wishlist</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.optionItem}>
+                    <FontAwesome name="lock" size={24} color="#777" />
+                    <Text style={styles.optionText}>Change Password</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.optionItem}>
                     <AntDesign name="logout" size={24} color="#777" />

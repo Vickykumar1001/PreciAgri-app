@@ -262,6 +262,10 @@ const HomePage = ({ navigation }) => {
                     <Ionicons name="person" size={28} color="#777" />
                     <Text style={styles.footerText}>Profile</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('AddPost')}>
+                    <Ionicons name="person" size={28} color="#777" />
+                    <Text style={styles.footerText}>Sell</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );

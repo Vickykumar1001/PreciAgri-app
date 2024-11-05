@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
         maxHeight: 140,
     },
     forecastItem: {
-        backgroundColor: '#E1F5FE', // Light blue for daily forecasts, giving a cool contrast
+        backgroundColor: '#ffff',
         borderRadius: 10,
         paddingVertical: 12,
         paddingHorizontal: 16,

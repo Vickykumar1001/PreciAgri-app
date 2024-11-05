@@ -30,6 +30,8 @@ import {
 import AppNavigator from './AppNavigator';
 import WeatherPage from './src/screens/WeatherPage';
 import EditProfilePage from './src/screens/EditProfilePage';
+import ShowAddressPage from './src/screens/ShowAddressPage';
+import AddPost from './src/screens/AddPost';
 
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -114,9 +116,11 @@ const App = () => {
                 <Stack.Screen name="Wishlist" component={Wishlist} />
                 <Stack.Screen name="Cart" component={CartPage} />
                 <Stack.Screen name="AddAddress" component={AddAddressPage} />
+                <Stack.Screen name="ShowAddress" component={ShowAddressPage} />
                 <Stack.Screen name="Weather" component={WeatherPage} />
                 <Stack.Screen name="Profile" component={ProfilePage} />
                 <Stack.Screen name="EditProfile" component={EditProfilePage} />
+                <Stack.Screen name="AddPost" component={AddPost} />
                 <Stack.Screen
                   name="ResetPasswordScreen"
                   component={ResetPasswordScreen}
