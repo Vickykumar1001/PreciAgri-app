@@ -5,6 +5,7 @@ import { Provider } from 'react-native-paper';
 import { StyleSheet, Platform, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { theme } from './src/core/theme';
@@ -44,9 +45,42 @@ const loadFonts = async () => {
   });
 };
 
-const Stack = createStackNavigator();
-
+const StackNav = ({ isAuthenticated }) => {
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator
+      initialRouteName={isAuthenticated ? 'HomePage' : 'StartScreen'}
+      screenOptions={{ headerShown: false }}
+    >
+      <Stack.Screen name="StartScreen" component={StartScreen} />
+      <Stack.Screen name="LoginScreen" component={LoginScreen} />
+      <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+      <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+      <Stack.Screen name="VerifyEmailonRegister" component={VerifyEmailonRegister} />
+      <Stack.Screen name="ChangePassword" component={ChangePassword} />
+      <Stack.Screen name="Dashboard" component={Dashboard} />
+      <Stack.Screen name="HomePage" component={HomePage} />
+      <Stack.Screen name="Shop" component={ShopPage} />
+      <Stack.Screen name="ProductDetail" component={ProductDetailPage} />
+      <Stack.Screen name="Wishlist" component={Wishlist} />
+      <Stack.Screen name="Cart" component={CartPage} />
+      <Stack.Screen name="AddAddress" component={AddAddressPage} />
+      <Stack.Screen name="ShowAddress" component={ShowAddressPage} />
+      <Stack.Screen name="Weather" component={WeatherPage} />
+      <Stack.Screen name="Profile" component={ProfilePage} />
+      <Stack.Screen name="EditProfile" component={EditProfilePage} />
+      <Stack.Screen name="AddPost" component={AddPost} />
+      <Stack.Screen
+        name="ResetPasswordScreen"
+        component={ResetPasswordScreen}
+      />
+      <Stack.Screen name="News" component={NewsAndSchemesTabView} options={{ title: 'News & Schemes' }} />
+      <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  )
+}
 const App = () => {
+  const Drawer = createDrawerNavigator();
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -100,36 +134,14 @@ const App = () => {
                 setIsFirstLaunch={setIsFirstLaunch}
                 isAuthenticated={isAuthenticated}
               />
-            ) : (
-              <Stack.Navigator
-                initialRouteName={isAuthenticated ? 'HomePage' : 'StartScreen'}
-                screenOptions={{ headerShown: false }}
-              >
-                <Stack.Screen name="StartScreen" component={StartScreen} />
-                <Stack.Screen name="LoginScreen" component={LoginScreen} />
-                <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-                <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
-                <Stack.Screen name="VerifyEmailonRegister" component={VerifyEmailonRegister} />
-                <Stack.Screen name="ChangePassword" component={ChangePassword} />
-                <Stack.Screen name="Dashboard" component={Dashboard} />
-                <Stack.Screen name="HomePage" component={HomePage} />
-                <Stack.Screen name="Shop" component={ShopPage} />
-                <Stack.Screen name="ProductDetail" component={ProductDetailPage} />
-                <Stack.Screen name="Wishlist" component={Wishlist} />
-                <Stack.Screen name="Cart" component={CartPage} />
-                <Stack.Screen name="AddAddress" component={AddAddressPage} />
-                <Stack.Screen name="ShowAddress" component={ShowAddressPage} />
-                <Stack.Screen name="Weather" component={WeatherPage} />
-                <Stack.Screen name="Profile" component={ProfilePage} />
-                <Stack.Screen name="EditProfile" component={EditProfilePage} />
-                <Stack.Screen name="AddPost" component={AddPost} />
-                <Stack.Screen
-                  name="ResetPasswordScreen"
-                  component={ResetPasswordScreen}
-                />
-                <Stack.Screen name="News" component={NewsAndSchemesTabView} options={{ title: 'News & Schemes' }} />
-                <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{ headerShown: false }} />
-              </Stack.Navigator>
+            ) : (<Drawer.Navigator screenOptions={{ headerShown: false }} >
+              <Drawer.Screen name="Home" component={StackNav} options={{ isAuthenticated }} />
+              <Drawer.Screen name="Profile" component={ProfilePage} />
+              <Drawer.Screen name="Wishlist" component={Wishlist} />
+              <Drawer.Screen name="Cart" component={CartPage} />
+              <Drawer.Screen name="Logout" component={StartScreen} />
+            </Drawer.Navigator>
+
             )}
           </NavigationContainer>
         </Provider>
