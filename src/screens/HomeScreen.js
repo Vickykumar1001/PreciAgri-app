@@ -263,8 +263,12 @@ const HomePage = ({ navigation }) => {
                     <Text style={styles.footerText}>Profile</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate('AddPost')}>
-                    <Ionicons name="person" size={28} color="#777" />
+                    <Ionicons name="cart" size={28} color="#777" />
                     <Text style={styles.footerText}>Sell</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('News')}>
+                    <Ionicons name="newspaper" size={28} color="#777" />
+                    <Text style={styles.footerText}>Article</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -25,6 +25,8 @@ import {
   CartPage,
   AddAddressPage,
   ProfilePage,
+  ArticleDetail,
+  NewsAndSchemesTabView
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
 import AppNavigator from './AppNavigator';
@@ -125,6 +127,8 @@ const App = () => {
                   name="ResetPasswordScreen"
                   component={ResetPasswordScreen}
                 />
+                <Stack.Screen name="News" component={NewsAndSchemesTabView} options={{ title: 'News & Schemes' }} />
+                <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{ headerShown: false }} />
               </Stack.Navigator>
             )}
           </NavigationContainer>
