@@ -1,41 +1,70 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import { MaterialIcons, Ionicons, FontAwesome, AntDesign } from '@expo/vector-icons';
 import ProfileTopBar from '../components/ProfileTopBar';
+const profileIcon = require('../assets/images/user-icon.png');
 
 export default function ProfilePage({ navigation }) {
+    const [profileData, setProfileData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            try {
+                const token = await AsyncStorage.getItem('token');
+                if (!token) throw new Error("No token found");
+
+                const response = await axios.get("http://192.168.0.106:5454/api/users/profile", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setProfileData(response.data);
+            } catch (error) {
+                console.error("Failed to fetch profile data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProfileData();
+    }, []);
+
+    if (loading) {
+        return <ActivityIndicator size="large" color="#4CAF50" style={styles.loader} />;
+    }
+
     return (
         <View style={styles.container}>
-            {/* Header */}
             <ProfileTopBar navigation={navigation} />
 
-            {/* Profile Information */}
+            {/* Profile Information Card */}
             <View style={styles.profileCard}>
                 <Image
-                    source={{ uri: 'https://via.placeholder.com/100' }}
+                    source={profileData?.profileImage ? { uri: profileData.profileImage } : profileIcon}
                     style={styles.profileImage}
                 />
-                <Text style={styles.profileName}>Person</Text>
-                <Text style={styles.profileEmail}>Person@gmail.com</Text>
+                <Text style={styles.profileName}>{profileData?.firstName} {profileData?.lastName}</Text>
+                <Text style={styles.profileEmail}>{profileData?.email}</Text>
+                <Text style={styles.infoText}>Mobile: {profileData?.mobile}</Text>
+                <Text style={styles.profileRole}>Role: {profileData?.role}</Text>
             </View>
 
             {/* Options List */}
             <ScrollView style={styles.optionsContainer}>
-                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('EditProfile')}>
+                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('EditProfile', { profileData })}>
                     <Ionicons name="person" size={24} color="#777" />
                     <Text style={styles.optionText}>Edit Profile</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('ShowAddress')} >
+                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('ShowAddress', { addresses: profileData?.addresses })}>
                     <Ionicons name="location" size={24} color="#777" />
                     <Text style={styles.optionText}>My Address</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.optionItem}>
+                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('MyProducts', { products: profileData?.product })}>
                     <FontAwesome name="file-text" size={24} color="#777" />
-                    <Text style={styles.optionText}>My Posts</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.optionItem}>
-                    <MaterialIcons name="store" size={24} color="#777" />
-                    <Text style={styles.optionText}>My Orders</Text>
+                    <Text style={styles.optionText}>My Products</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Wishlist')}>
                     <FontAwesome name="shopping-bag" size={24} color="#777" />
@@ -51,7 +80,6 @@ export default function ProfilePage({ navigation }) {
                 </TouchableOpacity>
             </ScrollView>
 
-            {/* Footer Navigation */}
             {/* Footer Navigation */}
             <View style={styles.footer}>
                 <TouchableOpacity onPress={() => navigation.navigate('HomePage')}>
@@ -77,8 +105,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#F8F8F8',
         padding: 5,
     },
-    icon: {
-        marginLeft: 15,
+    loader: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     profileCard: {
         alignItems: 'center',
@@ -89,20 +119,51 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     profileImage: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
+        width: 90,
+        height: 90,
+        borderRadius: 45,
         marginBottom: 10,
     },
     profileName: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: 'bold',
     },
     profileEmail: {
         color: '#555',
+        fontSize: 16,
+    },
+    profileRole: {
+        color: '#555',
+        fontSize: 14,
+        marginVertical: 2,
+    },
+    verifiedText: {
+        fontSize: 12,
+        color: '#4CAF50',
+        marginTop: 5,
+    },
+    infoSection: {
+        backgroundColor: '#FFF',
+        padding: 15,
+        marginHorizontal: 15,
+        borderRadius: 10,
+        marginBottom: 15,
+        elevation: 1,
+    },
+    infoTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginVertical: 8,
+        color: '#333',
+    },
+    infoText: {
+        fontSize: 14,
+        color: '#555',
+        paddingLeft: 5,
+        marginBottom: 5,
     },
     optionsContainer: {
-        padding: 15,
+        paddingHorizontal: 15,
     },
     optionItem: {
         flexDirection: 'row',
