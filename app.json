@@ -4,7 +4,7 @@
     "slug": "MizoFarm-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/iccon.png",
+    "icon": "./src/assets/images/app-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./src/assets/images/splash4.jpg",
@@ -16,7 +16,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "foregroundImage": "./src/assets/images/app-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.vicky1001.PreciAgriapp"

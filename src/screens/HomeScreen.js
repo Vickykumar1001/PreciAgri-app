@@ -250,23 +250,23 @@ const HomePage = ({ navigation }) => {
 
             {/* Footer Navigation */}
             <View style={styles.footer}>
-                <TouchableOpacity>
-                    <Ionicons name="home" size={28} onPress={() => navigation.navigate('HomePage')} color="#4CAF50" />
+                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('HomePage')}  >
+                    <Ionicons name="home" size={28} color="#4CAF50" />
                     <Text style={styles.footerText}>Home</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Shop', { category: '' })}>
+                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Shop', { category: '' })}>
                     <Ionicons name="storefront" size={28} color="#777" />
                     <Text style={styles.footerText}>Shop</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Profile')}>
                     <Ionicons name="person" size={28} color="#777" />
                     <Text style={styles.footerText}>Profile</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('AddPost')}>
+                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('AddPost')}>
                     <Ionicons name="cart" size={28} color="#777" />
                     <Text style={styles.footerText}>Sell</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('News')}>
+                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('News')}>
                     <Ionicons name="newspaper" size={28} color="#777" />
                     <Text style={styles.footerText}>Article</Text>
                 </TouchableOpacity>
