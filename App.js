@@ -27,7 +27,8 @@ import {
   AddAddressPage,
   ProfilePage,
   ArticleDetail,
-  NewsAndSchemesTabView
+  NewsAndSchemesTabView,
+  LogoutScreen,
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
 import AppNavigator from './AppNavigator';
@@ -45,7 +46,9 @@ const loadFonts = async () => {
   });
 };
 
-const StackNav = ({ isAuthenticated }) => {
+const StackNav = ({ route }) => {
+  const { isAuthenticated } = route.params;
+  console.log("isAuthenticated", isAuthenticated);
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator
@@ -70,6 +73,7 @@ const StackNav = ({ isAuthenticated }) => {
       <Stack.Screen name="Profile" component={ProfilePage} />
       <Stack.Screen name="EditProfile" component={EditProfilePage} />
       <Stack.Screen name="AddPost" component={AddPost} />
+      <Stack.Screen name="Logout" component={LogoutScreen} />
       <Stack.Screen
         name="ResetPasswordScreen"
         component={ResetPasswordScreen}
@@ -83,7 +87,7 @@ const App = () => {
   const Drawer = createDrawerNavigator();
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleFontsLoaded = useCallback(async () => {
     await loadFonts();
@@ -103,8 +107,13 @@ const App = () => {
         }
 
         // Check authentication status (you can also use an API call if needed)
-        const userToken = await AsyncStorage.getItem('userToken');
-        setIsAuthenticated(!!userToken); // Set based on the token presence
+        const userToken = await AsyncStorage.getItem('token');
+        if (userToken) {
+          console.log(userToken);
+          setIsAuthenticated(true); // Set based on the token presence
+        } else {
+          setIsAuthenticated(false);
+        }
       } catch (error) {
         console.error('Error checking launch or authentication status', error);
       }
@@ -134,11 +143,11 @@ const App = () => {
                 isAuthenticated={isAuthenticated}
               />
             ) : (<Drawer.Navigator screenOptions={{ headerShown: false }} >
-              <Drawer.Screen name="Home" component={StackNav} options={{ isAuthenticated }} />
+              <Drawer.Screen name="Home" component={StackNav} initialParams={{ isAuthenticated }} />
               <Drawer.Screen name="Profile" component={ProfilePage} />
               <Drawer.Screen name="Wishlist" component={Wishlist} />
               <Drawer.Screen name="Cart" component={CartPage} />
-              <Drawer.Screen name="Logout" component={StartScreen} />
+              <Drawer.Screen name="Logout" component={LogoutScreen} />
             </Drawer.Navigator>
 
             )}

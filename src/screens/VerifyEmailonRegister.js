@@ -9,7 +9,7 @@ import Button from '../components/Button';
 import BackButton from '../components/BackButton';
 import Logo from '../components/Logo';
 import { theme } from '../core/theme';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function VerifyEmailonRegister({ route, navigation }) {
     const { email } = route.params;
     const [otp, setOtp] = useState('');
@@ -42,7 +42,9 @@ export default function VerifyEmailonRegister({ route, navigation }) {
                 .post('http://192.168.0.106:5454/auth/verify-email', { otp, email })
                 .then((response) => {
                     if (response.status === 200) {
+                        Alert.alert('Logged In Successfull');
                         navigation.replace('HomePage');
+                        AsyncStorage.setItem('token', response.data.jwt);
                     }
                 })
                 .catch((error) => {

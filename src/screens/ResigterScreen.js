@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native'
 import { Text } from 'react-native-paper'
 import axios from 'axios';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -59,6 +59,7 @@ export default function RegisterScreen({ navigation }) {
       .post("http://192.168.0.106:5454/auth/signup", userData)
       .then((response) => {
         console.log(response.data.message);
+        Alert.alert('Registered Successfull!!');
         navigation.navigate('VerifyEmailonRegister', { email: email.value });
       })
       .catch((error) => {
