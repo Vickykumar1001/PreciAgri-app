@@ -1,159 +1,136 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { Text } from 'react-native-paper';
+import axios from 'axios';
+import Background from '../components/Background';
+import Header from '../components/Header';
+import TextInput from '../components/TextInput';
+import Button from '../components/Button';
+import BackButton from '../components/BackButton';
+import Logo from '../components/Logo';
+import { theme } from '../core/theme';
 
-export default function VerifyEmailonRegister({ navigation }) {
+export default function VerifyEmailonRegister({ route, navigation }) {
+    const { email } = route.params;
     const [otp, setOtp] = useState('');
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(120); // 5 minutes = 300 seconds
-    const timerRef = useRef(null); // Reference to keep track of the timer
+    const [resendTimer, setResendTimer] = useState(30);
+    const resendTimerRef = useRef(null);
 
-    // Enable the button if the OTP length is 5
     useEffect(() => {
-        setIsButtonEnabled(otp.length === 5);
+        setIsButtonEnabled(otp.length === 6);
     }, [otp]);
 
-    // Start the countdown timer on component mount
     useEffect(() => {
-        timerRef.current = setInterval(() => {
-            setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+        resendTimerRef.current = setInterval(() => {
+            setResendTimer((prev) => (prev > 0 ? prev - 1 : 0));
         }, 1000);
 
-        // Clear the timer on component unmount
-        return () => clearInterval(timerRef.current);
+        return () => clearInterval(resendTimerRef.current);
     }, []);
 
-    // Format the time as MM:SS
-    const formatTime = (seconds) => {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-    };
-
-    // Handle OTP input
     const handleOtpChange = (text) => {
-        // Allow only numeric input and limit to 5 characters
-        if (/^\d*$/.test(text) && text.length <= 5) {
+        if (/^\d*$/.test(text) && text.length <= 6) {
+            console.log(text)
             setOtp(text);
         }
     };
 
-    // Handle Continue button press
     const handleContinue = () => {
-        if (otp.length === 5) {
-            Alert.alert('OTP Verified', `Your OTP: ${otp}`);
-            // Perform OTP verification logic here
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'HomePage' }],
-            })
+        if (otp.length === 6) {
+            axios
+                .post('http://192.168.0.106:5454/auth/verify-email', { otp, email })
+                .then((response) => {
+                    if (response.status === 200) {
+                        navigation.replace('HomePage');
+                    }
+                })
+                .catch((error) => {
+                    Alert.alert(error.message);
+                });
         }
     };
 
-    // Handle Resend OTP
     const handleResend = () => {
         setOtp('');
-        setTimeLeft(300); // Reset timer to 5 minutes
+        setResendTimer(30);
         Alert.alert('OTP Resent', 'A new OTP has been sent to your email.');
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Verify Your Email</Text>
-
-            <Text style={styles.subtitle}>
-                Enter the 5-digit code sent to your email.
-            </Text>
-
-            <TextInput
-                style={styles.otpInput}
-                value={otp}
-                onChangeText={handleOtpChange}
-                keyboardType="numeric"
-                placeholder="Enter OTP"
-                maxLength={5}
-            />
-
-            <Text style={styles.timer}>
-                {timeLeft > 0 ? `Code expires in ${formatTime(timeLeft)}` : 'Code expired!'}
-            </Text>
-
-            <TouchableOpacity
-                style={[styles.button, isButtonEnabled ? styles.buttonEnabled : styles.buttonDisabled]}
-                onPress={handleContinue}
-                disabled={!isButtonEnabled}
-            >
-                <Text style={styles.buttonText}>Continue</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={handleResend} disabled={timeLeft > 0}>
-                <Text style={[styles.resendLink, timeLeft > 0 && styles.resendDisabled]}>
-                    Didn’t get the email? Resend
-                </Text>
-            </TouchableOpacity>
-        </View>
+        <Background>
+            <BackButton goBack={navigation.goBack} />
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+                <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+                    <Logo />
+                    <Header>Verify Your Email</Header>
+                    <Text style={styles.subtitle}>Enter the 6-digit code sent to your email.</Text>
+                    <TextInput
+                        label="Enter OTP"
+                        value={otp}
+                        onChangeText={handleOtpChange}
+                        keyboardType="numeric"
+                        maxLength={6}
+                    />
+                    <Button
+                        mode="contained"
+                        onPress={handleContinue}
+                        disabled={!isButtonEnabled}
+                        style={isButtonEnabled ? styles.buttonEnabled : styles.buttonDisabled}
+                    >
+                        Continue
+                    </Button>
+                    <TouchableOpacity onPress={handleResend} disabled={resendTimer > 0}>
+                        <Text style={[styles.resendLink, resendTimer > 0 && styles.resendDisabled]}>
+                            {resendTimer > 0 ? `Resend available in ${resendTimer}s` : 'Resend OTP'}
+                        </Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </Background>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5F5F5',
+    scrollContainer: {
+        margin: 0,
         padding: 20,
-        justifyContent: 'center',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 10,
+        flexGrow: 1,
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
     },
     subtitle: {
         fontSize: 16,
         textAlign: 'center',
-        marginBottom: 20,
         color: '#666',
+        marginBottom: 20,
     },
     otpInput: {
         height: 50,
-        borderColor: '#ddd',
+        borderColor: 'grey',
         borderWidth: 1,
-        borderRadius: 8,
+        borderRadius: 5,
         paddingHorizontal: 15,
         fontSize: 18,
-        backgroundColor: '#FFF',
+        backgroundColor: theme.colors.surface,
+        width: '100%',
         textAlign: 'center',
         marginBottom: 10,
     },
-    timer: {
-        textAlign: 'center',
-        fontSize: 14,
-        color: '#FF6347', // Tomato color for emphasis
-        marginBottom: 20,
-    },
-    button: {
-        height: 50,
-        borderRadius: 8,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 20,
-    },
     buttonEnabled: {
-        backgroundColor: '#4CAF50', // Green
+        backgroundColor: theme.colors.primary,
+        marginTop: 24,
     },
     buttonDisabled: {
-        backgroundColor: '#B0BEC5', // Greyed out
-    },
-    buttonText: {
-        fontSize: 18,
-        color: '#FFF',
-        fontWeight: 'bold',
+        backgroundColor: '#B0BEC5',
+        marginTop: 24,
     },
     resendLink: {
         textAlign: 'center',
         fontSize: 16,
-        color: '#1E90FF', // Dodger Blue for the link
+        color: '#1E90FF',
     },
     resendDisabled: {
-        color: '#A9A9A9', // Grey when disabled
+        color: '#A9A9A9',
     },
 });

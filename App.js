@@ -105,7 +105,6 @@ const App = () => {
         // Check authentication status (you can also use an API call if needed)
         const userToken = await AsyncStorage.getItem('userToken');
         setIsAuthenticated(!!userToken); // Set based on the token presence
-        setIsAuthenticated(true)
       } catch (error) {
         console.error('Error checking launch or authentication status', error);
       }
