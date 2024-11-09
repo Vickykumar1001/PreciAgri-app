@@ -3,66 +3,55 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const ProductCardWishlist = ({ product }) => {
-    const [isInWishlist, setIsInWishlist] = useState(true)
-    product.discount = Math.ceil(((product.originalPrice - product.currentPrice) / product.originalPrice) * 100);
-    product.discountAmount = product.originalPrice - product.currentPrice;
-    toggleWishlist = () => setIsInWishlist(!isInWishlist)
+    const [isInWishlist, setIsInWishlist] = useState(true);  // Initial state is false (not in wishlist)
+
+    // Calculate the discount percentage and discount amount
+    const discount = Math.ceil(((product.originalPrice - product.price) / product.originalPrice) * 100);
+    const discountAmount = product.originalPrice - product.price;
+
+    const toggleWishlist = () => setIsInWishlist(!isInWishlist); // Toggle wishlist state
+
     return (
         <View style={styles.card}>
-            {/* Discount Badge */}
-            {/* <View style={styles.discountBadge}>
-                
-            </View> */}
             {/* Wishlist Icon */}
             <TouchableOpacity style={styles.wishlistIcon} onPress={toggleWishlist}>
                 {/* Outer grey heart outline */}
                 <Ionicons
                     name="heart"
                     size={28}
-                    color={isInWishlist ? 'red' : 'red'}
+                    color={isInWishlist ? 'red' : 'grey'}  // Change color based on wishlist state
                     style={styles.outline}
-
                 />
                 {/* Inner heart, conditionally red or white based on wishlist state */}
                 <Ionicons
                     name="heart"
                     size={22}
-                    color={isInWishlist ? 'red' : 'white'}
+                    color={isInWishlist ? 'red' : 'white'}  // Inner heart shows red if in wishlist
                     style={styles.innerHeart}
                     aria-hidden="true"
                 />
             </TouchableOpacity>
 
             {/* Product Image */}
-            <Image source={{ uri: product.image }} style={styles.productImage} />
+            <Image source={{ uri: product.imageUrls[0] }} style={styles.productImage} />
 
             {/* Product Name */}
-
             <Text style={styles.productName}>{product.name}</Text>
-
-            {/* Ratings and Review Count */}
-
 
             {/* Price and Discount */}
             <View style={styles.priceContainer}>
                 <Ionicons name="arrow-down" size={16} color="green" />
-                <Text style={styles.discountText}>{product.discount}%</Text>
-                <Text style={styles.currentPrice}>₹{product.currentPrice}</Text>
+                <Text style={styles.discountText}>{discount}%</Text>
+                <Text style={styles.currentPrice}>₹{product.price}</Text>
                 <Text style={styles.originalPrice}>₹{product.originalPrice}</Text>
             </View>
+
+            {/* Rating and Discount Amount */}
             <View style={styles.ratingContainer}>
                 <Ionicons name="star" size={16} color="#FFD700" />
                 <Text style={styles.rating}>{product.rating}</Text>
-                <Text style={styles.discountAmount}>Discount: ₹{product.discountAmount}</Text>
-                {/* <Text style={styles.reviewCount}> - {product.reviews} reviews</Text> */}
+                <Text style={styles.discountAmount}>Discount: ₹{discountAmount}</Text>
             </View>
-
-
-            {/* Buy Now Button */}
-            {/* <TouchableOpacity style={styles.buyButton} onPress={() => navigation.navigate('ProductDetail')}>
-
-                <Text style={styles.buyButtonText}>Buy Now</Text>
-            </TouchableOpacity> */}
         </View>
     );
 };
@@ -84,22 +73,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
     },
-    discountBadge: {
-        position: 'absolute',
-        top: 10,
-        left: 10,
-        backgroundColor: '#FFC107',
-        // backgroundColor: 'red',
-        borderRadius: 50,
-        // padding: 5,
-        zIndex: 1,
-    },
-    discountText: {
-        color: 'green',
-        fontWeight: 'bold',
-        fontSize: 12,
-        paddingRight: 7,
-    },
     wishlistIcon: {
         position: 'absolute',
         top: 10,
@@ -109,7 +82,7 @@ const styles = StyleSheet.create({
         height: 30,
     },
     outline: {
-        fontWeight: 800,
+        fontWeight: '800',
         position: 'absolute',
         top: 0,
         left: 0,
@@ -142,9 +115,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
         fontWeight: 'bold',
     },
-    reviewCount: {
-        color: '#777',
-    },
     priceContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -161,22 +131,15 @@ const styles = StyleSheet.create({
         color: '#777',
         textDecorationLine: 'line-through',
     },
+    discountText: {
+        color: 'green',
+        fontWeight: 'bold',
+        fontSize: 12,
+        paddingRight: 7,
+    },
     discountAmount: {
         color: 'red',
         fontWeight: 'bold',
         textAlign: 'center',
-        // marginVertical: 3,
-    },
-    buyButton: {
-        backgroundColor: '#4CAF50',
-        // paddingVertical: 8,
-        borderRadius: 5,
-        alignItems: 'center',
-        marginTop: 10,
-    },
-    buyButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 14,
     },
 });

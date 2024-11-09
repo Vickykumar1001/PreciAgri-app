@@ -10,13 +10,15 @@ const HomePage = ({ navigation }) => {
     const [search, setSearch] = useState('');
 
     const categories = [
-        { id: '1', name: 'Vegetables', image: require('../assets/images/veg.png'), },
-        { id: '2', name: 'Fruits', image: require('../assets/images/fruit.png'), },
-        { id: '3', name: 'Grains', image: require('../assets/images/grain.webp'), },
-        { id: '4', name: 'Seeds', image: require('../assets/images/seed.png'), },
-        { id: '5', name: 'Fertilizers', image: require('../assets/images/fertilizer.png'), },
-        { id: '6', name: 'Pesticides', image: require('../assets/images/pesticide.png'), },
+        { id: '1', name: 'Seeds', image: require('../assets/images/seed.png') },
+        { id: '2', name: 'Fertilizers', image: require('../assets/images/fertilizer.png') },
+        { id: '3', name: 'Pesticides', image: require('../assets/images/pesticide.png') },
+        { id: '4', name: 'Irrigation', image: require('../assets/images/irrigation.png') },
+        { id: '5', name: 'Tools', image: require('../assets/images/tools.png') },
+        { id: '6', name: 'Machinery', image: require('../assets/images/machinery.png') },
+        { id: '7', name: 'Mulch & Covering', image: require('../assets/images/mulch.png') },
     ];
+
     const services = [
         { id: '1', name: 'Weather', image: require('../assets/images/weather.png') },
         { id: '2', name: 'Loans ', image: require('../assets/images/loan.png') },
@@ -29,85 +31,143 @@ const HomePage = ({ navigation }) => {
 
 
     const allProducts = [
+        // Seeds and Crops
         {
-            id: '1',
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQENlWkwP3PHLtWQo4RiBg5r_cUCqCCw-bH1w&s',
-            name: 'Fresh Tomatoes',
+            id: 1,
+            name: 'SRI Rice Seeds',
+            category: 'Seeds',
+            description: 'System of Rice Intensification (SRI) variety, suited for Mizoram’s hilly terrains and wet climate.',
+            imageUrls: [
+                'https://5.imimg.com/data5/SELLER/Default/2024/3/404980651/GJ/NK/AG/33516101/sri-vardhan-999-paddy-seeds.jpg',
+                'https://m.media-amazon.com/images/I/A1kOX5L0ezL._AC_UF1000,1000_QL80_.jpg',
+            ],
+            productDescription: {
+                title: 'Product Overview',
+                paragraph: 'High-yield rice seeds ideal for terrace farming. Adapted to grow with minimal water and sustainable practices.'
+            },
+            price: 400,
+            originalPrice: 500,
+            discount: 20,
+            quantity: 15,
+            seller: {
+                name: 'MizoAgro Seeds',
+                address: 'Aizawl, Mizoram, India',
+            },
             rating: 4.7,
-            reviews: 120,
-            currentPrice: 60,
-            originalPrice: 80,
-            category: 'vegetables',
+            ratingCount: [2, 1, 5, 8, 20],
+            reviews: [
+                { name: 'Chhingpuii Ralte', date: '5th Jan 2024', rating: 5, comment: 'Great yield and easy to cultivate on terraced fields.' }
+            ],
         },
         {
-            id: '2',
-            image: 'https://cdn.pixabay.com/photo/2017/09/26/13/21/apples-2788599_1280.jpg',
-            name: 'Apples (1 Kg)',
-            rating: 4.5,
-            reviews: 92,
-            currentPrice: 180,
-            originalPrice: 220,
-            category: 'fruits',
-        },
-        {
-            id: '3',
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkSrCZTZcv8qCqHOIpl9VEw9B4VvD2XFL4Tg&s',
-            name: 'Basmati Rice (5 Kg)',
-            rating: 4.3,
-            reviews: 48,
-            currentPrice: 500,
-            originalPrice: 600,
-            category: 'grains',
-        },
-        {
-            id: '4',
-            image: 'https://m.media-amazon.com/images/I/71xuH19n5YL._AC_UF1000,1000_QL80_.jpg',
-            name: 'Wheat Seeds (2 Kg)',
-            rating: 4.6,
-            reviews: 66,
-            currentPrice: 350,
-            originalPrice: 400,
-            category: 'seeds',
-        },
-        {
-            id: '5',
-            image: 'https://nutritionsource.hsph.harvard.edu/wp-content/uploads/2018/08/bananas-1354785_1920.jpg',
-            name: 'Bananas (Dozen)',
+            id: 2,
+            name: 'Ginger Rhizomes',
+            category: 'Crops',
+            description: 'High-quality ginger rhizomes, well-suited to Mizoram’s soil and climate.',
+            imageUrls: [
+                'https://housing.com/news/wp-content/uploads/2022/11/ginger-plant-compressed.jpg',
+            ],
+            productDescription: {
+                title: 'Product Overview',
+                paragraph: 'Fresh ginger rhizomes ideal for high-quality production, widely used in local cuisine and medicine.'
+            },
+            price: 250,
+            originalPrice: 300,
+            discount: 17,
+            quantity: 25,
+            seller: {
+                name: 'Hmar Organic Farms',
+                address: 'Lunglei, Mizoram, India',
+            },
             rating: 4.8,
-            reviews: 110,
-            currentPrice: 50,
-            originalPrice: 70,
-            category: 'fruits',
+            ratingCount: [1, 1, 2, 10, 30],
+            reviews: [
+                { name: 'Lalmuansangi', date: '20th Feb 2024', rating: 5, comment: 'Excellent quality and highly aromatic.' }
+            ],
         },
+
+        // Fertilizers
         {
-            id: '6',
-            image: 'https://www.purepunjabi.co.uk/wp-content/uploads/2017/01/Chickpeas.png',
-            name: 'Chickpeas (1 Kg)',
-            rating: 4.2,
-            reviews: 35,
-            currentPrice: 120,
-            originalPrice: 150,
-            category: 'grains',
-        },
-        {
-            id: '7',
-            image: 'https://cdn.mos.cms.futurecdn.net/iC7HBvohbJqExqvbKcV3pP-1200-80.jpg',
-            name: 'Potatoes (2 Kg)',
-            rating: 4.5,
-            reviews: 78,
-            currentPrice: 50,
-            originalPrice: 70,
-            category: 'vegetables',
-        },
-        {
-            id: '8',
-            image: 'https://static.wixstatic.com/media/5f378b_cfc7fbfd9df74b8aae0393776b9416f4~mv2.jpg',
-            name: 'Sunflower Seeds (1 Kg)',
-            rating: 4.3,
-            reviews: 28,
-            currentPrice: 200,
+            id: 3,
+            name: 'Organic Compost Fertilizer',
+            category: 'Fertilizers',
+            description: 'Compost fertilizer ideal for organic farming in Mizoram.',
+            imageUrls: [
+                'https://nurserylive.com/cdn/shop/products/nurserylive-g-soil-and-fertilizers-polestar-organic-food-waste-compost-1-kg-set-of-2_512x512.jpg?v=1634226541',
+            ],
+            productDescription: {
+                title: 'Product Overview',
+                paragraph: 'Enhances soil health and crop productivity through organic matter, perfect for hilly farming areas.'
+            },
+            price: 200,
             originalPrice: 250,
-            category: 'seeds',
+            discount: 20,
+            quantity: 30,
+            seller: {
+                name: 'EcoMizo Fertilizers',
+                address: 'Champhai, Mizoram, India',
+            },
+            rating: 4.6,
+            ratingCount: [2, 1, 5, 12, 20],
+            reviews: [
+                { name: 'Lalthanmawia', date: '5th Mar 2024', rating: 5, comment: 'Great for improving soil fertility naturally.' }
+            ],
+        },
+
+        // Pesticides
+        {
+            id: 4,
+            name: 'Neem-Based Organic Pesticide',
+            category: 'Pesticides',
+            description: 'Eco-friendly neem-based pesticide to keep crops pest-free without harming the soil.',
+            imageUrls: [
+                'https://krishisevakendra.in/cdn/shop/files/Dr.neem300.webp?v=1714656662&width=493',
+            ],
+            productDescription: {
+                title: 'Product Overview',
+                paragraph: 'Safe and effective pest control derived from neem, ideal for organic farms in Mizoram.'
+            },
+            price: 150,
+            originalPrice: 200,
+            discount: 25,
+            quantity: 20,
+            seller: {
+                name: 'BioSafe Agro',
+                address: 'Aizawl, Mizoram, India',
+            },
+            rating: 4.7,
+            ratingCount: [1, 1, 3, 8, 30],
+            reviews: [
+                { name: 'Vanlalruati', date: '10th Apr 2024', rating: 5, comment: 'Effective and safe for organic farming.' }
+            ],
+        },
+
+        // Tools
+        {
+            id: 5,
+            name: 'Daw (Traditional Hoe)',
+            category: 'Tools',
+            description: 'Traditional hoe used for weeding and land clearing in shifting cultivation.',
+            imageUrls: [
+                'https://5.imimg.com/data5/SELLER/Default/2024/2/384785979/OR/MW/IJ/9258799/hectare-traditional-hoe-with-3-prong-cultivator-hand-power-heavy-duty-for-loosening-soil-weeding-500x500.jpg',
+            ],
+            productDescription: {
+                title: 'Product Overview',
+                paragraph: 'Durable and easy-to-use hoe made from high-quality metal, essential for local farming practices.'
+            },
+            price: 300,
+            originalPrice: 350,
+            discount: 14,
+            quantity: 10,
+            seller: {
+                name: 'MizoFarm Tools',
+                address: 'Serchhip, Mizoram, India',
+            },
+            rating: 4.9,
+            ratingCount: [0, 0, 1, 5, 18],
+            reviews: [
+                { name: 'Lalremruata', date: '15th Jan 2024', rating: 5, comment: 'Perfect for small-scale weeding and digging.' }
+            ],
         },
     ];
 
@@ -205,7 +265,7 @@ const HomePage = ({ navigation }) => {
 
                             onPress={() => handleProductPress(product)}
                         >
-                            <ProductCardMini product={product} />
+                            <ProductCardMini navigation={navigation} product={product} />
                         </TouchableOpacity>
                     ))}
                 </ScrollView>
@@ -216,7 +276,7 @@ const HomePage = ({ navigation }) => {
                             key={product.id}
                             onPress={() => handleProductPress(product)}
                         >
-                            <ProductCardMini product={product} />
+                            <ProductCardMini navigation={navigation} product={product} />
                         </TouchableOpacity>
                     ))}
                 </ScrollView>
@@ -262,10 +322,10 @@ const HomePage = ({ navigation }) => {
                     <Ionicons name="person" size={28} color="#777" />
                     <Text style={styles.footerText}>Profile</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('AddPost')}>
+                {/* <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('AddPost')}>
                     <Ionicons name="cart" size={28} color="#777" />
                     <Text style={styles.footerText}>Sell</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('News')}>
                     <Ionicons name="newspaper" size={28} color="#777" />
                     <Text style={styles.footerText}>Article</Text>

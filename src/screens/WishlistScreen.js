@@ -2,9 +2,7 @@ import React, { useState, useEffect, useCallback, memo } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ProductCard from './ProductCard2'; // Reuse ProductCard for consistency
-
 import WishlistTopBar from '../components/WishListTopBar';
-import ProductFilterSort from './ProductFilterSort';
 import ProductCardWishlist from './ProductCardWishlist';
 
 const ShopPage = ({ navigation, route }) => {
@@ -13,97 +11,88 @@ const ShopPage = ({ navigation, route }) => {
     const [wishlist, setWishlist] = useState([]); // Track wishlist
     const allProducts = [
         {
-            id: '1',
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQENlWkwP3PHLtWQo4RiBg5r_cUCqCCw-bH1w&s',
-            name: 'Fresh Tomatoes',
+            id: 1,
+            name: 'SRI Rice Seeds',
+            category: 'Seeds',
+            description: 'System of Rice Intensification (SRI) variety, suited for Mizoram’s hilly terrains and wet climate.',
+            imageUrls: [
+                'https://5.imimg.com/data5/SELLER/Default/2024/3/404980651/GJ/NK/AG/33516101/sri-vardhan-999-paddy-seeds.jpg',
+                'https://m.media-amazon.com/images/I/A1kOX5L0ezL._AC_UF1000,1000_QL80_.jpg',
+            ],
+            price: 400,
+            originalPrice: 500,
+            discount: 20,
             rating: 4.7,
-            reviews: 120,
-            currentPrice: 60,
-            originalPrice: 80,
-            category: 'vegetables',
+            seller: { name: 'MizoAgro Seeds', address: 'Aizawl, Mizoram, India' },
         },
         {
-            id: '2',
-            image: 'https://cdn.pixabay.com/photo/2017/09/26/13/21/apples-2788599_1280.jpg',
-            name: 'Apples (1 Kg)',
-            rating: 4.5,
-            reviews: 92,
-            currentPrice: 180,
-            originalPrice: 220,
-            category: 'fruits',
-        },
-        {
-            id: '3',
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkSrCZTZcv8qCqHOIpl9VEw9B4VvD2XFL4Tg&s',
-            name: 'Basmati Rice (5 Kg)',
-            rating: 4.3,
-            reviews: 48,
-            currentPrice: 500,
-            originalPrice: 600,
-            category: 'grains',
-        },
-        {
-            id: '4',
-            image: 'https://m.media-amazon.com/images/I/71xuH19n5YL._AC_UF1000,1000_QL80_.jpg',
-            name: 'Wheat Seeds (2 Kg)',
-            rating: 4.6,
-            reviews: 66,
-            currentPrice: 350,
-            originalPrice: 400,
-            category: 'seeds',
-        },
-        {
-            id: '5',
-            image: 'https://nutritionsource.hsph.harvard.edu/wp-content/uploads/2018/08/bananas-1354785_1920.jpg',
-            name: 'Bananas (Dozen)',
+            id: 2,
+            name: 'Ginger Rhizomes',
+            category: 'Crops',
+            description: 'High-quality ginger rhizomes, well-suited to Mizoram’s soil and climate.',
+            imageUrls: ['https://housing.com/news/wp-content/uploads/2022/11/ginger-plant-compressed.jpg'],
+            price: 250,
+            originalPrice: 300,
+            discount: 17,
             rating: 4.8,
-            reviews: 110,
-            currentPrice: 50,
-            originalPrice: 70,
-            category: 'fruits',
+            seller: { name: 'Hmar Organic Farms', address: 'Lunglei, Mizoram, India' },
         },
         {
-            id: '6',
-            image: 'https://www.purepunjabi.co.uk/wp-content/uploads/2017/01/Chickpeas.png',
-            name: 'Chickpeas (1 Kg)',
-            rating: 4.2,
-            reviews: 35,
-            currentPrice: 120,
-            originalPrice: 150,
-            category: 'grains',
-        },
-        {
-            id: '7',
-            image: 'https://cdn.mos.cms.futurecdn.net/iC7HBvohbJqExqvbKcV3pP-1200-80.jpg',
-            name: 'Potatoes (2 Kg)',
-            rating: 4.5,
-            reviews: 78,
-            currentPrice: 50,
-            originalPrice: 70,
-            category: 'vegetables',
-        },
-        {
-            id: '8',
-            image: 'https://static.wixstatic.com/media/5f378b_cfc7fbfd9df74b8aae0393776b9416f4~mv2.jpg',
-            name: 'Sunflower Seeds (1 Kg)',
-            rating: 4.3,
-            reviews: 28,
-            currentPrice: 200,
+            id: 3,
+            name: 'Organic Compost Fertilizer',
+            category: 'Fertilizers',
+            description: 'Compost fertilizer ideal for organic farming in Mizoram.',
+            imageUrls: [
+                'https://nurserylive.com/cdn/shop/products/nurserylive-g-soil-and-fertilizers-polestar-organic-food-waste-compost-1-kg-set-of-2_512x512.jpg?v=1634226541',
+            ],
+            price: 200,
             originalPrice: 250,
-            category: 'seeds',
+            discount: 20,
+            rating: 4.6,
+            seller: { name: 'EcoMizo Fertilizers', address: 'Champhai, Mizoram, India' },
         },
+        {
+            id: 4,
+            name: 'Neem-Based Organic Pesticide',
+            category: 'Pesticides',
+            description: 'Eco-friendly neem-based pesticide to keep crops pest-free without harming the soil.',
+            imageUrls: [
+                'https://krishisevakendra.in/cdn/shop/files/Dr.neem300.webp?v=1714656662&width=493',
+            ],
+            price: 150,
+            originalPrice: 200,
+            discount: 25,
+            rating: 4.7,
+            seller: { name: 'BioSafe Agro', address: 'Aizawl, Mizoram, India' },
+        },
+        // {
+        //     id: 5,
+        //     name: 'Daw (Traditional Hoe)',
+        //     category: 'Tools',
+        //     description: 'Traditional hoe used for weeding and land clearing in shifting cultivation.',
+        //     imageUrls: [
+        //         'https://5.imimg.com/data5/SELLER/Default/2024/2/384785979/OR/MW/IJ/9258799/hectare-traditional-hoe-with-3-prong-cultivator-hand-power-heavy-duty-for-loosening-soil-weeding-500x500.jpg',
+        //     ],
+        //     price: 300,
+        //     originalPrice: 350,
+        //     discount: 14,
+        //     rating: 4.9,
+        //     seller: { name: 'MizoFarm Tools', address: 'Serchhip, Mizoram, India' },
+        // },
     ];
 
     // Filter products based on the selected category
     useEffect(() => {
         const filtered = category
-            ? allProducts.filter((product) =>
-                product.name.toLowerCase().includes(category.toLowerCase()) ||
-                product.category.toLowerCase() === category.toLowerCase()
+            ? allProducts.filter(
+                (product) =>
+                    product.name.toLowerCase().includes(category.toLowerCase()) ||
+                    product.category.toLowerCase() === category.toLowerCase()
             )
             : allProducts;
         setFilteredProducts(filtered);
     }, [category]);
+
     // Toggle product in/out of wishlist
     const toggleWishlist = (productId) => {
         setWishlist((prevWishlist) =>
@@ -121,46 +110,21 @@ const ShopPage = ({ navigation, route }) => {
 
     // Memoized ProductCard for better performance
     const MemoizedProductCard = memo(({ item }) => (
-        <ProductCardWishlist
-            product={item}
-
-        />
+        <TouchableOpacity onPress={() => navigation.navigate('ProductDetail', { productId: item.id })}>
+            <ProductCardWishlist product={item} />
+        </TouchableOpacity>
     ));
 
     return (
         <View style={styles.container}>
             <WishlistTopBar navigation={navigation} />
-            {/* <ProductFilterSort products={filteredProducts} setFilteredProducts={setFilteredProducts} /> */}
             <FlatList
                 data={filteredProducts}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => <MemoizedProductCard item={item} />}
                 numColumns={2}
                 columnWrapperStyle={styles.row}
             />
-
-
-            {/* Footer Navigation */}
-            {/* <View style={styles.footer}>
-                <FooterButton
-                    icon="home"
-                    label="Home"
-                    onPress={() => navigation.navigate('HomePage')}
-                    isActive={false}
-                />
-                <FooterButton
-                    icon="storefront"
-                    label="Shop"
-                    onPress={() => navigation.navigate('Shop')}
-                    isActive={true}
-                />
-                <FooterButton
-                    icon="person"
-                    label="Profile"
-                    onPress={() => navigation.navigate('Profile')}
-                    isActive={false}
-                />
-            </View> */}
         </View>
     );
 };
@@ -176,10 +140,7 @@ const FooterButton = ({ icon, label, onPress, isActive }) => (
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 5, backgroundColor: '#f5f5f5' },
     title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' },
-    row: {
-        justifyContent: 'space-evenly',
-        maragin: 0,
-    },
+    row: { justifyContent: 'space-evenly', margin: 0 },
     footer: {
         flexDirection: 'row',
         justifyContent: 'space-around',

@@ -1,189 +1,130 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Button, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Button, Image, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AddPost() {
-    const [category, setCategory] = useState('Crops');
+    const [imageUrl, setImageUrl] = useState('');
+    const [brand, setBrand] = useState('');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [quantity, setQuantity] = useState('');
-    const [unit, setUnit] = useState('kg');
     const [price, setPrice] = useState('');
-    const [priceUnit, setPriceUnit] = useState('Per kg');
-    const [availableFrom, setAvailableFrom] = useState(new Date().toISOString().split('T')[0]);
-    const [mobile, setMobile] = useState('');
-    const [address, setAddress] = useState('');
-    const [state, setState] = useState('');
-    const [district, setDistrict] = useState('');
-    const [subDistrict, setSubDistrict] = useState('');
-    const [village, setVillage] = useState('');
-    const [image, setImage] = useState(null);
+    const [discountedPrice, setDiscountedPrice] = useState('');
+    const [topLevelCategory, setTopLevelCategory] = useState('');
+    const [secondLevelCategory, setSecondLevelCategory] = useState('');
+    const [thirdLevelCategory, setThirdLevelCategory] = useState('');
+    const [sizes, setSizes] = useState([{ name: '', quantity: '', price: '', discountedPrice: '' }]);
+
+    // Add more size inputs
+    const addSize = () => {
+        setSizes([...sizes, { name: '', quantity: '', price: '', discountedPrice: '' }]);
+    };
 
     const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
+        const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         });
-
         if (!result.cancelled) {
-            setImage(result.uri);
+            setImageUrl(result.uri);
         }
     };
 
-    const takePhoto = async () => {
-        let result = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
+    const handleSubmit = async () => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const productData = {
+                imageUrl,
+                brand,
+                title,
+                description,
+                quantity: parseInt(quantity),
+                price: parseFloat(price),
+                discountedPrice: parseFloat(discountedPrice),
+                topLevelCategory,
+                secondLevelCategory,
+                thirdLevelCategory,
+                size: sizes.map(size => ({
+                    name: size.name,
+                    quantity: parseInt(size.quantity),
+                    price: parseFloat(size.price),
+                    discountedPrice: parseFloat(size.discountedPrice)
+                }))
+            };
 
-        if (!result.cancelled) {
-            setImage(result.uri);
+            await axios.post("http://192.168.0.106:5454/api/admin/products", productData, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            Alert.alert("Success", "Product added successfully!");
+        } catch (error) {
+            Alert.alert("Error", "Could not add product. Please try again.");
         }
-    };
-
-    const handleSubmit = () => {
-        // Implement submission logic here
-        alert('Post submitted!');
     };
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.label}>Category*</Text>
-            <Picker
-                selectedValue={category}
-                style={styles.picker}
-                onValueChange={(itemValue) => setCategory(itemValue)}
-            >
-                <Picker.Item label="Crops" value="Crops" />
-                <Picker.Item label="Vegetable" value="Vegetable" />
-                <Picker.Item label="Fruits" value="Fruits" />
-                <Picker.Item label="Nursery & Plants" value="Nursery & Plants" />
-                {/* Add other categories here */}
-            </Picker>
+            <Text style={styles.label}>Brand</Text>
+            <TextInput style={styles.input} value={brand} onChangeText={setBrand} placeholder="Enter brand name" />
 
-            <Text style={styles.label}>Enter Title*</Text>
-            <TextInput style={styles.input} placeholder="Enter Title" value={title} onChangeText={setTitle} />
+            <Text style={styles.label}>Title</Text>
+            <TextInput style={styles.input} value={title} onChangeText={setTitle} placeholder="Product title" />
 
-            <Text style={styles.label}>Enter Description*</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter Description"
-                value={description}
-                onChangeText={setDescription}
-                multiline
-            />
+            <Text style={styles.label}>Description</Text>
+            <TextInput style={styles.input} value={description} onChangeText={setDescription} placeholder="Product description" multiline />
 
-            <Text style={styles.label}>Item Quantity*</Text>
-            <TextInput style={styles.input} placeholder="Quantity" value={quantity} onChangeText={setQuantity} keyboardType="numeric" />
+            <Text style={styles.label}>Image URL</Text>
+            <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+                {imageUrl ? <Image source={{ uri: imageUrl }} style={styles.image} /> : <Text>Select Image</Text>}
+            </TouchableOpacity>
 
-            <Picker selectedValue={unit} style={styles.picker} onValueChange={(itemValue) => setUnit(itemValue)}>
-                <Picker.Item label="kg" value="kg" />
-                <Picker.Item label="Ton" value="Ton" />
-                <Picker.Item label="Gram" value="Gram" />
-                <Picker.Item label="Box" value="Box" />
-            </Picker>
+            <Text style={styles.label}>Price</Text>
+            <TextInput style={styles.input} value={price} onChangeText={setPrice} placeholder="Price" keyboardType="numeric" />
 
-            <Text style={styles.label}>Expected Price*</Text>
-            <TextInput style={styles.input} placeholder="₹" value={price} onChangeText={setPrice} keyboardType="numeric" />
+            <Text style={styles.label}>Discounted Price</Text>
+            <TextInput style={styles.input} value={discountedPrice} onChangeText={setDiscountedPrice} placeholder="Discounted Price" keyboardType="numeric" />
 
-            <Picker selectedValue={priceUnit} style={styles.picker} onValueChange={(itemValue) => setPriceUnit(itemValue)}>
-                <Picker.Item label="Per 20kg" value="Per 20kg" />
-                <Picker.Item label="Per Ton" value="Per Ton" />
-                <Picker.Item label="Per kg" value="Per kg" />
-                <Picker.Item label="Per Gram" value="Per Gram" />
-            </Picker>
+            <Text style={styles.label}>Quantity</Text>
+            <TextInput style={styles.input} value={quantity} onChangeText={setQuantity} placeholder="Quantity" keyboardType="numeric" />
 
-            <Text style={styles.label}>Available From*</Text>
-            <TextInput style={styles.input} placeholder="Available From" value={availableFrom} onChangeText={setAvailableFrom} />
+            <Text style={styles.label}>Categories</Text>
+            <TextInput style={styles.input} value={topLevelCategory} onChangeText={setTopLevelCategory} placeholder="Top Level Category" />
+            <TextInput style={styles.input} value={secondLevelCategory} onChangeText={setSecondLevelCategory} placeholder="Second Level Category" />
+            <TextInput style={styles.input} value={thirdLevelCategory} onChangeText={setThirdLevelCategory} placeholder="Third Level Category" />
 
-            <Text style={styles.label}>Enter Mobile No*</Text>
-            <TextInput style={styles.input} placeholder="Enter Mobile No" value={mobile} onChangeText={setMobile} keyboardType="phone-pad" />
+            <Text style={styles.label}>Sizes</Text>
+            {sizes.map((size, index) => (
+                <View key={index} style={styles.sizeContainer}>
+                    <TextInput style={styles.input} placeholder="Size" value={size.name} onChangeText={value => updateSizeField(index, 'name', value)} />
+                    <TextInput style={styles.input} placeholder="Quantity" value={size.quantity} onChangeText={value => updateSizeField(index, 'quantity', value)} keyboardType="numeric" />
+                    <TextInput style={styles.input} placeholder="Price" value={size.price} onChangeText={value => updateSizeField(index, 'price', value)} keyboardType="numeric" />
+                    <TextInput style={styles.input} placeholder="Discounted Price" value={size.discountedPrice} onChangeText={value => updateSizeField(index, 'discountedPrice', value)} keyboardType="numeric" />
+                </View>
+            ))}
+            <TouchableOpacity onPress={addSize} style={styles.addButton}>
+                <Text style={styles.addButtonText}>Add Size</Text>
+            </TouchableOpacity>
 
-            <Text style={styles.label}>Enter Address*</Text>
-            <TextInput style={styles.input} placeholder="Enter Address" value={address} onChangeText={setAddress} />
-
-            <Text style={styles.label}>Select State*</Text>
-            <Picker selectedValue={state} style={styles.picker} onValueChange={(itemValue) => setState(itemValue)}>
-                <Picker.Item label="Select State" value="" />
-                {/* Populate with actual states */}
-            </Picker>
-
-            <Text style={styles.label}>Select District*</Text>
-            <Picker selectedValue={district} style={styles.picker} onValueChange={(itemValue) => setDistrict(itemValue)}>
-                <Picker.Item label="Select District" value="" />
-                {/* Populate with actual districts */}
-            </Picker>
-
-            <Text style={styles.label}>Select Sub District*</Text>
-            <Picker selectedValue={subDistrict} style={styles.picker} onValueChange={(itemValue) => setSubDistrict(itemValue)}>
-                <Picker.Item label="Select Sub District" value="" />
-                {/* Populate with actual sub-districts */}
-            </Picker>
-
-            <Text style={styles.label}>Select Village*</Text>
-            <Picker selectedValue={village} style={styles.picker} onValueChange={(itemValue) => setVillage(itemValue)}>
-                <Picker.Item label="Select Village" value="" />
-                {/* Populate with actual villages */}
-            </Picker>
-
-            <Text style={styles.label}>Upload Image*</Text>
-            <View style={styles.imageContainer}>
-                {image && <Image source={{ uri: image }} style={styles.image} />}
-                <Button title="Pick an image from gallery" onPress={pickImage} />
-                <Button title="Take a photo" onPress={takePhoto} />
-            </View>
-
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>SAVE</Text>
+            <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                <Text style={styles.submitButtonText}>Save Product</Text>
             </TouchableOpacity>
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        padding: 20,
-    },
-    label: {
-        fontWeight: 'bold',
-        marginTop: 15,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        borderRadius: 5,
-        marginVertical: 10,
-    },
-    picker: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        marginVertical: 10,
-    },
-    imageContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 10,
-    },
-    image: {
-        width: 100,
-        height: 100,
-        marginRight: 10,
-    },
-    button: {
-        backgroundColor: 'green',
-        padding: 15,
-        borderRadius: 5,
-        alignItems: 'center',
-        marginVertical: 20,
-    },
-    buttonText: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
+    container: { padding: 20 },
+    label: { fontWeight: 'bold', marginTop: 10 },
+    input: { borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 5, marginVertical: 5 },
+    imagePicker: { alignItems: 'center', borderWidth: 1, borderColor: '#ccc', borderRadius: 5, padding: 10, marginVertical: 10 },
+    image: { width: 100, height: 100 },
+    sizeContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+    addButton: { backgroundColor: '#4CAF50', padding: 10, borderRadius: 5, marginVertical: 10 },
+    addButtonText: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
+    submitButton: { backgroundColor: 'green', padding: 15, borderRadius: 5, marginVertical: 20, alignItems: 'center' },
+    submitButtonText: { color: 'white', fontWeight: 'bold' }
 });
