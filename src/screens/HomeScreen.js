@@ -322,10 +322,10 @@ const HomePage = ({ navigation }) => {
                     <Ionicons name="person" size={28} color="#777" />
                     <Text style={styles.footerText}>Profile</Text>
                 </TouchableOpacity>
-                {/* <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('AddPost')}>
+                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('AddPost')}>
                     <Ionicons name="cart" size={28} color="#777" />
                     <Text style={styles.footerText}>Sell</Text>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
                 <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('News')}>
                     <Ionicons name="newspaper" size={28} color="#777" />
                     <Text style={styles.footerText}>Article</Text>
