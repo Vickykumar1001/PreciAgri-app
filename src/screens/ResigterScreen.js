@@ -24,10 +24,19 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState({ value: '', error: '' })
   const [mobile, setMobile] = useState({ value: '', error: '' })
   const [role, setRole] = useState({ value: '', error: '' })
+  const [businessName, setBusinessName] = useState({ value: '', error: '' });
+  const [businessType, setBusinessType] = useState({ value: '', error: '' });
 
   const data = [
     { label: 'Farmer', value: 'Farmer' },
     { label: 'Seller', value: 'Seller' },
+  ];
+
+  const businessTypeOptions = [
+    { label: 'Shopkeeper', value: 'Shopkeeper' },
+    { label: 'Wholesaler', value: 'Wholesaler' },
+    { label: 'Distributor', value: 'Distributor' },
+    { label: 'Service Provider', value: 'Service Provider' },
   ];
 
   const onSignUpPressed = () => {
@@ -37,6 +46,13 @@ export default function RegisterScreen({ navigation }) {
     const passwordError = passwordValidator(password.value)
     const mobileError = mobileValidator(mobile.value)
     const roleError = roleValidator(role.value)
+    let businessNameError = '';
+    let businessTypeError = '';
+
+    if (role.value === 'Seller') {
+      businessNameError = nameValidator(businessName.value);
+      businessTypeError = roleValidator(businessType.value); // Use a role-like validator
+    }
     if (emailError || passwordError || firstNameError || lastNameError || roleError) {
       setFirstName({ ...firstName, error: firstNameError })
       setLastName({ ...lastName, error: lastNameError })
@@ -44,7 +60,11 @@ export default function RegisterScreen({ navigation }) {
       setPassword({ ...password, error: passwordError })
       setRole({ ...role, error: roleError })
       setMobile({ ...mobile, error: mobileError })
-      return
+      if (role.value === 'Seller') {
+        setBusinessName({ ...businessName, error: businessNameError });
+        setBusinessType({ ...businessType, error: businessTypeError });
+      }
+      return;
     }
     const userData = {
       firstName: firstName.value,
@@ -53,10 +73,14 @@ export default function RegisterScreen({ navigation }) {
       password: password.value,
       mobile: mobile.value,
       role: role.value,
+      ...(role.value === 'Seller' && {
+        businessName: businessName.value,
+        businessType: businessType.value,
+      }),
     }
     console.log("Signup")
     axios
-      .post("http://192.168.0.106:5454/auth/signup", userData)
+      .post("http://192.168.0.104:5454/auth/signup", userData)
       .then((response) => {
         console.log(response.data.message);
         Alert.alert('Registered Successfull!!');
@@ -100,6 +124,30 @@ export default function RegisterScreen({ navigation }) {
           <View style={styles.container}>
             {role.error ? <Text style={styles.error}>{role.error}</Text> : null}
           </View>
+          {role.value === 'Seller' && (
+            <>
+              <TextInput
+                label="Business Name"
+                value={businessName.value}
+                onChangeText={(text) => setBusinessName({ value: text, error: '' })}
+                error={!!businessName.error}
+                errorText={businessName.error}
+              />
+              <Dropdown
+                style={[!businessType.error ? styles.dropdown : styles.dropdownError]}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                data={businessTypeOptions}
+                labelField="label"
+                valueField="value"
+                placeholder="Select Business Type"
+                value={businessType.value}
+                onChange={(item) => setBusinessType({ value: item.value, error: '' })}
+              />
+              {businessType.error ? <Text style={styles.error}>{businessType.error}</Text> : null}
+            </>
+          )}
+
           <TextInput
             label="First Name"
             returnKeyType="next"
