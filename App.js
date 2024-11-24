@@ -36,6 +36,8 @@ import WeatherPage from './src/screens/WeatherPage';
 import EditProfilePage from './src/screens/EditProfilePage';
 import ShowAddressPage from './src/screens/ShowAddressPage';
 import AddPost from './src/screens/AddPost';
+import SelectAddressPage from './src/screens/SelectAddressPage';
+import OrderSummaryPage from './src/screens/OrderSummaryPage';
 
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -80,6 +82,8 @@ const StackNav = ({ route }) => {
       />
       <Stack.Screen name="News" component={NewsAndSchemesTabView} options={{ title: 'News & Schemes' }} />
       <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{ headerShown: false }} />
+      <Stack.Screen name="SelectAddress" component={SelectAddressPage} />
+      <Stack.Screen name="OrderSummary" component={OrderSummaryPage} />
     </Stack.Navigator>
   )
 }

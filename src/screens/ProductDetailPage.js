@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -8,197 +8,127 @@ import {
     TextInput,
     StyleSheet,
     Dimensions,
-    FlatList
 } from 'react-native';
+import { ToastAndroid } from 'react-native'; // For Android Toast messages
 import { Icon, Rating } from 'react-native-elements';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { BarChart } from 'react-native-chart-kit';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ProductCardMini from './ProductCardMini';
 import ReviewComponent from '../components/Review';
-import ProductCardMini from './ProductCardMini'; // Reuse ProductCard for consistency
-
 
 const ProductDetailScreen = ({ navigation, route }) => {
-    const { productId } = route.params || { productId: 5 }; // Destructure productId from route params
+    const { product } = route.params; // Product ID passed from route
+    const [seller, setSeller] = useState(null); // State to store seller details
     const [quantity, setQuantity] = useState(1); // Start with quantity of 1
+    const [wishlist, setWishlist] = useState([]); // Wishlist state
+    const [allProducts, setAllProducts] = useState([]); // All products
+    const [selectedSize, setSelectedSize] = useState(0);
 
-    const products = [
-        // Seeds and Crops
-        {
-            id: 1,
-            name: 'SRI Rice Seeds',
-            category: 'Seeds',
-            description: 'System of Rice Intensification (SRI) variety, suited for Mizoram’s hilly terrains and wet climate.',
-            imageUrls: [
-                'https://5.imimg.com/data5/SELLER/Default/2024/3/404980651/GJ/NK/AG/33516101/sri-vardhan-999-paddy-seeds.jpg',
-                'https://m.media-amazon.com/images/I/A1kOX5L0ezL._AC_UF1000,1000_QL80_.jpg',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'High-yield rice seeds ideal for terrace farming. Adapted to grow with minimal water and sustainable practices.'
-            },
-            price: 400,
-            originalPrice: 500,
-            discount: 20,
-            quantity: 15,
-            seller: {
-                name: 'MizoAgro Seeds',
-                address: 'Aizawl, Mizoram, India',
-            },
-            rating: 4.7,
-            ratingCount: [2, 1, 5, 8, 20],
-            reviews: [
-                { name: 'Chhingpuii Ralte', date: '5th Jan 2024', rating: 5, comment: 'Great yield and easy to cultivate on terraced fields.' }
-            ],
-        },
-        {
-            id: 2,
-            name: 'Ginger Rhizomes',
-            category: 'Crops',
-            description: 'High-quality ginger rhizomes, well-suited to Mizoram’s soil and climate.',
-            imageUrls: [
-                'https://housing.com/news/wp-content/uploads/2022/11/ginger-plant-compressed.jpg',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Fresh ginger rhizomes ideal for high-quality production, widely used in local cuisine and medicine.'
-            },
-            price: 250,
-            originalPrice: 300,
-            discount: 17,
-            quantity: 25,
-            seller: {
-                name: 'Hmar Organic Farms',
-                address: 'Lunglei, Mizoram, India',
-            },
-            rating: 4.8,
-            ratingCount: [1, 1, 2, 10, 30],
-            reviews: [
-                { name: 'Lalmuansangi', date: '20th Feb 2024', rating: 5, comment: 'Excellent quality and highly aromatic.' }
-            ],
-        },
+    // Fetch Product Data
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                // Fetch Seller Data
+                const token = await AsyncStorage.getItem('token');
+                const response = await axios.get(`https://preciagri-backend.onrender.com/api/users/sellerDetail/${product.sellerId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
+                    },
+                });
+                setSeller(response.data);
+                const products = await axios.get(`https://preciagri-backend.onrender.com/api/products`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
+                    },
+                });
+                setAllProducts(products.data.content);
+            } catch (error) {
+                console.error("Error fetching product or seller data:", error);
+            }
+        };
 
-        // Fertilizers
-        {
-            id: 3,
-            name: 'Organic Compost Fertilizer',
-            category: 'Fertilizers',
-            description: 'Compost fertilizer ideal for organic farming in Mizoram.',
-            imageUrls: [
-                'https://nurserylive.com/cdn/shop/products/nurserylive-g-soil-and-fertilizers-polestar-organic-food-waste-compost-1-kg-set-of-2_512x512.jpg?v=1634226541',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Enhances soil health and crop productivity through organic matter, perfect for hilly farming areas.'
-            },
-            price: 200,
-            originalPrice: 250,
-            discount: 20,
-            quantity: 30,
-            seller: {
-                name: 'EcoMizo Fertilizers',
-                address: 'Champhai, Mizoram, India',
-            },
-            rating: 4.6,
-            ratingCount: [2, 1, 5, 12, 20],
-            reviews: [
-                { name: 'Lalthanmawia', date: '5th Mar 2024', rating: 5, comment: 'Great for improving soil fertility naturally.' }
-            ],
-        },
+        fetchProduct();
+    }, []);
 
-        // Pesticides
-        {
-            id: 4,
-            name: 'Neem-Based Organic Pesticide',
-            category: 'Pesticides',
-            description: 'Eco-friendly neem-based pesticide to keep crops pest-free without harming the soil.',
-            imageUrls: [
-                'https://krishisevakendra.in/cdn/shop/files/Dr.neem300.webp?v=1714656662&width=493',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Safe and effective pest control derived from neem, ideal for organic farms in Mizoram.'
-            },
-            price: 150,
-            originalPrice: 200,
-            discount: 25,
-            quantity: 20,
-            seller: {
-                name: 'BioSafe Agro',
-                address: 'Aizawl, Mizoram, India',
-            },
-            rating: 4.7,
-            ratingCount: [1, 1, 3, 8, 30],
-            reviews: [
-                { name: 'Vanlalruati', date: '10th Apr 2024', rating: 5, comment: 'Effective and safe for organic farming.' }
-            ],
-        },
-
-        // Tools
-        {
-            id: 5,
-            name: 'Daw (Traditional Hoe)',
-            category: 'Tools',
-            description: 'Traditional hoe used for weeding and land clearing in shifting cultivation.',
-            imageUrls: [
-                'https://5.imimg.com/data5/SELLER/Default/2024/2/384785979/OR/MW/IJ/9258799/hectare-traditional-hoe-with-3-prong-cultivator-hand-power-heavy-duty-for-loosening-soil-weeding-500x500.jpg',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Durable and easy-to-use hoe made from high-quality metal, essential for local farming practices.'
-            },
-            price: 300,
-            originalPrice: 350,
-            discount: 14,
-            quantity: 10,
-            seller: {
-                name: 'MizoFarm Tools',
-                address: 'Serchhip, Mizoram, India',
-            },
-            rating: 4.9,
-            ratingCount: [0, 0, 1, 5, 18],
-            reviews: [
-                { name: 'Lalremruata', date: '15th Jan 2024', rating: 5, comment: 'Perfect for small-scale weeding and digging.' }
-            ],
-        },
-    ];
-
-
-    const product = products.find(p => p.id === productId);
-
-    const [wishlist, setWishlist] = useState([]);
-
+    // Handle Quantity Change
     const handleQuantityChange = (type) => {
-        setQuantity(prevQuantity =>
-            type === 'inc' ? Math.min(prevQuantity + 1, product.quantity) : Math.max(1, prevQuantity - 1)
+        if (!product) return;
+        setQuantity((prevQuantity) =>
+            type === 'inc' ? Math.min(prevQuantity + 1, product.sizes[0]?.quantity) : Math.max(1, prevQuantity - 1)
         );
     };
 
+    // Toggle Wishlist
     const toggleWishlist = () => {
-        setWishlist(prevWishlist =>
-            prevWishlist.includes(productId)
-                ? prevWishlist.filter(id => id !== productId)
-                : [...prevWishlist, productId]
+        setWishlist((prevWishlist) =>
+            prevWishlist.includes(product._id)
+                ? prevWishlist.filter((id) => id !== product._id)
+                : [...prevWishlist, product._id]
         );
     };
+    const handleAddToCart = async (product) => {
+        try {
+            const token = await AsyncStorage.getItem('token'); // Fetch the token from AsyncStorage
+
+            const response = await axios.put(
+                'https://preciagri-backend.onrender.com/api/cart/add',
+                {
+                    productId: product._id,
+                    sizeIndx: selectedSize,
+                    sizeName: product.sizes[selectedSize]?.name, // Access selected size name
+                    quantity: quantity,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
+                    },
+                }
+            );
+
+            // Show success toast
+            ToastAndroid.show('Item added to cart!', ToastAndroid.SHORT);
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            ToastAndroid.show('Failed to add item to cart.', ToastAndroid.SHORT);
+        }
+    };
+
+    // Buy Now Functionality
+    const handleBuyNow = async (product) => {
+        try {
+            await handleAddToCart(product); // First, add the item to the cart
+            navigation.navigate('Cart'); // Then, navigate to the Cart screen
+        } catch (error) {
+            console.error('Error handling Buy Now:', error);
+        }
+    };
+    if (!product || !seller) {
+        return (
+            <View style={styles.loader}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 {/* Product Images */}
                 <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false}>
-                    {product.imageUrls.map((url, index) => (
+                    {product.imagesUrl.map((url, index) => (
                         <Image key={index} source={{ uri: url }} style={styles.productImage} />
                     ))}
                 </ScrollView>
 
                 {/* Back and Wishlist Icons */}
                 <TouchableOpacity style={styles.backIcon} onPress={() => navigation.goBack()}>
-                    <Ionicons name="arrow-back" size={28} color="#fff" />
+                    <Ionicons name="arrow-back" size={28} color="black" />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.wishlistIcon} onPress={toggleWishlist}>
                     <Ionicons
-                        name={wishlist.includes(productId) ? "heart" : "heart-outline"}
+                        name={wishlist.includes(product._id) ? "heart" : "heart-outline"}
                         size={28}
                         color="#E53935"
                     />
@@ -206,22 +136,57 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
                 {/* Product Info Section */}
                 <View style={styles.productInfo}>
-                    <Text style={styles.productName}>{product.name}</Text>
+                    <Text style={styles.productName}>{product.title}</Text>
                     <View style={styles.ratingRow}>
                         <Rating
                             imageSize={20}
                             readonly
-                            startingValue={product.rating}
+                            startingValue={product.ratings.average}
                             style={styles.rating}
                             tintColor="#fff"
                             type="star"
                         />
-                        <Text style={styles.ratingCount}>({product.ratingCount} reviews)</Text>
+                        <Text style={styles.ratingCount}>({product.ratings.count} reviews)</Text>
                     </View>
                     <View style={styles.priceSection}>
-                        <Text style={styles.originalPrice}>₹{product.originalPrice}</Text>
-                        <Text style={styles.currentPrice}>₹{product.price}</Text>
-                        <Text style={styles.discount}>{product.discount}% OFF</Text>
+                        <Text style={styles.originalPrice}>₹{product.sizes[selectedSize]?.price}</Text>
+                        <Text style={styles.currentPrice}>₹{product.sizes[selectedSize]?.discountedPrice}</Text>
+                        <Text style={styles.discount}>
+                            {Math.round(
+                                ((product.sizes[selectedSize]?.price - product.sizes[selectedSize]?.discountedPrice) /
+                                    product.sizes[selectedSize]?.price) *
+                                100
+                            )}
+                            % OFF
+                        </Text>
+                    </View>
+
+                    {/* Size Selector Section */}
+                    <View style={styles.sizeSection}>
+                        <Text style={styles.sectionLabel}>Select Size:</Text>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.sizeContainer}>
+                            {product.sizes.map((size, index) => (
+                                <TouchableOpacity
+                                    key={size._id}
+                                    style={[
+                                        styles.sizeBox,
+                                        selectedSize === index && styles.selectedSizeBox, // Apply styles for selected size
+                                    ]}
+                                    onPress={() => {
+                                        setSelectedSize(index); // Update selected size
+                                    }}
+                                >
+                                    <Text
+                                        style={[
+                                            styles.sizeText,
+                                            selectedSize === index && styles.selectedSizeText, // Change text style for selected size
+                                        ]}
+                                    >
+                                        {size.name}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
                     </View>
 
                     {/* Quantity Selector Section */}
@@ -241,22 +206,23 @@ const ProductDetailScreen = ({ navigation, route }) => {
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Product Description</Text>
                     <View style={styles.descriptionCard}>
-                        <Text style={styles.descriptionText}>{product.productDescription.paragraph}</Text>
+                        <Text style={styles.descriptionText}>{product.description}</Text>
                     </View>
                 </View>
 
                 {/* Seller Info Section */}
                 <View style={styles.sellerInfo}>
                     <Text style={styles.sellerLabel}>Seller Information</Text>
-                    <Text style={styles.sellerName}>Name: {product.seller.name}</Text>
-                    <Text style={styles.sellerAddress}>Address: {product.seller.address}</Text>
+                    <Text style={styles.sellerName}>Name: {seller.businessName}</Text>
+                    <Text style={styles.sellerAddress}>
+                        Address: {seller.streetAddress}, {seller.city}, {seller.state}, {seller.zipCode}
+                    </Text>
                 </View>
-
                 {/* Customer Reviews Section */}
                 <Text style={styles.sectionTitle}>Ratings & Reviews</Text>
                 <View style={styles.reviewSection}>
-                    <ReviewComponent reviewCount={product.ratingCount} />
-                    {product.reviews.map((review, index) => (
+                    <ReviewComponent ratings={product.ratings} />
+                    {/* {product.reviews.map((review, index) => (
                         <View key={index} style={styles.reviewCard}>
                             <Rating
                                 imageSize={15}
@@ -269,31 +235,36 @@ const ProductDetailScreen = ({ navigation, route }) => {
                             <Text style={styles.reviewerName}>{review.name}</Text>
                             <Text style={styles.reviewText}>{review.comment}</Text>
                         </View>
-                    ))}
+                    ))} */}
                 </View>
-
                 {/* Similar Products Section */}
-                <Text style={styles.sectionTitle}>Similar Products</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {products.map((p, index) => (
-                        <ProductCardMini key={index} product={p} />
-                    ))}
-                </ScrollView>
+                {allProducts && <><Text style={styles.sectionTitle}>Similar Products</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        {allProducts.map((product) => (
+                            <TouchableOpacity
+                                key={product._id}
+
+                                onPress={() => handleProductPress(product)}
+                            >
+                                <ProductCardMini navigation={navigation} product={product} />
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </>}
             </ScrollView>
 
             {/* Footer Buttons */}
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.addToCartButton}>
+                <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddToCart(product)}>
                     <Text style={styles.buttonText}>ADD TO CART</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buyNowButton} onPress={() => navigation.navigate('Cart')}>
+                <TouchableOpacity style={styles.buyNowButton} onPress={() => handleBuyNow(product)}>
                     <Text style={styles.buttonText}>BUY NOW</Text>
                 </TouchableOpacity>
-            </View>
+            </View>;
         </View>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -304,7 +275,7 @@ const styles = StyleSheet.create({
         paddingBottom: 100,
     },
     productImage: {
-        width: Dimensions.get('window').width - 30,
+        width: Dimensions.get('window').width - 40,
         height: 300,
         borderRadius: 15,
         marginHorizontal: 15,
@@ -323,6 +294,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 20,
         left: 10,
+
     },
     productInfo: {
         marginHorizontal: 5,
@@ -364,7 +336,6 @@ const styles = StyleSheet.create({
     currentPrice: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#E53935',
         marginRight: 8,
     },
     discount: {
@@ -403,6 +374,41 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         color: '#333',
     },
+    sizeSection: {
+        marginVertical: 10,
+        padding: 10,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+    },
+    sizeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    sizeBox: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        backgroundColor: '#f9f9f9',
+        marginRight: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    selectedSizeBox: {
+        borderColor: 'green', // Highlight selected size
+        backgroundColor: '#dfffde',
+    },
+    sizeText: {
+        fontSize: 16,
+        color: 'green',
+    },
+    selectedSizeText: {
+        color: 'green', // Highlight text for selected size
+        fontWeight: 'bold',
+    },
+
     descriptionCard: {
         backgroundColor: '#fff',
         borderRadius: 10,

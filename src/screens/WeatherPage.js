@@ -20,6 +20,7 @@ export default function WeatherPage({ navigation }) {
             const response = await axios.get(
                 `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
             );
+            console.log(response.data);
             setWeatherData(response.data);
             setIsLoading(false);
 
@@ -67,9 +68,12 @@ export default function WeatherPage({ navigation }) {
 
     const fetchWeatherByCity = async () => {
         try {
+            setIsLoading(true);
+            setIsError(false);
             const response = await axios.get(
                 `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
             );
+            console.log(response.data);
             setWeatherData(response.data);
 
             const forecastResponse = await axios.get(

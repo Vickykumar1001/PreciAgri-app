@@ -16,7 +16,7 @@ export default function ProfilePage({ navigation }) {
                 const token = await AsyncStorage.getItem('token');
                 if (!token) throw new Error("No token found");
 
-                const response = await axios.get("http://192.168.0.106:5454/api/users/profile", {
+                const response = await axios.get("https://preciagri-backend.onrender.com/api/users/profile", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

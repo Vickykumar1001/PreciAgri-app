@@ -3,15 +3,19 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const ProductCard = ({ navigation, product, isInWishlist, toggleWishlist }) => {
-    // Calculate discount and discount amount if not already provided
-    const discountPercentage = Math.ceil(((product.originalPrice - product.price) / product.originalPrice) * 100);
-    const discountAmount = product.originalPrice - product.price;
-    console.log(product)
+    const productPrice = product.sizes?.[0]?.discountedPrice || 0;
+    const originalPrice = product.sizes?.[0]?.price || 0;
+    const primaryImageUrl = product.imagesUrl[0];
+    // Calculate discount and discount amount
+    const discountPercentage = originalPrice
+        ? Math.ceil(((originalPrice - productPrice) / originalPrice) * 100)
+        : 0;
+    const discountAmount = originalPrice - productPrice;
 
     return (
         <TouchableOpacity
             style={styles.card}
-            onPress={() => navigation.navigate('ProductDetail', { productId: product.id })}
+            onPress={() => navigation.navigate('ProductDetail', { product: product })}
         >
             {/* Wishlist Icon */}
             <TouchableOpacity style={styles.wishlistIcon} onPress={toggleWishlist}>
@@ -31,29 +35,34 @@ const ProductCard = ({ navigation, product, isInWishlist, toggleWishlist }) => {
             </TouchableOpacity>
 
             {/* Product Image */}
-            <Image source={{ uri: product.imageUrls[0] }} style={styles.productImage} />
+            <Image source={{ uri: primaryImageUrl }} style={styles.productImage} />
 
             {/* Product Name */}
-            <Text style={styles.productName}>{product.name}</Text>
+            <Text style={styles.productName}>{product.title}</Text>
 
             {/* Price and Discount */}
             <View style={styles.priceContainer}>
                 <Ionicons name="arrow-down" size={16} color="green" />
                 <Text style={styles.discountText}>{discountPercentage}%</Text>
-                <Text style={styles.currentPrice}>₹{product.price}</Text>
-                <Text style={styles.originalPrice}>₹{product.originalPrice}</Text>
+                <Text style={styles.currentPrice}>₹{productPrice}</Text>
+                <Text style={styles.originalPrice}>₹{originalPrice}</Text>
             </View>
 
             {/* Rating and Discount Amount */}
             <View style={styles.ratingContainer}>
                 <Ionicons name="star" size={16} color="#FFD700" />
-                <Text style={styles.rating}>{product.rating}</Text>
+                <Text style={styles.rating}>
+                    {product.ratings?.average || 0}
+                </Text>
                 <Text style={styles.discountAmount}>Discount: ₹{discountAmount}</Text>
             </View>
 
             {/* Buy Now Button */}
-            <TouchableOpacity style={styles.buyButton} onPress={() => navigation.navigate('ProductDetail', { productId: product.id })}>
-                <Text style={styles.buyButtonText}>Buy Now</Text>
+            <TouchableOpacity
+                style={styles.buyButton}
+                onPress={() => navigation.navigate('ProductDetail', { product: product })}
+            >
+                <Text style={styles.buyButtonText}>View Product</Text>
             </TouchableOpacity>
         </TouchableOpacity>
     );
@@ -102,7 +111,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     productName: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
         marginBottom: 5,

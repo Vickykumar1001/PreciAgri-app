@@ -5,13 +5,50 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import Banner from "../Shared/Banner"
 import TopBar from '../components/TopBar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductCardMini from './ProductCardMini';
+import { useEffect } from 'react';
+import axios from 'axios';
 const HomePage = ({ navigation }) => {
     const [search, setSearch] = useState('');
 
+    const [role, setRole] = useState(null);
+    const [allProducts, setProducts] = useState([]);
+
+    useEffect(() => {
+        // Async function to fetch role and products
+        const fetchData = async () => {
+            try {
+                // Retrieve role from AsyncStorage
+                const storedRole = await AsyncStorage.getItem('role');
+                if (storedRole !== null) {
+                    setRole(storedRole); // Set the role state
+                }
+
+                // Retrieve token from AsyncStorage for the API request
+                const token = await AsyncStorage.getItem('token');
+                if (token) {
+                    // If token is available, fetch products from the API
+                    const response = await axios.get('https://preciagri-backend.onrender.com/api/products', {
+                        headers: {
+                            Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
+                        },
+                    });
+                    setProducts(response.data.content); // Set the products in state
+                } else {
+                    setError('Token not found');
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setError('Failed to fetch data');
+            }
+        };
+
+        fetchData(); // Call the async function to fetch role and products
+    }, []);
     const categories = [
         { id: '1', name: 'Seeds', image: require('../assets/images/seed.png') },
-        { id: '2', name: 'Fertilizers', image: require('../assets/images/fertilizer.png') },
+        { id: '2', name: 'Fertilizer', image: require('../assets/images/fertilizer.png') },
         { id: '3', name: 'Pesticides', image: require('../assets/images/pesticide.png') },
         { id: '4', name: 'Irrigation', image: require('../assets/images/irrigation.png') },
         { id: '5', name: 'Tools', image: require('../assets/images/tools.png') },
@@ -22,153 +59,11 @@ const HomePage = ({ navigation }) => {
     const services = [
         { id: '1', name: 'Weather', image: require('../assets/images/weather.png') },
         { id: '2', name: 'Loans ', image: require('../assets/images/loan.png') },
-        { id: '3', name: 'Market-price', image: require('../assets/images/market.png') },
-        { id: '4', name: 'Crop Insurance', image: require('../assets/images/insurance.png') },
         { id: '5', name: 'Shop', image: require('../assets/images/shop.png') },
         { id: '7', name: 'Farming Tips', image: require('../assets/images/tips.png') },
-        { id: '9', name: 'Soil Testing', image: require('../assets/images/soil.png') },
-    ];
-
-
-    const allProducts = [
-        // Seeds and Crops
-        {
-            id: 1,
-            name: 'SRI Rice Seeds',
-            category: 'Seeds',
-            description: 'System of Rice Intensification (SRI) variety, suited for Mizoram’s hilly terrains and wet climate.',
-            imageUrls: [
-                'https://5.imimg.com/data5/SELLER/Default/2024/3/404980651/GJ/NK/AG/33516101/sri-vardhan-999-paddy-seeds.jpg',
-                'https://m.media-amazon.com/images/I/A1kOX5L0ezL._AC_UF1000,1000_QL80_.jpg',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'High-yield rice seeds ideal for terrace farming. Adapted to grow with minimal water and sustainable practices.'
-            },
-            price: 400,
-            originalPrice: 500,
-            discount: 20,
-            quantity: 15,
-            seller: {
-                name: 'MizoAgro Seeds',
-                address: 'Aizawl, Mizoram, India',
-            },
-            rating: 4.7,
-            ratingCount: [2, 1, 5, 8, 20],
-            reviews: [
-                { name: 'Chhingpuii Ralte', date: '5th Jan 2024', rating: 5, comment: 'Great yield and easy to cultivate on terraced fields.' }
-            ],
-        },
-        {
-            id: 2,
-            name: 'Ginger Rhizomes',
-            category: 'Crops',
-            description: 'High-quality ginger rhizomes, well-suited to Mizoram’s soil and climate.',
-            imageUrls: [
-                'https://housing.com/news/wp-content/uploads/2022/11/ginger-plant-compressed.jpg',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Fresh ginger rhizomes ideal for high-quality production, widely used in local cuisine and medicine.'
-            },
-            price: 250,
-            originalPrice: 300,
-            discount: 17,
-            quantity: 25,
-            seller: {
-                name: 'Hmar Organic Farms',
-                address: 'Lunglei, Mizoram, India',
-            },
-            rating: 4.8,
-            ratingCount: [1, 1, 2, 10, 30],
-            reviews: [
-                { name: 'Lalmuansangi', date: '20th Feb 2024', rating: 5, comment: 'Excellent quality and highly aromatic.' }
-            ],
-        },
-
-        // Fertilizers
-        {
-            id: 3,
-            name: 'Organic Compost Fertilizer',
-            category: 'Fertilizers',
-            description: 'Compost fertilizer ideal for organic farming in Mizoram.',
-            imageUrls: [
-                'https://nurserylive.com/cdn/shop/products/nurserylive-g-soil-and-fertilizers-polestar-organic-food-waste-compost-1-kg-set-of-2_512x512.jpg?v=1634226541',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Enhances soil health and crop productivity through organic matter, perfect for hilly farming areas.'
-            },
-            price: 200,
-            originalPrice: 250,
-            discount: 20,
-            quantity: 30,
-            seller: {
-                name: 'EcoMizo Fertilizers',
-                address: 'Champhai, Mizoram, India',
-            },
-            rating: 4.6,
-            ratingCount: [2, 1, 5, 12, 20],
-            reviews: [
-                { name: 'Lalthanmawia', date: '5th Mar 2024', rating: 5, comment: 'Great for improving soil fertility naturally.' }
-            ],
-        },
-
-        // Pesticides
-        {
-            id: 4,
-            name: 'Neem-Based Organic Pesticide',
-            category: 'Pesticides',
-            description: 'Eco-friendly neem-based pesticide to keep crops pest-free without harming the soil.',
-            imageUrls: [
-                'https://krishisevakendra.in/cdn/shop/files/Dr.neem300.webp?v=1714656662&width=493',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Safe and effective pest control derived from neem, ideal for organic farms in Mizoram.'
-            },
-            price: 150,
-            originalPrice: 200,
-            discount: 25,
-            quantity: 20,
-            seller: {
-                name: 'BioSafe Agro',
-                address: 'Aizawl, Mizoram, India',
-            },
-            rating: 4.7,
-            ratingCount: [1, 1, 3, 8, 30],
-            reviews: [
-                { name: 'Vanlalruati', date: '10th Apr 2024', rating: 5, comment: 'Effective and safe for organic farming.' }
-            ],
-        },
-
-        // Tools
-        {
-            id: 5,
-            name: 'Daw (Traditional Hoe)',
-            category: 'Tools',
-            description: 'Traditional hoe used for weeding and land clearing in shifting cultivation.',
-            imageUrls: [
-                'https://5.imimg.com/data5/SELLER/Default/2024/2/384785979/OR/MW/IJ/9258799/hectare-traditional-hoe-with-3-prong-cultivator-hand-power-heavy-duty-for-loosening-soil-weeding-500x500.jpg',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Durable and easy-to-use hoe made from high-quality metal, essential for local farming practices.'
-            },
-            price: 300,
-            originalPrice: 350,
-            discount: 14,
-            quantity: 10,
-            seller: {
-                name: 'MizoFarm Tools',
-                address: 'Serchhip, Mizoram, India',
-            },
-            rating: 4.9,
-            ratingCount: [0, 0, 1, 5, 18],
-            reviews: [
-                { name: 'Lalremruata', date: '15th Jan 2024', rating: 5, comment: 'Perfect for small-scale weeding and digging.' }
-            ],
-        },
+        { id: '3', name: 'Market-price', image: require('../assets/images/market.png') },
+        // { id: '4', name: 'Crop Insurance', image: require('../assets/images/insurance.png') },
+        // { id: '9', name: 'Soil Testing', image: require('../assets/images/soil.png') },
     ];
 
     const farmers = [
@@ -176,11 +71,10 @@ const HomePage = ({ navigation }) => {
         { id: '2', name: 'Farmer Priya Patel', location: 'Gujarat' },
     ];
     const handleCategoryPress = (category) => {
-        console.log(category)
         if (category.name === 'Weather') {
 
             navigation.navigate('Weather');
-            return
+            return;
         }
         navigation.navigate('Shop', { category: category.name });
     };
@@ -261,7 +155,7 @@ const HomePage = ({ navigation }) => {
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     {allProducts.map((product) => (
                         <TouchableOpacity
-                            key={product.id}
+                            key={product._id}
 
                             onPress={() => handleProductPress(product)}
                         >
@@ -273,7 +167,7 @@ const HomePage = ({ navigation }) => {
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     {allProducts.map((product) => (
                         <TouchableOpacity
-                            key={product.id}
+                            key={product._id}
                             onPress={() => handleProductPress(product)}
                         >
                             <ProductCardMini navigation={navigation} product={product} />
@@ -322,10 +216,13 @@ const HomePage = ({ navigation }) => {
                     <Ionicons name="person" size={28} color="#777" />
                     <Text style={styles.footerText}>Profile</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('AddPost')}>
-                    <Ionicons name="cart" size={28} color="#777" />
-                    <Text style={styles.footerText}>Sell</Text>
-                </TouchableOpacity>
+                {
+                    role === 'Seller' && <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('AddPost')}>
+                        <Ionicons name="cart" size={28} color="#777" />
+                        <Text style={styles.footerText}>Sell</Text>
+                    </TouchableOpacity>
+                }
+
                 <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('News')}>
                     <Ionicons name="newspaper" size={28} color="#777" />
                     <Text style={styles.footerText}>Article</Text>

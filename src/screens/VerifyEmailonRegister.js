@@ -39,12 +39,13 @@ export default function VerifyEmailonRegister({ route, navigation }) {
     const handleContinue = () => {
         if (otp.length === 6) {
             axios
-                .post('http://192.168.0.106:5454/auth/verify-email', { otp, email })
+                .post('https://preciagri-backend.onrender.com/auth/verify-email', { otp, email })
                 .then((response) => {
                     if (response.status === 200) {
                         Alert.alert('Logged In Successfull');
                         navigation.replace('HomePage');
                         AsyncStorage.setItem('token', response.data.jwt);
+                        AsyncStorage.setItem('role', response.data.user.role);
                     }
                 })
                 .catch((error) => {

@@ -3,35 +3,38 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const ProductCardMini = ({ navigation, product }) => {
+    const defaultSize = product.sizes[0];
+    const primaryImageUrl = product.imagesUrl[0];
 
     // Calculating discount percentage and amount
-    const discountPercentage = Math.ceil(((product.originalPrice - product.price) / product.originalPrice) * 100);
-    const discountAmount = product.originalPrice - product.price;
-    const primaryImageUrl = product.imageUrls[0];
+    const discountPercentage = Math.ceil(
+        ((defaultSize.price - defaultSize.discountedPrice) / defaultSize.price) * 100
+    );
+    const discountAmount = defaultSize.price - defaultSize.discountedPrice;
 
     return (
         <TouchableOpacity
             style={styles.card}
-            onPress={() => navigation.navigate('ProductDetail', { productId: product.id })}
+            onPress={() => navigation.navigate('ProductDetail', { product: product })}
         >
             {/* Product Image */}
             <Image source={{ uri: primaryImageUrl }} style={styles.productImage} />
 
             {/* Product Name */}
-            <Text style={styles.productName}>{product.name}</Text>
+            <Text style={styles.productName}>{product.title}</Text>
 
             {/* Price and Discount */}
             <View style={styles.priceContainer}>
                 <Ionicons name="arrow-down" size={16} color="green" />
                 <Text style={styles.discountText}>{discountPercentage}%</Text>
-                <Text style={styles.currentPrice}>₹{product.price}</Text>
-                <Text style={styles.originalPrice}>₹{product.originalPrice}</Text>
+                <Text style={styles.currentPrice}>₹{defaultSize.discountedPrice}</Text>
+                <Text style={styles.originalPrice}>₹{defaultSize.price}</Text>
             </View>
 
             {/* Rating and Discount Amount */}
             <View style={styles.ratingContainer}>
                 <Ionicons name="star" size={16} color="#FFD700" />
-                <Text style={styles.rating}>{product.rating}</Text>
+                <Text style={styles.rating}>{product.ratings.average.toFixed(1)}</Text>
                 <Text style={styles.discountAmount}>Discount: ₹{discountAmount}</Text>
             </View>
         </TouchableOpacity>
@@ -62,9 +65,9 @@ const styles = StyleSheet.create({
         marginBottom: 7,
     },
     productName: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'bold',
-        color: '#333',
+        color: '#1c2022',
         marginBottom: 3,
         textAlign: 'center',
     },

@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'; // Make sure to install react-native-vector-icons or @expo/vector-icons
 
-const ReviewComponent = ({ reviewCount }) => {
-    const totalRatings = reviewCount.reduce((sum, count) => sum + count, 0);
-    const rating = (
-        reviewCount.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRatings
-    ).toFixed(1);
+const ReviewComponent = ({ ratings }) => {
+    const { distribution, average, count } = ratings;
+
+    const totalRatings = count; // Total number of ratings
+    const rating = average.toFixed(1); // Average rating
 
     return (
         <View style={styles.container}>
@@ -23,20 +23,27 @@ const ReviewComponent = ({ reviewCount }) => {
                     <Text style={styles.totalRatings}>{totalRatings} Satisfied Ratings</Text>
                 </View>
                 <View style={styles.starsContainer}>
-                    {[...reviewCount].reverse().map((count, index) => {
-                        const starLevel = 5 - index; // Start with 5 stars at the top
-                        const percentage = totalRatings > 0 ? (count / totalRatings) * 100 : 0;
-                        return (
-                            <View key={index} style={styles.starRow}>
-                                <Text style={styles.starLabel}>{starLevel}</Text>
-                                <FontAwesome name="star" size={16} color="black" />
-                                <View style={styles.progressBar}>
-                                    <View style={[styles.progressBarFilled, { width: `${percentage}%` }]} />
+                    {Object.entries(distribution)
+                        .reverse() // Start with 5 stars at the top
+                        .map(([starLevel, starCount], index) => {
+                            const percentage =
+                                totalRatings > 0 ? (starCount / totalRatings) * 100 : 0;
+                            return (
+                                <View key={index} style={styles.starRow}>
+                                    <Text style={styles.starLabel}>{starLevel}</Text>
+                                    <FontAwesome name="star" size={16} color="black" />
+                                    <View style={styles.progressBar}>
+                                        <View
+                                            style={[
+                                                styles.progressBarFilled,
+                                                { width: `${percentage}%` },
+                                            ]}
+                                        />
+                                    </View>
+                                    <Text style={styles.starCount}>{starCount}</Text>
                                 </View>
-                                <Text style={styles.starCount}>{count}</Text>
-                            </View>
-                        );
-                    })}
+                            );
+                        })}
                 </View>
             </View>
         </View>

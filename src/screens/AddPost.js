@@ -67,7 +67,7 @@ export default function AddPost() {
                     discountPercent: parseFloat(size.discountPercent)
                 }))
             };
-            await axios.post("http://192.168.0.106:5454/api/admin/products", productData, {
+            await axios.post("https://preciagri-backend.onrender.com/api/admin/products", productData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             Alert.alert("Success", "Product added successfully!");

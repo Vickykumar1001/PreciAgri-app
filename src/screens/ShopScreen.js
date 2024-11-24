@@ -1,187 +1,47 @@
 import React, { useState, useEffect, useRef, memo, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ProductCard from './ProductCard2';
 import { Picker } from '@react-native-picker/picker';
 import SearchTopBar from '../components/SearchTopBar';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ShopPage = ({ navigation, route }) => {
     const [category, setCategory] = useState(route.params?.category || '');
+    const [allProducts, setAllProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [sortOption, setSortOption] = useState('');
     const [showSortDropdown, setShowSortDropdown] = useState(false);
     const [wishlist, setWishlist] = useState([]);
+    const [loading, setLoading] = useState(true);
     const inputRef = useRef(null);
 
     const { focusInput } = route.params || {};
 
-    const allProducts = [
-        // Seeds and Crops
-        {
-            id: 1,
-            name: 'SRI Rice Seeds',
-            category: 'Seeds',
-            description: 'System of Rice Intensification (SRI) variety, suited for Mizoram’s hilly terrains and wet climate.',
-            imageUrls: [
-                'https://5.imimg.com/data5/SELLER/Default/2024/3/404980651/GJ/NK/AG/33516101/sri-vardhan-999-paddy-seeds.jpg',
-                'https://m.media-amazon.com/images/I/A1kOX5L0ezL._AC_UF1000,1000_QL80_.jpg',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'High-yield rice seeds ideal for terrace farming. Adapted to grow with minimal water and sustainable practices.'
-            },
-            price: 400,
-            originalPrice: 500,
-            discount: 20,
-            quantity: 15,
-            seller: {
-                name: 'MizoAgro Seeds',
-                address: 'Aizawl, Mizoram, India',
-            },
-            rating: 4.7,
-            ratingCount: [2, 1, 5, 8, 20],
-            reviews: [
-                { name: 'Chhingpuii Ralte', date: '5th Jan 2024', rating: 5, comment: 'Great yield and easy to cultivate on terraced fields.' }
-            ],
-        },
-        {
-            id: 2,
-            name: 'Ginger Rhizomes',
-            category: 'Crops',
-            description: 'High-quality ginger rhizomes, well-suited to Mizoram’s soil and climate.',
-            imageUrls: [
-                'https://housing.com/news/wp-content/uploads/2022/11/ginger-plant-compressed.jpg',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Fresh ginger rhizomes ideal for high-quality production, widely used in local cuisine and medicine.'
-            },
-            price: 250,
-            originalPrice: 300,
-            discount: 17,
-            quantity: 25,
-            seller: {
-                name: 'Hmar Organic Farms',
-                address: 'Lunglei, Mizoram, India',
-            },
-            rating: 4.8,
-            ratingCount: [1, 1, 2, 10, 30],
-            reviews: [
-                { name: 'Lalmuansangi', date: '20th Feb 2024', rating: 5, comment: 'Excellent quality and highly aromatic.' }
-            ],
-        },
+    // Fetch products from the API
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = await AsyncStorage.getItem('token');
+                if (token) {
+                    const response = await axios.get('https://preciagri-backend.onrender.com/api/products', {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    setAllProducts(response.data.content);
+                    setFilteredProducts(response.data.content); // Set initial filter
+                } else {
+                    console.error('Token not found');
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        // Fertilizers
-        {
-            id: 3,
-            name: 'Organic Compost Fertilizer',
-            category: 'Fertilizers',
-            description: 'Compost fertilizer ideal for organic farming in Mizoram.',
-            imageUrls: [
-                'https://nurserylive.com/cdn/shop/products/nurserylive-g-soil-and-fertilizers-polestar-organic-food-waste-compost-1-kg-set-of-2_512x512.jpg?v=1634226541',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Enhances soil health and crop productivity through organic matter, perfect for hilly farming areas.'
-            },
-            price: 200,
-            originalPrice: 250,
-            discount: 20,
-            quantity: 30,
-            seller: {
-                name: 'EcoMizo Fertilizers',
-                address: 'Champhai, Mizoram, India',
-            },
-            rating: 4.6,
-            ratingCount: [2, 1, 5, 12, 20],
-            reviews: [
-                { name: 'Lalthanmawia', date: '5th Mar 2024', rating: 5, comment: 'Great for improving soil fertility naturally.' }
-            ],
-        },
-
-        // Pesticides
-        {
-            id: 4,
-            name: 'Neem-Based Organic Pesticide',
-            category: 'Pesticides',
-            description: 'Eco-friendly neem-based pesticide to keep crops pest-free without harming the soil.',
-            imageUrls: [
-                'https://krishisevakendra.in/cdn/shop/files/Dr.neem300.webp?v=1714656662&width=493',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Safe and effective pest control derived from neem, ideal for organic farms in Mizoram.'
-            },
-            price: 150,
-            originalPrice: 200,
-            discount: 25,
-            quantity: 20,
-            seller: {
-                name: 'BioSafe Agro',
-                address: 'Aizawl, Mizoram, India',
-            },
-            rating: 4.7,
-            ratingCount: [1, 1, 3, 8, 30],
-            reviews: [
-                { name: 'Vanlalruati', date: '10th Apr 2024', rating: 5, comment: 'Effective and safe for organic farming.' }
-            ],
-        },
-
-        // Tools
-        {
-            id: 5,
-            name: 'Daw (Traditional Hoe)',
-            category: 'Tools',
-            description: 'Traditional hoe used for weeding and land clearing in shifting cultivation.',
-            imageUrls: [
-                'https://5.imimg.com/data5/SELLER/Default/2024/2/384785979/OR/MW/IJ/9258799/hectare-traditional-hoe-with-3-prong-cultivator-hand-power-heavy-duty-for-loosening-soil-weeding-500x500.jpg',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Durable and easy-to-use hoe made from high-quality metal, essential for local farming practices.'
-            },
-            price: 300,
-            originalPrice: 350,
-            discount: 14,
-            quantity: 10,
-            seller: {
-                name: 'MizoFarm Tools',
-                address: 'Serchhip, Mizoram, India',
-            },
-            rating: 4.9,
-            ratingCount: [0, 0, 1, 5, 18],
-            reviews: [
-                { name: 'Lalremruata', date: '15th Jan 2024', rating: 5, comment: 'Perfect for small-scale weeding and digging.' }
-            ],
-        },
-        // Pesticides
-        {
-            id: 4,
-            name: 'Neem-Based Organic Pesticide',
-            category: 'Pesticides',
-            description: 'Eco-friendly neem-based pesticide to keep crops pest-free without harming the soil.',
-            imageUrls: [
-                'https://krishisevakendra.in/cdn/shop/files/Dr.neem300.webp?v=1714656662&width=493',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Safe and effective pest control derived from neem, ideal for organic farms in Mizoram.'
-            },
-            price: 150,
-            originalPrice: 200,
-            discount: 25,
-            quantity: 20,
-            seller: {
-                name: 'BioSafe Agro',
-                address: 'Aizawl, Mizoram, India',
-            },
-            rating: 4.7,
-            ratingCount: [1, 1, 3, 8, 30],
-            reviews: [
-                { name: 'Vanlalruati', date: '10th Apr 2024', rating: 5, comment: 'Effective and safe for organic farming.' }
-            ],
-        },
-    ];
+        fetchData();
+    }, []);
 
     // Focus input field if focusInput is true
     useEffect(() => {
@@ -191,34 +51,42 @@ const ShopPage = ({ navigation, route }) => {
         }
     }, [focusInput]);
 
-    // Filter products based on the selected category
+    // Filter and sort products
     const filterProducts = useCallback(() => {
-        let filtered = allProducts;
+        let filtered = [...allProducts]; // Clone to avoid mutating original array
 
+        // Filter by category
         if (category) {
-            filtered = allProducts.filter(
+            filtered = filtered.filter(
                 (product) =>
-                    product.category.toLowerCase().includes(category.toLowerCase()) ||
-                    product.name.toLowerCase().includes(category.toLowerCase())
+                    product.topLevelCategory?.toLowerCase().includes(category.toLowerCase()) ||
+                    product.title?.toLowerCase().includes(category.toLowerCase())
             );
         }
 
         // Apply sorting
         if (sortOption === 'priceHighToLow') {
-            filtered.sort((a, b) => b.currentPrice - a.currentPrice);
+            filtered.sort((a, b) => (b.sizes[0]?.discountedPrice || 0) - (a.sizes[0]?.discountedPrice || 0));
         } else if (sortOption === 'priceLowToHigh') {
-            filtered.sort((a, b) => a.currentPrice - b.currentPrice);
+            filtered.sort((a, b) => (a.sizes[0]?.discountedPrice || 0) - (b.sizes[0]?.discountedPrice || 0));
         } else if (sortOption === 'popularity') {
-            filtered.sort((a, b) => b.rating - a.rating);
+            filtered.sort((a, b) => (b.ratings?.average || 0) - (a.ratings?.average || 0));
         }
 
         setFilteredProducts(filtered);
-    }, [category, sortOption]);
+    }, [allProducts, sortOption, category]);
 
     // Trigger filtering whenever category or sort option changes
     useEffect(() => {
         filterProducts();
     }, [filterProducts]);
+
+    // Update category when route.params.category changes
+    useEffect(() => {
+        if (route.params?.category) {
+            setCategory(route.params.category);
+        }
+    }, [route.params?.category]);
 
     const toggleWishlist = (productId) => {
         setWishlist((prev) =>
@@ -230,10 +98,19 @@ const ShopPage = ({ navigation, route }) => {
         <ProductCard
             navigation={navigation}
             product={item}
-            isInWishlist={wishlist.includes(item.id)}
-            toggleWishlist={() => toggleWishlist(item.id)}
+            isInWishlist={wishlist.includes(item._id)}
+            toggleWishlist={() => toggleWishlist(item._id)}
         />
     ));
+
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#4CAF50" />
+                <Text>Loading products...</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -276,7 +153,7 @@ const ShopPage = ({ navigation, route }) => {
 
             <FlatList
                 data={filteredProducts}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item._id}
                 renderItem={({ item }) => <MemoizedProductCard item={item} />}
                 numColumns={2}
                 columnWrapperStyle={styles.row}
@@ -285,6 +162,7 @@ const ShopPage = ({ navigation, route }) => {
         </View>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 5, backgroundColor: '#f5f5f5' },
@@ -310,6 +188,11 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     emptyText: { textAlign: 'center', marginTop: 20, fontSize: 18, color: '#777' },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
 
 export default ShopPage;

@@ -80,7 +80,7 @@ export default function RegisterScreen({ navigation }) {
     }
     console.log("Signup")
     axios
-      .post("http://192.168.0.104:5454/auth/signup", userData)
+      .post("https://preciagri-backend.onrender.com/auth/signup", userData)
       .then((response) => {
         console.log(response.data.message);
         Alert.alert('Registered Successfull!!');

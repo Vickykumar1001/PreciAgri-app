@@ -1,101 +1,149 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import CartTopBar from '../components/CartTopBar';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 const CartPage = ({ navigation }) => {
-    // This should be the updated product data, assuming the cartItems are same as the products initially
-    const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            name: 'SRI Rice Seeds',
-            category: 'Seeds',
-            description: 'System of Rice Intensification (SRI) variety, suited for Mizoram’s hilly terrains and wet climate.',
-            imageUrls: [
-                'https://5.imimg.com/data5/SELLER/Default/2024/3/404980651/GJ/NK/AG/33516101/sri-vardhan-999-paddy-seeds.jpg',
-            ],
-            price: 400,
-            originalPrice: 500,
-            discount: 20,
-            quantity: 2,
-            seller: { name: 'MizoAgro Seeds', address: 'Aizawl, Mizoram, India' },
-            rating: 4.7,
-            ratingCount: [2, 1, 5, 8, 20],
-        }, {
-            id: 3,
-            name: 'Organic Compost Fertilizer',
-            category: 'Fertilizers',
-            description: 'Compost fertilizer ideal for organic farming in Mizoram.',
-            imageUrls: [
-                'https://nurserylive.com/cdn/shop/products/nurserylive-g-soil-and-fertilizers-polestar-organic-food-waste-compost-1-kg-set-of-2_512x512.jpg?v=1634226541',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Enhances soil health and crop productivity through organic matter, perfect for hilly farming areas.'
-            },
-            price: 200,
-            originalPrice: 250,
-            discount: 20,
-            quantity: 5,
-            seller: {
-                name: 'EcoMizo Fertilizers',
-                address: 'Champhai, Mizoram, India',
-            },
-            rating: 4.6,
-            ratingCount: [2, 1, 5, 12, 20],
-            reviews: [
-                { name: 'Lalthanmawia', date: '5th Mar 2024', rating: 5, comment: 'Great for improving soil fertility naturally.' }
-            ],
-        },
+    const [cartItems, setCartItems] = useState([]);
+    const [totalMRP, setTotalMRP] = useState(0);
+    const [totalSellingPrice, setTotalSellingPrice] = useState(0);
+    const [discount, setDiscount] = useState(0);
 
-        // Pesticides
-        {
-            id: 4,
-            name: 'Neem-Based Organic Pesticide',
-            category: 'Pesticides',
-            description: 'Eco-friendly neem-based pesticide to keep crops pest-free without harming the soil.',
-            imageUrls: [
-                'https://krishisevakendra.in/cdn/shop/files/Dr.neem300.webp?v=1714656662&width=493',
-            ],
-            productDescription: {
-                title: 'Product Overview',
-                paragraph: 'Safe and effective pest control derived from neem, ideal for organic farms in Mizoram.'
-            },
-            price: 150,
-            originalPrice: 200,
-            discount: 25,
-            quantity: 2,
-            seller: {
-                name: 'BioSafe Agro',
-                address: 'Aizawl, Mizoram, India',
-            },
-            rating: 4.7,
-            ratingCount: [1, 1, 3, 8, 30],
-            reviews: [
-                { name: 'Vanlalruati', date: '10th Apr 2024', rating: 5, comment: 'Effective and safe for organic farming.' }
-            ],
-        },
-    ]);
+    // Fetching data from the API
+    useEffect(() => {
+        const fetchCartData = async () => {
+            try {
+                const token = await AsyncStorage.getItem('token');
+                const response = await axios.get(`https://preciagri-backend.onrender.com/api/cart`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
+                    },
+                });
+                const data = response.data;
+                console.log('Cart data fetched:', data);
+                const updatedCartItems = data.cartItems.map((item) => ({
+                    id: item._id,
+                    name: item.product.title,
+                    description: item.product.description,
+                    brand: item.product.brand,
+                    imageUrls: item.product.imagesUrl,
+                    size: item.size,
+                    quantity: item.quantity,
+                    price: item.discountedPrice,
+                    originalPrice: item.price,
+                }));
 
-    // Calculating totals and discount
-    const totalMRP = cartItems.reduce((sum, item) => sum + item.originalPrice * item.quantity, 0);
-    const totalSellingPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const discount = totalMRP - totalSellingPrice;
+                setCartItems(updatedCartItems);
 
-    // Increase and decrease quantity logic
-    const increaseQuantity = (id) => {
-        setCartItems(cartItems.map(item =>
-            item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-        ));
+                // Calculate totals
+                const totalMRP = updatedCartItems.reduce(
+                    (sum, item) => sum + item.originalPrice * item.quantity,
+                    0
+                );
+                const totalSellingPrice = updatedCartItems.reduce(
+                    (sum, item) => sum + item.price * item.quantity,
+                    0
+                );
+                const discount = totalMRP - totalSellingPrice;
+
+                setTotalMRP(totalMRP);
+                setTotalSellingPrice(totalSellingPrice);
+                setDiscount(discount);
+            } catch (error) {
+                console.error('Error fetching cart data:', error);
+            }
+        };
+
+        fetchCartData();
+    }, []);
+
+    const updateQuantityAPI = async (id, newQuantity) => {
+        const token = await AsyncStorage.getItem('token'); // Retrieve the token
+
+        try {
+            // Send PUT request to update the quantity
+            await axios.put(
+                `https://preciagri-backend.onrender.com/api/cart_items/${id}`,
+                { quantity: newQuantity },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Add Authorization header
+                    },
+                }
+            );
+
+            console.log('Quantity updated successfully');
+        } catch (error) {
+            console.error('Error while updating quantity:', error.message);
+        }
+    };
+    const updateCartDetails = () => {
+        setCartItems((updatedCartItems) => {
+            const totalMRP = updatedCartItems.reduce(
+                (sum, item) => sum + item.originalPrice * item.quantity,
+                0
+            );
+            const totalSellingPrice = updatedCartItems.reduce(
+                (sum, item) => sum + item.price * item.quantity,
+                0
+            );
+            const discount = totalMRP - totalSellingPrice;
+
+            setTotalMRP(totalMRP);
+            setTotalSellingPrice(totalSellingPrice);
+            setDiscount(discount);
+
+            return updatedCartItems;
+        });
     };
 
-    const decreaseQuantity = (id) => {
-        setCartItems(cartItems.map(item =>
-            item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
-        ));
+    // Increase quantity and send update to the API
+    const increaseQuantity = async (id) => {
+        setCartItems((prevItems) =>
+            prevItems.map((item) => {
+                if (item.id === id) {
+                    const updatedQuantity = item.quantity + 1;
+                    updateQuantityAPI(id, updatedQuantity); // Call API to update quantity
+                    return { ...item, quantity: updatedQuantity };
+                }
+                return item;
+            })
+        );
+
+        updateCartDetails();
     };
 
-    const removeItem = (id) => {
-        setCartItems(cartItems.filter(item => item.id !== id));
+    // Decrease quantity and send update to the API
+    const decreaseQuantity = async (id) => {
+        setCartItems((prevItems) =>
+            prevItems.map((item) => {
+                if (item.id === id && item.quantity > 1) {
+                    const updatedQuantity = item.quantity - 1;
+                    updateQuantityAPI(id, updatedQuantity); // Call API to update quantity
+                    return { ...item, quantity: updatedQuantity };
+                }
+                return item;
+            })
+        );
+
+        updateCartDetails();
+    };
+
+    const removeItem = async (id) => {
+        const token = await AsyncStorage.getItem('token'); // Replace with your token retrieval logic
+
+        try {
+            await axios.delete(`https://preciagri-backend.onrender.com/api/cart_items/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            // Update the cart state after successful deletion
+            setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+        } catch (error) {
+            console.error('Error while deleting the item:', error.message);
+        }
     };
 
     // Rendering cart items
@@ -104,18 +152,30 @@ const CartPage = ({ navigation }) => {
             <Image source={{ uri: item.imageUrls[0] }} style={styles.productImage} />
             <View style={styles.productDetails}>
                 <Text style={styles.productName}>{item.name}</Text>
+                <Text style={styles.discountText}> {item.size}</Text>
                 <Text style={styles.productPrice}>
-                    ₹ {item.price} <Text style={styles.originalPrice}>₹ {item.originalPrice}</Text>
+                    ₹ {item.price}{' '}
+                    <Text style={styles.originalPrice}>₹ {item.originalPrice}</Text>
+
                 </Text>
                 <View style={styles.quantityContainer}>
-                    <TouchableOpacity onPress={() => decreaseQuantity(item.id)} style={styles.quantityButton}>
+                    <TouchableOpacity
+                        onPress={() => decreaseQuantity(item.id)}
+                        style={styles.quantityButton}
+                    >
                         <Text style={styles.quantityButtonText}>-</Text>
                     </TouchableOpacity>
                     <Text style={styles.quantityText}>{item.quantity}</Text>
-                    <TouchableOpacity onPress={() => increaseQuantity(item.id)} style={styles.quantityButton}>
+                    <TouchableOpacity
+                        onPress={() => increaseQuantity(item.id)}
+                        style={styles.quantityButton}
+                    >
                         <Text style={styles.quantityButtonText}>+</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => removeItem(item.id)} style={styles.removeButton}>
+                    <TouchableOpacity
+                        onPress={() => removeItem(item.id)}
+                        style={styles.removeButton}
+                    >
                         <Text style={styles.removeText}>Remove</Text>
                     </TouchableOpacity>
                 </View>
@@ -129,7 +189,7 @@ const CartPage = ({ navigation }) => {
             <FlatList
                 data={cartItems}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item.id}
                 ListHeaderComponent={
                     <Text style={styles.savingsText}>
                         You save a total of ₹ {discount} on this order
@@ -161,7 +221,10 @@ const CartPage = ({ navigation }) => {
             </View>
             <View style={styles.checkoutContainer}>
                 <Text style={styles.totalAmountText}>₹ {totalSellingPrice}</Text>
-                <TouchableOpacity style={styles.checkoutButton} onPress={() => navigation.navigate('AddAddress')}>
+                <TouchableOpacity
+                    style={styles.checkoutButton}
+                    onPress={() => navigation.navigate('SelectAddress')}
+                >
                     <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
                 </TouchableOpacity>
             </View>
@@ -171,6 +234,7 @@ const CartPage = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     // Styles remain the same as provided in your original code
+    savingsText: { color: 'green' },
     container: { flex: 1, backgroundColor: '#f2f2f2', marginTop: 10, marginHorizontal: 10 },
     cartItem: { flexDirection: 'row', backgroundColor: '#fff', padding: 10, marginVertical: 5, borderRadius: 8 },
     productImage: { width: 80, height: 80, borderRadius: 8 },

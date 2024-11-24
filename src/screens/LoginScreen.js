@@ -27,11 +27,12 @@ export default function LoginScreen({ navigation }) {
     const emailVal = email.value;
     const passwordVal = password.value;
     axios
-      .post('http://192.168.0.106:5454/auth/signin', { email: emailVal, password: passwordVal })
+      .post('https://preciagri-backend.onrender.com/auth/signin', { email: emailVal, password: passwordVal })
       .then((response) => {
         if (response.status === 200) {
           Alert.alert('Logged In Successfull');
           AsyncStorage.setItem('token', response.data.jwt);
+          AsyncStorage.setItem('role', response.data.user.role);
           navigation.replace('HomePage');
         }
       })
