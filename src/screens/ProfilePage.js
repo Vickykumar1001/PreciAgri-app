@@ -9,11 +9,13 @@ const profileIcon = require('../assets/images/user-icon.png');
 export default function ProfilePage({ navigation }) {
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
-
+    const [role, setRole] = useState('');
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
+                const role = await AsyncStorage.getItem('role');
+                setRole(role)
                 if (!token) throw new Error("No token found");
 
                 const response = await axios.get("https://preciagri-backend.onrender.com/api/users/profile", {
@@ -66,6 +68,12 @@ export default function ProfilePage({ navigation }) {
                     <FontAwesome name="file-text" size={24} color="#777" />
                     <Text style={styles.optionText}>My Products</Text>
                 </TouchableOpacity>
+                {
+                    role === 'Seller' && <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('OrdersReceived', { products: profileData?.product })}>
+                        <FontAwesome name="file-text" size={24} color="#777" />
+                        <Text style={styles.optionText}>Orders Received</Text>
+                    </TouchableOpacity>
+                }
                 <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Wishlist')}>
                     <FontAwesome name="shopping-bag" size={24} color="#777" />
                     <Text style={styles.optionText}>My Wishlist</Text>
