@@ -215,7 +215,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
                     <Text style={styles.sellerLabel}>Seller Information</Text>
                     <Text style={styles.sellerName}>Name: {seller.businessName}</Text>
                     <Text style={styles.sellerAddress}>
-                        Address: {seller.streetAddress}, {seller.city}, {seller.state}, {seller.zipCode}
+                        Address: {`${seller.streetAddress}, ${seller.city}, ${seller.state}, ${seller.zipCode}`}
                     </Text>
                 </View>
                 {/* Customer Reviews Section */}
@@ -261,7 +261,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
                 <TouchableOpacity style={styles.buyNowButton} onPress={() => handleBuyNow(product)}>
                     <Text style={styles.buttonText}>BUY NOW</Text>
                 </TouchableOpacity>
-            </View>;
+            </View>
         </View>
     );
 };

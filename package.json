@@ -22,10 +22,10 @@
     "expo": "~52.0.11",
     "expo-dev-client": "~5.0.4",
     "expo-font": "~13.0.1",
-    "expo-image-picker": "~16.0.2",
+    "expo-image-picker": "~16.0.3",
     "expo-location": "~18.0.2",
     "expo-sharing": "~13.0.0",
-    "expo-splash-screen": "^0.29.13",
+    "expo-splash-screen": "~0.29.13",
     "expo-status-bar": "~2.0.0",
     "native-base": "^3.4.28",
     "postcss": "^8.1.0",
@@ -60,7 +60,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "eas-cli": "^12.6.1",
-    "expo": "^52.0.8"
+    "expo": "~52.0.11"
   },
   "private": true
 }

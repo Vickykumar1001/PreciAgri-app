@@ -49,7 +49,7 @@ const HomePage = ({ navigation }) => {
     const categories = [
         { id: '1', name: 'Seeds', image: require('../assets/images/seed.png') },
         { id: '2', name: 'Fertilizer', image: require('../assets/images/fertilizer.png') },
-        { id: '3', name: 'Pesticides', image: require('../assets/images/pesticide.png') },
+        { id: '3', name: 'Pesticide', image: require('../assets/images/pesticide.png') },
         { id: '4', name: 'Irrigation', image: require('../assets/images/irrigation.png') },
         { id: '5', name: 'Tools', image: require('../assets/images/tools.png') },
         { id: '6', name: 'Machinery', image: require('../assets/images/machinery.png') },
@@ -60,7 +60,7 @@ const HomePage = ({ navigation }) => {
         { id: '1', name: 'Weather', image: require('../assets/images/weather.png') },
         { id: '2', name: 'Loans ', image: require('../assets/images/loan.png') },
         { id: '5', name: 'Shop', image: require('../assets/images/shop.png') },
-        { id: '7', name: 'Farming Tips', image: require('../assets/images/tips.png') },
+        { id: '7', name: 'FarmingTips', image: require('../assets/images/tips.png') },
         { id: '3', name: 'Market-price', image: require('../assets/images/market.png') },
         // { id: '4', name: 'Crop Insurance', image: require('../assets/images/insurance.png') },
         // { id: '9', name: 'Soil Testing', image: require('../assets/images/soil.png') },
@@ -72,8 +72,12 @@ const HomePage = ({ navigation }) => {
     ];
     const handleCategoryPress = (category) => {
         if (category.name === 'Weather') {
-
             navigation.navigate('Weather');
+            return;
+        }
+        if (category.name === 'FarmingTips') {
+
+            navigation.navigate('FarmingTips');
             return;
         }
         navigation.navigate('Shop', { category: category.name });

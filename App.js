@@ -38,10 +38,15 @@ import ShowAddressPage from './src/screens/ShowAddressPage';
 import AddPost from './src/screens/AddPost';
 import SelectAddressPage from './src/screens/SelectAddressPage';
 import OrderSummaryPage from './src/screens/OrderSummaryPage';
+import SellerOrdersPage from './src/screens/SellerOrderPage';
+import FarmingTipsPage from './src/screens/FarmingTipsPage';
 
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
-
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
 const loadFonts = async () => {
   await Font.loadAsync({
     'Lobster-Regular': require('./src/assets/fonts/Lobster-Regular.ttf'),
@@ -84,6 +89,8 @@ const StackNav = ({ route }) => {
       <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{ headerShown: false }} />
       <Stack.Screen name="SelectAddress" component={SelectAddressPage} />
       <Stack.Screen name="OrderSummary" component={OrderSummaryPage} />
+      <Stack.Screen name="SellerOrder" component={SellerOrdersPage} />
+      <Stack.Screen name="FarmingTips" component={FarmingTipsPage} />
     </Stack.Navigator>
   )
 }

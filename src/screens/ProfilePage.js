@@ -69,7 +69,7 @@ export default function ProfilePage({ navigation }) {
                     <Text style={styles.optionText}>My Products</Text>
                 </TouchableOpacity>
                 {
-                    role === 'Seller' && <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('OrdersReceived', { products: profileData?.product })}>
+                    role === 'Seller' && <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('SellerOrder', { products: profileData?.product })}>
                         <FontAwesome name="file-text" size={24} color="#777" />
                         <Text style={styles.optionText}>Orders Received</Text>
                     </TouchableOpacity>
@@ -90,18 +90,25 @@ export default function ProfilePage({ navigation }) {
 
             {/* Footer Navigation */}
             <View style={styles.footer}>
-                <TouchableOpacity onPress={() => navigation.navigate('HomePage')}>
+                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('HomePage')}  >
                     <Ionicons name="home" size={28} color="#777" />
                     <Text style={styles.footerText}>Home</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Shop', { category: '' })}>
+                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Shop', { category: '' })}>
                     <Ionicons name="storefront" size={28} color="#777" />
                     <Text style={styles.footerText}>Shop</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Profile')}>
                     <Ionicons name="person" size={28} color="#4CAF50" />
                     <Text style={styles.footerText}>Profile</Text>
                 </TouchableOpacity>
+                {
+                    role === 'Seller' && <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('AddPost')}>
+                        <Ionicons name="cart" size={28} color="#777" />
+                        <Text style={styles.footerText}>Sell</Text>
+                    </TouchableOpacity>
+                }
+
                 <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('News')}>
                     <Ionicons name="newspaper" size={28} color="#777" />
                     <Text style={styles.footerText}>Article</Text>
