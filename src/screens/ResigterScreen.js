@@ -80,14 +80,23 @@ export default function RegisterScreen({ navigation }) {
     }
     console.log("Signup")
     axios
-      .post("https://preciagri-backend.onrender.com/auth/signup", userData)
+      .post("http://192.168.158.195:5454/auth/signup", userData)
       .then((response) => {
         console.log(response.data.message);
-        Alert.alert('Registered Successfull!!');
-        navigation.navigate('VerifyEmailonRegister', { email: email.value });
+        Alert.alert('Registration Successfull! Verify OTP sent on you email.');
+        navigation.navigate('VerifyEmailonRegister', { email: email });
       })
       .catch((error) => {
-        console.log(error.message);
+        console.log("errrrrorrrrr", error)
+
+        if (error.response?.data?.message === 'User exists, but email verification is pending.') {
+          // Redirect to OTP verification page
+          Alert.alert('User exists, but email verification is pending.');
+          navigation.navigate('VerifyEmailonRegister', { email });
+        } else {
+          // Handle other errors, like "User already exists"
+          Alert.alert('Error', error.response?.data?.message || error.message);
+        }
       });
   }
 

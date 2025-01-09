@@ -6,17 +6,35 @@ import Header from '../components/Header'
 import TextInput from '../components/TextInput'
 import Button from '../components/Button'
 import { emailValidator } from '../helpers/emailValidator'
+import axios from 'axios'
+import { Alert } from 'react-native'
 
 export default function ResetPasswordScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
 
-  const sendResetPasswordEmail = () => {
+  const sendResetPasswordEmail = async () => {
+    // Validate email
     const emailError = emailValidator(email.value)
     if (emailError) {
       setEmail({ ...email, error: emailError })
       return
     }
-    navigation.navigate('VerifyEmail')
+
+    try {
+      // Send POST request to /forgot-password
+      const response = await axios.post('http://192.168.158.195:5454/auth/forgot-password', { email: email.value })
+
+      // Handle success response
+      if (response.data.message) {
+        Alert.alert('Success', response.data.message)
+        // Navigate to OTP verification screen
+        navigation.navigate('VerifyEmail', { email: email.value })
+      }
+    } catch (error) {
+      // Handle error response
+      console.error(error)
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong. Please try again later.')
+    }
   }
 
   return (
@@ -35,14 +53,14 @@ export default function ResetPasswordScreen({ navigation }) {
         autoCompleteType="email"
         textContentType="emailAddress"
         keyboardType="email-address"
-        description="You will receive email with password reset link."
+        description="You will receive an OTP to reset your password."
       />
       <Button
         mode="contained"
         onPress={sendResetPasswordEmail}
         style={{ marginTop: 16 }}
       >
-        Send Email
+        Send OTP
       </Button>
     </Background>
   )

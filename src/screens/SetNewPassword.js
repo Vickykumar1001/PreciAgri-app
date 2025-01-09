@@ -8,53 +8,32 @@ import Button from '../components/Button';
 import BackButton from '../components/BackButton';
 import Logo from '../components/Logo';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function ChangePassword({ route, navigation }) {
-    const [oldPassword, setOldPassword] = useState('');
+export default function ResetForgotPassword({ route, navigation }) {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleChangePassword = async () => {
-        if (!oldPassword || !newPassword || !confirmPassword) {
-            Alert.alert('Error', 'Please fill in all fields.');
+    const handleResetPassword = async () => {
+        if (!newPassword || !confirmPassword) {
+            Alert.alert('Error', 'Please fill in both fields.');
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            Alert.alert('Error', 'New passwords do not match.');
+            Alert.alert('Error', 'Passwords do not match.');
             return;
         }
 
         try {
-            // Fetch token from AsyncStorage
-            const token = await AsyncStorage.getItem('token');
-
-            // Make the API request
-            const response = await axios.post(
-                'http://192.168.158.195:5454/api/users/change-password',
-                {
-                    oldPassword,
-                    newPassword,
-                },
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
+            const response = await axios.post('http://192.168.158.195:5454/auth/reset-password', {
+                email: route.params.email, // Assuming email is passed via route params
+                newPassword,
+                confirmPassword,
+            });
 
             if (response.status === 200) {
-                Alert.alert('Success', 'Your password has been changed successfully.');
-
-                // Decide whether to log out or keep logged in
-                // KEEP LOGGED IN (Default Behavior):
-                navigation.goBack();
-
-                // LOG OUT (Optional - uncomment this to log out the user):
-                // await AsyncStorage.removeItem('token');
-                // navigation.reset({
-                //     index: 0,
-                //     routes: [{ name: 'LoginScreen' }],
-                // });
+                Alert.alert('Success', 'Your password has been reset.');
+                navigation.navigate('LoginScreen'); // Redirect to login after successful reset
             }
         } catch (error) {
             console.error(error);
@@ -62,27 +41,15 @@ export default function ChangePassword({ route, navigation }) {
         }
     };
 
+
     return (
         <Background>
             <BackButton goBack={navigation.goBack} />
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-                <ScrollView
-                    contentContainerStyle={styles.scrollContainer}
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                >
+                <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                     <Logo />
-                    <Header>Change Password</Header>
-                    <Text style={styles.subtitle}>
-                        Enter your current password and set a new one.
-                    </Text>
-
-                    <TextInput
-                        label="Current Password"
-                        secureTextEntry
-                        value={oldPassword}
-                        onChangeText={setOldPassword}
-                    />
+                    <Header>Reset Password</Header>
+                    <Text style={styles.subtitle}>Enter your new password and confirm it below.</Text>
 
                     <TextInput
                         label="New Password"
@@ -100,10 +67,10 @@ export default function ChangePassword({ route, navigation }) {
 
                     <Button
                         mode="contained"
-                        onPress={handleChangePassword}
+                        onPress={handleResetPassword}
                         style={styles.button}
                     >
-                        Change Password
+                        Reset Password
                     </Button>
                 </ScrollView>
             </KeyboardAvoidingView>

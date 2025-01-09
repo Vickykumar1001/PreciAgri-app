@@ -12,6 +12,7 @@ import { theme } from '../core/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function VerifyEmailonRegister({ route, navigation }) {
     const { email } = route.params;
+    console.log(email)
     const [otp, setOtp] = useState('');
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [resendTimer, setResendTimer] = useState(30);
@@ -39,7 +40,7 @@ export default function VerifyEmailonRegister({ route, navigation }) {
     const handleContinue = () => {
         if (otp.length === 6) {
             axios
-                .post('https://preciagri-backend.onrender.com/auth/verify-email', { otp, email })
+                .post('http://192.168.158.195:5454/auth/verify-email', { otp, email: email.value })
                 .then((response) => {
                     if (response.status === 200) {
                         Alert.alert('Logged In Successfull');
@@ -55,9 +56,16 @@ export default function VerifyEmailonRegister({ route, navigation }) {
     };
 
     const handleResend = () => {
-        setOtp('');
-        setResendTimer(30);
-        Alert.alert('OTP Resent', 'A new OTP has been sent to your email.');
+        axios
+            .post('http://192.168.158.195:5454/auth/resend-otp', { email: email.value })
+            .then(() => {
+                setOtp('');
+                setResendTimer(30);
+                Alert.alert('OTP Resent', 'A new OTP has been sent to your email.');
+            })
+            .catch((error) => {
+                Alert.alert('Error', error.response?.data?.message || error.message);
+            });
     };
 
     return (
@@ -75,14 +83,13 @@ export default function VerifyEmailonRegister({ route, navigation }) {
                         keyboardType="numeric"
                         maxLength={6}
                     />
-                    <Button
-                        mode="contained"
+                    <TouchableOpacity
+                        style={[styles.button, isButtonEnabled ? styles.buttonEnabled : styles.buttonDisabled]}
                         onPress={handleContinue}
                         disabled={!isButtonEnabled}
-                        style={isButtonEnabled ? styles.buttonEnabled : styles.buttonDisabled}
                     >
-                        Continue
-                    </Button>
+                        <Text style={styles.buttonText}>Continue</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={handleResend} disabled={resendTimer > 0}>
                         <Text style={[styles.resendLink, resendTimer > 0 && styles.resendDisabled]}>
                             {resendTimer > 0 ? `Resend available in ${resendTimer}s` : 'Resend OTP'}
@@ -120,13 +127,19 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 10,
     },
-    buttonEnabled: {
-        backgroundColor: theme.colors.primary,
+    button: {
+        height: 50,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5,
         marginTop: 24,
     },
+    buttonEnabled: {
+        backgroundColor: 'green',
+    },
     buttonDisabled: {
-        backgroundColor: '#B0BEC5',
-        marginTop: 24,
+        backgroundColor: '#A9A9A9',
     },
     resendLink: {
         textAlign: 'center',
