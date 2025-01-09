@@ -13,26 +13,34 @@ const ShopPage = ({ navigation, route }) => {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [sortOption, setSortOption] = useState('');
     const [showSortDropdown, setShowSortDropdown] = useState(false);
-    const [wishlist, setWishlist] = useState([]);
+    const [wishlist, setWishlist] = useState(new Set()); // Use Set for faster lookups
     const [loading, setLoading] = useState(true);
     const inputRef = useRef(null);
 
     const { focusInput } = route.params || {};
 
-    // Fetch products from the API
+    // Fetch products and wishlist from the API
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
-                if (token) {
-                    const response = await axios.get('https://preciagri-backend.onrender.com/api/products', {
-                        headers: { Authorization: `Bearer ${token}` },
-                    });
-                    setAllProducts(response.data.content);
-                    setFilteredProducts(response.data.content); // Set initial filter
-                } else {
+                if (!token) {
                     console.error('Token not found');
+                    return;
                 }
+
+                // Fetch products
+                const productsResponse = await axios.get('http://192.168.158.195:5454/api/products', {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setAllProducts(productsResponse.data.content);
+                setFilteredProducts(productsResponse.data.content);
+
+                // Fetch wishlist
+                const wishlistResponse = await axios.get(`http://192.168.158.195:5454/api/wishlist`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setWishlist(new Set(wishlistResponse.data));
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -41,7 +49,7 @@ const ShopPage = ({ navigation, route }) => {
         };
 
         fetchData();
-    }, []);
+    }, [route.params.userId]);
 
     // Focus input field if focusInput is true
     useEffect(() => {
@@ -88,17 +96,44 @@ const ShopPage = ({ navigation, route }) => {
         }
     }, [route.params?.category]);
 
-    const toggleWishlist = (productId) => {
-        setWishlist((prev) =>
-            prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
-        );
+    const toggleWishlist = async (productId) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            if (!token) {
+                console.error('Token not found');
+                return;
+            }
+
+            if (wishlist.has(productId)) {
+                // Remove from wishlist
+                await axios.delete(`http://192.168.158.195:5454/api/wishlist`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    data: { productId },
+                });
+                setWishlist((prev) => {
+                    const newWishlist = new Set(prev);
+                    newWishlist.delete(productId);
+                    return newWishlist;
+                });
+            } else {
+                // Add to wishlist
+                await axios.post(
+                    `http://192.168.158.195:5454/api/wishlist`,
+                    { productId },
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                setWishlist((prev) => new Set(prev).add(productId));
+            }
+        } catch (error) {
+            console.error('Error updating wishlist:', error);
+        }
     };
 
     const MemoizedProductCard = memo(({ item }) => (
         <ProductCard
             navigation={navigation}
             product={item}
-            isInWishlist={wishlist.includes(item._id)}
+            isInWishlist={wishlist.has(item._id)}
             toggleWishlist={() => toggleWishlist(item._id)}
         />
     ));
@@ -162,7 +197,6 @@ const ShopPage = ({ navigation, route }) => {
         </View>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 5, backgroundColor: '#f5f5f5' },
