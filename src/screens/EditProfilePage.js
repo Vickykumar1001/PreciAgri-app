@@ -1,21 +1,34 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ToastAndroid } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { FontAwesome } from '@expo/vector-icons';
 import ProfileTopBar from '../components/ProfileTopBar';
-
-export default function EditProfilePage({ navigation }) {
-    const [fullName, setFullName] = useState('Person');
-    const [email, setEmail] = useState('person@gmail.com');
+const profileIcon = require('../assets/images/user-icon.png');
+export default function EditProfilePage({ route, navigation }) {
+    const { profileData } = route.params
+    const [firstName, setFirstName] = useState(profileData.firstName);
+    const [lastName, setLastName] = useState(profileData.lastName);
+    const [email, setEmail] = useState(profileData.email);
     const [category, setCategory] = useState('Farmer');
-    const [contactNumber, setContactNumber] = useState('+91');
+    const [contactNumber, setContactNumber] = useState(profileData.mobile);
 
-    const handleSaveChanges = () => {
-        // Show a toast message
-        ToastAndroid.show('Profile changes saved successfully!', ToastAndroid.SHORT);
+    const handleSaveChanges = async () => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const response = await axios.put(
+                'http://192.168.158.195:5454/api/users/profile/edit',
+                { firstName, lastName, mobile: contactNumber },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
 
-        // Navigate back to the previous screen
-        navigation.goBack();
+            ToastAndroid.show('Profile updated successfully!', ToastAndroid.SHORT);
+            navigation.goBack();
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            ToastAndroid.show('Failed to update profile. Please try again.', ToastAndroid.SHORT);
+        }
     };
 
     return (
@@ -26,26 +39,33 @@ export default function EditProfilePage({ navigation }) {
             {/* Profile Picture */}
             <View style={styles.profileContainer}>
                 <Image
-                    source={{ uri: 'https://via.placeholder.com/100' }}
+                    source={profileIcon}
                     style={styles.profileImage}
                 />
-                <View style={styles.imageButtons}>
+                {/* <View style={styles.imageButtons}>
                     <TouchableOpacity style={styles.cameraButton}>
                         <FontAwesome name="camera" size={16} color="white" />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.deleteButton}>
                         <FontAwesome name="trash" size={16} color="white" />
                     </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
 
             {/* Form */}
             <View style={styles.formContainer}>
-                <Text style={styles.label}>Full Name*</Text>
+                <Text style={styles.label}>First Name</Text>
                 <TextInput
                     style={styles.input}
-                    value={fullName}
-                    onChangeText={setFullName}
+                    value={firstName}
+                    onChangeText={setFirstName}
+                    placeholder="Enter full name"
+                />
+                <Text style={styles.label}>Last Name</Text>
+                <TextInput
+                    style={styles.input}
+                    value={lastName}
+                    onChangeText={setLastName}
                     placeholder="Enter full name"
                 />
 
@@ -60,7 +80,7 @@ export default function EditProfilePage({ navigation }) {
                     <Text style={styles.verifiedText}>Verified</Text>
                 </View>
 
-                <Text style={styles.label}>Category*</Text>
+                {/* <Text style={styles.label}>Category*</Text>
                 <View style={styles.input}>
                     <Picker
                         style={styles.picker}
@@ -68,9 +88,9 @@ export default function EditProfilePage({ navigation }) {
                         onValueChange={(itemValue) => setCategory(itemValue)}
                     >
                         <Picker.Item label="Farmer" value="Farmer" />
-                        <Picker.Item label="Buyer" value="Buyer" />
+                        <Picker.Item label="Seller" value="Seller" />
                     </Picker>
-                </View>
+                </View> */}
 
                 <Text style={styles.label}>Contact Number*</Text>
                 <TextInput

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { MaterialIcons, Ionicons, FontAwesome, AntDesign } from '@expo/vector-icons';
 import ProfileTopBar from '../components/ProfileTopBar';
@@ -10,30 +11,33 @@ export default function ProfilePage({ navigation }) {
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [role, setRole] = useState('');
-    useEffect(() => {
-        const fetchProfileData = async () => {
-            try {
-                const token = await AsyncStorage.getItem('token');
-                const role = await AsyncStorage.getItem('role');
-                setRole(role)
-                if (!token) throw new Error("No token found");
+    const fetchProfileData = async () => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const role = await AsyncStorage.getItem('role');
+            setRole(role)
+            if (!token) throw new Error("No token found");
 
-                const response = await axios.get("https://preciagri-backend.onrender.com/api/users/profile", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setProfileData(response.data);
-            } catch (error) {
-                console.error("Failed to fetch profile data:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProfileData();
-    }, []);
-
+            const response = await axios.get("http://192.168.158.195:5454/api/users/profile", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setProfileData(response.data);
+        } catch (error) {
+            console.error("Failed to fetch profile data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    // useEffect(() => {
+    //     fetchProfileData();
+    // }, []);
+    useFocusEffect(
+        useCallback(() => {
+            fetchProfileData();
+        }, [])
+    );
     if (loading) {
         return <ActivityIndicator size="large" color="#4CAF50" style={styles.loader} />;
     }
@@ -56,7 +60,7 @@ export default function ProfilePage({ navigation }) {
 
             {/* Options List */}
             <ScrollView style={styles.optionsContainer}>
-                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('EditProfile', { profileData })}>
+                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('EditProfile', { profileData: { firstName: profileData?.firstName, lastName: profileData?.lastName, email: profileData?.email, mobile: profileData?.mobile } })}>
                     <Ionicons name="person" size={24} color="#777" />
                     <Text style={styles.optionText}>Edit Profile</Text>
                 </TouchableOpacity>
@@ -64,7 +68,7 @@ export default function ProfilePage({ navigation }) {
                     <Ionicons name="location" size={24} color="#777" />
                     <Text style={styles.optionText}>My Address</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('MyProducts', { products: profileData?.product })}>
+                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('UserProducts', { products: profileData?.product })}>
                     <FontAwesome name="file-text" size={24} color="#777" />
                     <Text style={styles.optionText}>My Products</Text>
                 </TouchableOpacity>
@@ -78,11 +82,11 @@ export default function ProfilePage({ navigation }) {
                     <FontAwesome name="shopping-bag" size={24} color="#777" />
                     <Text style={styles.optionText}>My Wishlist</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.optionItem}>
+                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('ChangePassword', { email: profileData?.email })}>
                     <FontAwesome name="lock" size={24} color="#777" />
                     <Text style={styles.optionText}>Change Password</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.optionItem}>
+                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Logout')}>
                     <AntDesign name="logout" size={24} color="#777" />
                     <Text style={styles.optionText}>Logout</Text>
                 </TouchableOpacity>

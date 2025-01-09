@@ -24,7 +24,7 @@ const SelectAddressPage = ({ navigation }) => {
             try {
                 const token = await AsyncStorage.getItem('token');
                 const response = await axios.get(
-                    'https://preciagri-backend.onrender.com/api/users/address',
+                    'http://192.168.158.195:5454/api/users/address',
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ const SelectAddressPage = ({ navigation }) => {
             try {
                 const token = await AsyncStorage.getItem('token'); // Retrieve token from AsyncStorage
                 const response = await axios.post(
-                    'https://preciagri-backend.onrender.com/api/orders', // Replace with your API endpoint
+                    'http://192.168.158.195:5454/api/orders', // Replace with your API endpoint
                     { address: selectedAddress }, // Sending the selected address in the request body
                     {
                         headers: {
