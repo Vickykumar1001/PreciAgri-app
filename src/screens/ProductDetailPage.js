@@ -9,7 +9,7 @@ import {
     StyleSheet,
     Dimensions,
 } from 'react-native';
-import { ToastAndroid } from 'react-native'; // For Android Toast messages
+import { ToastAndroid, ActivityIndicator } from 'react-native'; // For Android Toast messages
 import { Icon, Rating } from 'react-native-elements';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import axios from 'axios';
@@ -19,32 +19,39 @@ import ReviewComponent from '../components/Review';
 
 const ProductDetailScreen = ({ navigation, route }) => {
     const { product } = route.params; // Product ID passed from route
+    console.log(product);
     const [seller, setSeller] = useState(null); // State to store seller details
     const [quantity, setQuantity] = useState(1); // Start with quantity of 1
-    const [wishlist, setWishlist] = useState([]); // Wishlist state
+    const [wishlist, setWishlist] = useState(new Set()); // Wishlist state
     const [allProducts, setAllProducts] = useState([]); // All products
     const [selectedSize, setSelectedSize] = useState(0);
-
+    const [loading, setLoading] = useState(true);
     // Fetch Product Data
     useEffect(() => {
         const fetchProduct = async () => {
             try {
                 // Fetch Seller Data
                 const token = await AsyncStorage.getItem('token');
-                const response = await axios.get(`https://preciagri-backend.onrender.com/api/users/sellerDetail/${product.sellerId}`, {
+                const response = await axios.get(`http://192.168.158.195:5454/api/users/sellerDetail/${product.sellerId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
                     },
                 });
                 setSeller(response.data);
-                const products = await axios.get(`https://preciagri-backend.onrender.com/api/products`, {
+                const products = await axios.get(`http://192.168.158.195:5454/api/products`, {
                     headers: {
                         Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
                     },
                 });
                 setAllProducts(products.data.content);
+                const wishlistResponse = await axios.get(`http://192.168.158.195:5454/api/wishlist`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setWishlist(new Set(wishlistResponse.data));
             } catch (error) {
                 console.error("Error fetching product or seller data:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -60,19 +67,47 @@ const ProductDetailScreen = ({ navigation, route }) => {
     };
 
     // Toggle Wishlist
-    const toggleWishlist = () => {
-        setWishlist((prevWishlist) =>
-            prevWishlist.includes(product._id)
-                ? prevWishlist.filter((id) => id !== product._id)
-                : [...prevWishlist, product._id]
-        );
+    const toggleWishlist = async () => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            if (!token) {
+                console.error('Token not found');
+                return;
+            }
+
+            if (wishlist.has(product._id)) {
+                // Remove from wishlist
+                await axios.delete(`http://192.168.158.195:5454/api/wishlist`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    data: { productId: product._id },
+                });
+                setWishlist((prev) => {
+                    const newWishlist = new Set(prev);
+                    newWishlist.delete(product._id);
+                    return newWishlist;
+                });
+            } else {
+                // Add to wishlist
+                await axios.post(
+                    `http://192.168.158.195:5454/api/wishlist`,
+                    { productId: product._id },
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                setWishlist((prev) => new Set(prev).add(product._id));
+            }
+        } catch (error) {
+            console.error('Error updating wishlist:', error);
+        }
     };
+
+
+
     const handleAddToCart = async (product) => {
         try {
             const token = await AsyncStorage.getItem('token'); // Fetch the token from AsyncStorage
 
             const response = await axios.put(
-                'https://preciagri-backend.onrender.com/api/cart/add',
+                'http://192.168.158.195:5454/api/cart/add',
                 {
                     productId: product._id,
                     sizeIndx: selectedSize,
@@ -103,14 +138,9 @@ const ProductDetailScreen = ({ navigation, route }) => {
             console.error('Error handling Buy Now:', error);
         }
     };
-    if (!product || !seller) {
-        return (
-            <View style={styles.loader}>
-                <Text>Loading...</Text>
-            </View>
-        );
+    if (loading) {
+        return <ActivityIndicator size="large" color="#E53935" />;
     }
-
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -128,7 +158,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
                 <TouchableOpacity style={styles.wishlistIcon} onPress={toggleWishlist}>
                     <Ionicons
-                        name={wishlist.includes(product._id) ? "heart" : "heart-outline"}
+                        name={wishlist.has(product._id) ? "heart" : "heart-outline"}
                         size={28}
                         color="#E53935"
                     />

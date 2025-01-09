@@ -29,7 +29,7 @@ const HomePage = ({ navigation }) => {
                 const token = await AsyncStorage.getItem('token');
                 if (token) {
                     // If token is available, fetch products from the API
-                    const response = await axios.get('https://preciagri-backend.onrender.com/api/products', {
+                    const response = await axios.get('http://192.168.158.195:5454/api/products', {
                         headers: {
                             Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
                         },
@@ -215,6 +215,10 @@ const HomePage = ({ navigation }) => {
                 <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Shop', { category: '' })}>
                     <Ionicons name="storefront" size={28} color="#777" />
                     <Text style={styles.footerText}>Shop</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Category')}>
+                    <Ionicons name="grid" size={28} color="#777" />
+                    <Text style={styles.footerText}>Category</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Profile')}>
                     <Ionicons name="person" size={28} color="#777" />

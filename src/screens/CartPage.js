@@ -14,7 +14,7 @@ const CartPage = ({ navigation }) => {
         const fetchCartData = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
-                const response = await axios.get(`https://preciagri-backend.onrender.com/api/cart`, {
+                const response = await axios.get(`http://192.168.158.195:5454/api/cart`, {
                     headers: {
                         Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
                     },
@@ -63,7 +63,7 @@ const CartPage = ({ navigation }) => {
         try {
             // Send PUT request to update the quantity
             await axios.put(
-                `https://preciagri-backend.onrender.com/api/cart_items/${id}`,
+                `http://192.168.158.195:5454/api/cart_items/${id}`,
                 { quantity: newQuantity },
                 {
                     headers: {
@@ -133,7 +133,7 @@ const CartPage = ({ navigation }) => {
         const token = await AsyncStorage.getItem('token'); // Replace with your token retrieval logic
 
         try {
-            await axios.delete(`https://preciagri-backend.onrender.com/api/cart_items/${id}`, {
+            await axios.delete(`http://192.168.158.195:5454/api/cart_items/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

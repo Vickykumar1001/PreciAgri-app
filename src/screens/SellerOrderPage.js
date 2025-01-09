@@ -17,7 +17,7 @@ const SellerOrdersPage = () => {
                     return;
                 }
 
-                const response = await axios.get('https://preciagri-backend.onrender.com/api/seller/orders', {
+                const response = await axios.get('http://192.168.158.195:5454/api/seller/orders', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 

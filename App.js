@@ -29,6 +29,9 @@ import {
   ArticleDetail,
   NewsAndSchemesTabView,
   LogoutScreen,
+  UserProducts,
+  ResetForgotPassword
+
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
 import AppNavigator from './AppNavigator';
@@ -36,10 +39,14 @@ import WeatherPage from './src/screens/WeatherPage';
 import EditProfilePage from './src/screens/EditProfilePage';
 import ShowAddressPage from './src/screens/ShowAddressPage';
 import AddPost from './src/screens/AddPost';
+import EditPost from './src/screens/EditPost';
 import SelectAddressPage from './src/screens/SelectAddressPage';
 import OrderSummaryPage from './src/screens/OrderSummaryPage';
 import SellerOrdersPage from './src/screens/SellerOrderPage';
 import FarmingTipsPage from './src/screens/FarmingTipsPage';
+import AboutUs from './src/screens/AboutUs';
+import ContactUs from './src/screens/ContactUs';
+import CategoryScreen from './src/screens/CategoryScreen';
 
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -68,6 +75,8 @@ const StackNav = ({ route }) => {
       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
       <Stack.Screen name="VerifyEmailonRegister" component={VerifyEmailonRegister} />
       <Stack.Screen name="ChangePassword" component={ChangePassword} />
+      <Stack.Screen name="ResetForgotPassword" component={ResetForgotPassword} />
+      <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="Dashboard" component={Dashboard} />
       <Stack.Screen name="HomePage" component={HomePage} />
       <Stack.Screen name="Shop" component={ShopPage} />
@@ -80,7 +89,9 @@ const StackNav = ({ route }) => {
       <Stack.Screen name="Profile" component={ProfilePage} />
       <Stack.Screen name="EditProfile" component={EditProfilePage} />
       <Stack.Screen name="AddPost" component={AddPost} />
+      <Stack.Screen name="EditPost" component={EditPost} />
       <Stack.Screen name="Logout" component={LogoutScreen} />
+      <Stack.Screen name="UserProducts" component={UserProducts} />
       <Stack.Screen
         name="ResetPasswordScreen"
         component={ResetPasswordScreen}
@@ -158,6 +169,8 @@ const App = () => {
               <Drawer.Screen name="Profile" component={ProfilePage} />
               <Drawer.Screen name="Wishlist" component={Wishlist} />
               <Drawer.Screen name="Cart" component={CartPage} />
+              <Drawer.Screen name="About" component={AboutUs} />
+              <Drawer.Screen name="Contact-Us" component={ContactUs} />
               <Drawer.Screen name="Logout" component={LogoutScreen} />
             </Drawer.Navigator>
 
