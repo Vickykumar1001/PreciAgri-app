@@ -4,7 +4,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-
+import CustomTopBar from '../components/CustomTopBar';
 export default function UserProducts({ navigation }) {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -14,7 +14,7 @@ export default function UserProducts({ navigation }) {
     const fetchProducts = async () => {
         try {
             const token = await AsyncStorage.getItem('token');
-            const response = await axios.get('http://192.168.158.195:5454/api/users/my-products', {
+            const response = await axios.get('http://192.168.198.195:5454/api/users/my-products', {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setProducts(response.data.products);
@@ -67,118 +67,109 @@ export default function UserProducts({ navigation }) {
     }
 
     return (
-        <View style={styles.container}>
-            <MyProductsTopBar navigation={navigation} />
-            {products.length > 0 ? (
-                <FlatList
-                    data={products}
-                    keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => (
-                        <View style={styles.card}>
-                            <Image source={{ uri: item.imagesUrl[0] }} style={styles.productImage} />
-                            <View style={styles.cardContent}>
-                                <Text style={styles.productTitle}>{item.title}</Text>
-                                <View style={styles.buttonContainer}>
-                                    <TouchableOpacity
-                                        style={styles.sizeButton}
-                                        onPress={() => openProductDetails(item)}
-                                    >
-                                        <Text style={styles.sizeButtonText}>View Details</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={styles.iconButton}
-                                        onPress={() => handleEdit(item)}
-                                    >
-                                        <MaterialIcons name="edit" size={24} color="#4CAF50" />
-                                        <Text style={styles.iconText}>Edit</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={styles.iconButton}
-                                        onPress={() => dummyDelete(item._id)}
-                                    >
-                                        <Ionicons name="trash-outline" size={24} color="#f44336" />
-                                        <Text style={styles.iconText}>Delete</Text>
-                                    </TouchableOpacity>
+        <><CustomTopBar navigation={navigation} title={"My Products"} />
+            <View style={styles.container}>
+
+                {products.length > 0 ? (
+                    <FlatList
+                        data={products}
+                        keyExtractor={(item) => item._id}
+                        renderItem={({ item }) => (
+                            <View style={styles.card}>
+                                <Image source={{ uri: item.imagesUrl[0] }} style={styles.productImage} />
+                                <View style={styles.cardContent}>
+                                    <Text style={styles.productTitle}>{item.title}</Text>
+                                    <View style={styles.buttonContainer}>
+                                        <TouchableOpacity
+                                            style={styles.sizeButton}
+                                            onPress={() => openProductDetails(item)}
+                                        >
+                                            <Text style={styles.sizeButtonText}>View Details</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={styles.iconButton}
+                                            onPress={() => handleEdit(item)}
+                                        >
+                                            <MaterialIcons name="edit" size={24} color="#4CAF50" />
+                                            <Text style={styles.iconText}>Edit</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={styles.iconButton}
+                                            onPress={() => dummyDelete(item._id)}
+                                        >
+                                            <Ionicons name="trash-outline" size={24} color="#f44336" />
+                                            <Text style={styles.iconText}>Delete</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                    )}
-                />
-            ) : (
-                <Text style={styles.noProductsText}>You haven't posted any products yet.</Text>
-            )}
-            <Modal
-                visible={modalVisible}
-                animationType="slide"
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalHeader}>
-                        <Text style={styles.modalHeading}>Product Details</Text>
-                        <TouchableOpacity
-                            style={styles.modalCloseButton}
-                            onPress={() => setModalVisible(false)}
-                        >
-                            <Ionicons name="close" size={28} color="#333" />
-                        </TouchableOpacity>
-                    </View>
-                    <ScrollView contentContainerStyle={styles.modalContent}>
-                        {selectedProduct && (
-                            <>
-                                <ScrollView
-                                    horizontal
-                                    showsHorizontalScrollIndicator={false}
-                                    style={styles.imageContainer}
-                                >
-                                    {selectedProduct.imagesUrl.map((url, index) => (
-                                        <Image
-                                            key={index}
-                                            source={{ uri: url }}
-                                            style={styles.modalImage}
-                                        />
-                                    ))}
-                                </ScrollView>
-                                <View style={styles.productInfo}>
-                                    <Text style={styles.modalTitle}>{selectedProduct.title}</Text>
-                                    <Text style={styles.modalBrand}>{selectedProduct.brand}</Text>
-                                    <Text style={styles.modalDescription}>
-                                        {selectedProduct.description}
-                                    </Text>
-                                </View>
-                                <View style={styles.section}>
-                                    <Text style={styles.sectionHeader}>Sizes Available</Text>
-                                    {selectedProduct.sizes.map((size) => (
-                                        <View key={size._id} style={styles.sizeDetail}>
-                                            <Text style={styles.sizeText}>Name: {size.name}</Text>
-                                            <Text style={styles.sizeText}>Price: ₹{size.price}</Text>
-                                            <Text style={styles.sizeText}>
-                                                Discounted Price: ₹{size.discountedPrice}
-                                            </Text>
-                                            <Text style={styles.sizeText}>Quantity: {size.quantity}</Text>
-                                        </View>
-                                    ))}
-                                </View>
-                            </>
                         )}
-                    </ScrollView>
-                </View>
-            </Modal>
+                    />
+                ) : (
+                    <Text style={styles.noProductsText}>You haven't posted any products yet.</Text>
+                )}
+                <Modal
+                    visible={modalVisible}
+                    animationType="slide"
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalHeading}>Product Details</Text>
+                            <TouchableOpacity
+                                style={styles.modalCloseButton}
+                                onPress={() => setModalVisible(false)}
+                            >
+                                <Ionicons name="close" size={28} color="#333" />
+                            </TouchableOpacity>
+                        </View>
+                        <ScrollView contentContainerStyle={styles.modalContent}>
+                            {selectedProduct && (
+                                <>
+                                    <ScrollView
+                                        horizontal
+                                        showsHorizontalScrollIndicator={false}
+                                        style={styles.imageContainer}
+                                    >
+                                        {selectedProduct.imagesUrl.map((url, index) => (
+                                            <Image
+                                                key={index}
+                                                source={{ uri: url }}
+                                                style={styles.modalImage}
+                                            />
+                                        ))}
+                                    </ScrollView>
+                                    <View style={styles.productInfo}>
+                                        <Text style={styles.modalTitle}>{selectedProduct.title}</Text>
+                                        <Text style={styles.modalBrand}>{selectedProduct.brand}</Text>
+                                        <Text style={styles.modalDescription}>
+                                            {selectedProduct.description}
+                                        </Text>
+                                    </View>
+                                    <View style={styles.section}>
+                                        <Text style={styles.sectionHeader}>Sizes Available</Text>
+                                        {selectedProduct.sizes.map((size) => (
+                                            <View key={size._id} style={styles.sizeDetail}>
+                                                <Text style={styles.sizeText}>Name: {size.name}</Text>
+                                                <Text style={styles.sizeText}>Price: ₹{size.price}</Text>
+                                                <Text style={styles.sizeText}>
+                                                    Discounted Price: ₹{size.discountedPrice}
+                                                </Text>
+                                                <Text style={styles.sizeText}>Quantity: {size.quantity}</Text>
+                                            </View>
+                                        ))}
+                                    </View>
+                                </>
+                            )}
+                        </ScrollView>
+                    </View>
+                </Modal>
 
 
-        </View>
+            </View>
+        </>
     );
 }
-
-const MyProductsTopBar = ({ navigation }) => {
-    return (
-        <View style={styles.topBar}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="arrow-back" size={28} color="#333" />
-            </TouchableOpacity>
-            <Text style={styles.sectionTitle}>My Products</Text>
-        </View>
-    );
-};
 
 const styles = StyleSheet.create({
     container: {

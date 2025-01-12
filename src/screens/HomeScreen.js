@@ -7,6 +7,7 @@ import Banner from "../Shared/Banner"
 import TopBar from '../components/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductCardMini from './ProductCardMini';
+import FooterNavigation from '../components/FooterNavigation';
 import { useEffect } from 'react';
 import axios from 'axios';
 const HomePage = ({ navigation }) => {
@@ -29,7 +30,7 @@ const HomePage = ({ navigation }) => {
                 const token = await AsyncStorage.getItem('token');
                 if (token) {
                     // If token is available, fetch products from the API
-                    const response = await axios.get('http://192.168.158.195:5454/api/products', {
+                    const response = await axios.get('http://192.168.198.195:5454/api/products', {
                         headers: {
                             Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
                         },
@@ -87,9 +88,10 @@ const HomePage = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
-            {/* Top Bar with Cart Icon */}
-            {/* <View style={styles.topBar}>
+        <><TopBar navigation={navigation} />
+            <View style={styles.container}>
+                {/* Top Bar with Cart Icon */}
+                {/* <View style={styles.topBar}>
                 <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.openDrawer()}>
                     <Ionicons name="menu" size={28} color="#333" />
                 </TouchableOpacity>
@@ -110,10 +112,10 @@ const HomePage = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View> */}
-            <TopBar navigation={navigation} />
 
-            {/* Search Bar */}
-            {/* <View style={styles.searchContainer}>
+
+                {/* Search Bar */}
+                {/* <View style={styles.searchContainer}>
                 <Ionicons name="search" size={20} color="#777" />
                 <TextInput
                     style={styles.searchInput}
@@ -122,121 +124,70 @@ const HomePage = ({ navigation }) => {
                     onChangeText={(text) => setSearch(text)}
                 />
             </View> */}
-            <ScrollView>
-                <Banner />
-                {/* Categories Section */}
-                <Text style={styles.sectionTitle}>Categories</Text>
-                <FlatList
-                    style={styles.iconList}
-                    data={categories}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity style={styles.categoryCard} onPress={() => handleCategoryPress(item)}>
-                            <Image source={item.image} style={styles.categoryImage} />
-                            <Text style={styles.categoryName}>{item.name}</Text>
-                        </TouchableOpacity>
-                    )}
-                />
-                <Text style={styles.sectionTitle}>Services</Text>
-                <FlatList
-                    data={services}
-                    horizontal
-                    style={styles.iconList}
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity style={styles.categoryCard} onPress={() => handleCategoryPress(item)}>
-                            <Image source={item.image} style={styles.categoryImage} />
-                            <Text style={styles.categoryName}>{item.name}</Text>
-                        </TouchableOpacity>
-                    )}
-                />
+                <ScrollView>
+                    <Banner />
+                    {/* Categories Section */}
+                    <Text style={styles.sectionTitle}>Categories</Text>
+                    <FlatList
+                        style={styles.iconList}
+                        data={categories}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity style={styles.categoryCard} onPress={() => handleCategoryPress(item)}>
+                                <Image source={item.image} style={styles.categoryImage} />
+                                <Text style={styles.categoryName}>{item.name}</Text>
+                            </TouchableOpacity>
+                        )}
+                    />
+                    <Text style={styles.sectionTitle}>Services</Text>
+                    <FlatList
+                        data={services}
+                        horizontal
+                        style={styles.iconList}
+                        showsHorizontalScrollIndicator={false}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity style={styles.categoryCard} onPress={() => handleCategoryPress(item)}>
+                                <Image source={item.image} style={styles.categoryImage} />
+                                <Text style={styles.categoryName}>{item.name}</Text>
+                            </TouchableOpacity>
+                        )}
+                    />
 
-                {/* Featured Products Section */}
-                <Text style={styles.sectionTitle}>Featured Products</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {allProducts.map((product) => (
-                        <TouchableOpacity
-                            key={product._id}
+                    {/* Featured Products Section */}
+                    <Text style={styles.sectionTitle}>Featured Products</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        {allProducts.map((product) => (
+                            <TouchableOpacity
+                                key={product._id}
 
-                            onPress={() => handleProductPress(product)}
-                        >
-                            <ProductCardMini navigation={navigation} product={product} />
-                        </TouchableOpacity>
-                    ))}
+                                onPress={() => handleProductPress(product)}
+                            >
+                                <ProductCardMini navigation={navigation} product={product} />
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                    <Text style={styles.sectionTitle}>Most Selling Products</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        {allProducts.map((product) => (
+                            <TouchableOpacity
+                                key={product._id}
+                                onPress={() => handleProductPress(product)}
+                            >
+                                <ProductCardMini navigation={navigation} product={product} />
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+
                 </ScrollView>
-                <Text style={styles.sectionTitle}>Most Selling Products</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {allProducts.map((product) => (
-                        <TouchableOpacity
-                            key={product._id}
-                            onPress={() => handleProductPress(product)}
-                        >
-                            <ProductCardMini navigation={navigation} product={product} />
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView>
-                {/* <Text style={styles.sectionTitle}>Farming Tips</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {featuredProducts.map((product) => (
-                        <TouchableOpacity
-                            key={product.id}
-                            style={styles.productCard}
-                            onPress={() => handleProductPress(product)}
-                        >
-                            <Image source={product.image} style={styles.productImage} />
-                            <Text style={styles.productName}>{product.name}</Text>
-                            <Text style={styles.productPrice}>{product.price}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView> */}
 
-                {/* Farmer Section */}
-                {/* <Text style={styles.sectionTitle}>Meet the Farmers</Text>
-                {farmers.map((farmer) => (
-                    <View key={farmer.id} style={styles.farmerCard}>
-                        <FontAwesome5 name="user" size={24} color="#4CAF50" />
-                        <View style={{ marginLeft: 10 }}>
-                            <Text style={styles.farmerName}>{farmer.name}</Text>
-                            <Text style={styles.farmerLocation}>{farmer.location}</Text>
-                        </View>
-                    </View>
-                ))} */}
-            </ScrollView>
+                {/* Footer Navigation */}
 
-            {/* Footer Navigation */}
-            <View style={styles.footer}>
-                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('HomePage')}  >
-                    <Ionicons name="home" size={28} color="#4CAF50" />
-                    <Text style={styles.footerText}>Home</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Shop', { category: '' })}>
-                    <Ionicons name="storefront" size={28} color="#777" />
-                    <Text style={styles.footerText}>Shop</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Category')}>
-                    <Ionicons name="grid" size={28} color="#777" />
-                    <Text style={styles.footerText}>Category</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Profile')}>
-                    <Ionicons name="person" size={28} color="#777" />
-                    <Text style={styles.footerText}>Profile</Text>
-                </TouchableOpacity>
-                {
-                    role === 'Seller' && <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('AddPost')}>
-                        <Ionicons name="cart" size={28} color="#777" />
-                        <Text style={styles.footerText}>Sell</Text>
-                    </TouchableOpacity>
-                }
-
-                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('News')}>
-                    <Ionicons name="newspaper" size={28} color="#777" />
-                    <Text style={styles.footerText}>Article</Text>
-                </TouchableOpacity>
+                <FooterNavigation navigation={navigation} activePage={"Home"} role={role} />
             </View>
-        </View>
+        </>
     );
 };
 
@@ -244,15 +195,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F5F5F5',
-        padding: 5,
-    },
-    topBar: {
-        width: '100%', // Full width
-        flexDirection: 'row',
-        justifyContent: 'space-between', // Distribute space between title and icons
-        alignItems: 'center', // Align items vertically
-        marginBottom: 10,
-        paddingHorizontal: 10, // Optional: Add some horizontal padding
+        // paddingTop: 5,
     },
     icons: {
         padding: 5,

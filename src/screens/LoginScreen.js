@@ -27,7 +27,7 @@ export default function LoginScreen({ navigation }) {
     const emailVal = email.value;
     const passwordVal = password.value;
     axios
-      .post('http://192.168.158.195:5454/auth/signin', { email: emailVal, password: passwordVal })
+      .post('http://192.168.198.195:5454/auth/signin', { email: emailVal, password: passwordVal })
       .then((response) => {
         if (response.status === 200) {
           Alert.alert('Logged In Successfull');

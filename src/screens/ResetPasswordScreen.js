@@ -22,7 +22,7 @@ export default function ResetPasswordScreen({ navigation }) {
 
     try {
       // Send POST request to /forgot-password
-      const response = await axios.post('http://192.168.158.195:5454/auth/forgot-password', { email: email.value })
+      const response = await axios.post('http://192.168.198.195:5454/auth/forgot-password', { email: email.value })
 
       // Handle success response
       if (response.data.message) {

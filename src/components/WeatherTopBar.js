@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
-const WeatherTopBar = ({ navigation, city, setCity, fetchWeatherByCity }) => {
+import { Feather, MaterialIcons } from '@expo/vector-icons';
+const WeatherTopBar = ({ navigation, city, setCity, fetchWeatherByCity, getLocation }) => {
     const [searchText, setSearchText] = useState('');
     const handleSearch = (text) => {
         setSearchText(text);
@@ -27,6 +27,11 @@ const WeatherTopBar = ({ navigation, city, setCity, fetchWeatherByCity }) => {
                     onSubmitEditing={fetchWeatherByCity}
                 />
             </View>
+            {/* Location Button */}
+            <TouchableOpacity style={styles.locationButton} onPress={getLocation}>
+                <MaterialIcons name="my-location" size={24} color="#ffffff" />
+                <Text style={styles.locationButtonText}>My Location</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -72,5 +77,20 @@ const styles = StyleSheet.create({
     icons: {
         flexDirection: 'row', // Arrange icons in a row
         alignItems: 'center', // Align icons vertically
+    },
+    locationButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#2E7D32',
+        borderRadius: 8,
+        padding: 5,
+        // marginBottom: 10,
+        elevation: 3,
+    },
+    locationButtonText: {
+        color: '#ffffff',
+        fontSize: 16,
+        marginLeft: 5,
     },
 });

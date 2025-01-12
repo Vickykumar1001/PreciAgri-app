@@ -4,9 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { MaterialIcons, Ionicons, FontAwesome, AntDesign } from '@expo/vector-icons';
-import ProfileTopBar from '../components/ProfileTopBar';
+import CustomTopBar from '../components/CustomTopBar';
 const profileIcon = require('../assets/images/user-icon.png');
-
+import FooterNavigation from '../components/FooterNavigation';
 export default function ProfilePage({ navigation }) {
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ export default function ProfilePage({ navigation }) {
             setRole(role)
             if (!token) throw new Error("No token found");
 
-            const response = await axios.get("http://192.168.158.195:5454/api/users/profile", {
+            const response = await axios.get("http://192.168.198.195:5454/api/users/profile", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -43,82 +43,60 @@ export default function ProfilePage({ navigation }) {
     }
 
     return (
-        <View style={styles.container}>
-            <ProfileTopBar navigation={navigation} />
+        <><CustomTopBar navigation={navigation} title={"My Profile"} />
+            <View style={styles.container}>
 
-            {/* Profile Information Card */}
-            <View style={styles.profileCard}>
-                <Image
-                    source={profileData?.profileImage ? { uri: profileData.profileImage } : profileIcon}
-                    style={styles.profileImage}
-                />
-                <Text style={styles.profileName}>{profileData?.firstName} {profileData?.lastName}</Text>
-                <Text style={styles.profileEmail}>{profileData?.email}</Text>
-                <Text style={styles.infoText}>Mobile: {profileData?.mobile}</Text>
-                <Text style={styles.profileRole}>Role: {profileData?.role}</Text>
-            </View>
 
-            {/* Options List */}
-            <ScrollView style={styles.optionsContainer}>
-                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('EditProfile', { profileData: { firstName: profileData?.firstName, lastName: profileData?.lastName, email: profileData?.email, mobile: profileData?.mobile } })}>
-                    <Ionicons name="person" size={24} color="#777" />
-                    <Text style={styles.optionText}>Edit Profile</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('ShowAddress', { addresses: profileData?.addresses })}>
-                    <Ionicons name="location" size={24} color="#777" />
-                    <Text style={styles.optionText}>My Address</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('UserProducts', { products: profileData?.product })}>
-                    <FontAwesome name="file-text" size={24} color="#777" />
-                    <Text style={styles.optionText}>My Products</Text>
-                </TouchableOpacity>
-                {
-                    role === 'Seller' && <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('SellerOrder', { products: profileData?.product })}>
+                {/* Profile Information Card */}
+                <View style={styles.profileCard}>
+                    <Image
+                        source={profileData?.profileImage ? { uri: profileData.profileImage } : profileIcon}
+                        style={styles.profileImage}
+                    />
+                    <Text style={styles.profileName}>{profileData?.firstName} {profileData?.lastName}</Text>
+                    <Text style={styles.profileEmail}>{profileData?.email}</Text>
+                    <Text style={styles.infoText}>Mobile: {profileData?.mobile}</Text>
+                    <Text style={styles.profileRole}>Role: {profileData?.role}</Text>
+                </View>
+
+                {/* Options List */}
+                <ScrollView style={styles.optionsContainer}>
+                    <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('EditProfile', { profileData: { firstName: profileData?.firstName, lastName: profileData?.lastName, email: profileData?.email, mobile: profileData?.mobile } })}>
+                        <Ionicons name="person" size={24} color="#777" />
+                        <Text style={styles.optionText}>Edit Profile</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('ShowAddress', { addresses: profileData?.addresses })}>
+                        <Ionicons name="location" size={24} color="#777" />
+                        <Text style={styles.optionText}>My Address</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('UserProducts', { products: profileData?.product })}>
                         <FontAwesome name="file-text" size={24} color="#777" />
-                        <Text style={styles.optionText}>Orders Received</Text>
+                        <Text style={styles.optionText}>My Products</Text>
                     </TouchableOpacity>
-                }
-                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Wishlist')}>
-                    <FontAwesome name="shopping-bag" size={24} color="#777" />
-                    <Text style={styles.optionText}>My Wishlist</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('ChangePassword', { email: profileData?.email })}>
-                    <FontAwesome name="lock" size={24} color="#777" />
-                    <Text style={styles.optionText}>Change Password</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Logout')}>
-                    <AntDesign name="logout" size={24} color="#777" />
-                    <Text style={styles.optionText}>Logout</Text>
-                </TouchableOpacity>
-            </ScrollView>
-
-            {/* Footer Navigation */}
-            <View style={styles.footer}>
-                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('HomePage')}  >
-                    <Ionicons name="home" size={28} color="#777" />
-                    <Text style={styles.footerText}>Home</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Shop', { category: '' })}>
-                    <Ionicons name="storefront" size={28} color="#777" />
-                    <Text style={styles.footerText}>Shop</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('Profile')}>
-                    <Ionicons name="person" size={28} color="#4CAF50" />
-                    <Text style={styles.footerText}>Profile</Text>
-                </TouchableOpacity>
-                {
-                    role === 'Seller' && <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('AddPost')}>
-                        <Ionicons name="cart" size={28} color="#777" />
-                        <Text style={styles.footerText}>Sell</Text>
+                    {
+                        role === 'Seller' && <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('SellerOrder', { products: profileData?.product })}>
+                            <FontAwesome name="file-text" size={24} color="#777" />
+                            <Text style={styles.optionText}>Orders Received</Text>
+                        </TouchableOpacity>
+                    }
+                    <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Wishlist')}>
+                        <FontAwesome name="shopping-bag" size={24} color="#777" />
+                        <Text style={styles.optionText}>My Wishlist</Text>
                     </TouchableOpacity>
-                }
+                    <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('ChangePassword', { email: profileData?.email })}>
+                        <FontAwesome name="lock" size={24} color="#777" />
+                        <Text style={styles.optionText}>Change Password</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Logout')}>
+                        <AntDesign name="logout" size={24} color="#777" />
+                        <Text style={styles.optionText}>Logout</Text>
+                    </TouchableOpacity>
+                </ScrollView>
 
-                <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate('News')}>
-                    <Ionicons name="newspaper" size={28} color="#777" />
-                    <Text style={styles.footerText}>Article</Text>
-                </TouchableOpacity>
+                {/* Footer Navigation */}
+                <FooterNavigation navigation={navigation} activePage={"Profile"} role={role} />
             </View>
-        </View>
+        </>
     );
 }
 
@@ -126,7 +104,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F8F8F8',
-        padding: 5,
     },
     loader: {
         flex: 1,
@@ -136,8 +113,8 @@ const styles = StyleSheet.create({
     profileCard: {
         alignItems: 'center',
         backgroundColor: '#FFF',
-        margin: 15,
-        padding: 20,
+        margin: 10,
+        padding: 10,
         borderRadius: 10,
         elevation: 3,
     },
@@ -167,7 +144,7 @@ const styles = StyleSheet.create({
     },
     infoSection: {
         backgroundColor: '#FFF',
-        padding: 15,
+        padding: 10,
         marginHorizontal: 15,
         borderRadius: 10,
         marginBottom: 15,

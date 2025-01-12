@@ -13,7 +13,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
-
+import CustomTopBar from '../components/CustomTopBar';
 const SelectAddressPage = ({ navigation }) => {
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
@@ -24,7 +24,7 @@ const SelectAddressPage = ({ navigation }) => {
             try {
                 const token = await AsyncStorage.getItem('token');
                 const response = await axios.get(
-                    'http://192.168.158.195:5454/api/users/address',
+                    'http://192.168.198.195:5454/api/users/address',
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ const SelectAddressPage = ({ navigation }) => {
             try {
                 const token = await AsyncStorage.getItem('token'); // Retrieve token from AsyncStorage
                 const response = await axios.post(
-                    'http://192.168.158.195:5454/api/orders', // Replace with your API endpoint
+                    'http://192.168.198.195:5454/api/orders', // Replace with your API endpoint
                     { address: selectedAddress }, // Sending the selected address in the request body
                     {
                         headers: {
@@ -88,54 +88,45 @@ const SelectAddressPage = ({ navigation }) => {
     }
 
     return (
-        <SafeAreaView style={styles.safeArea}>
-            {/* Header with Back Button */}
-            <View style={styles.header}>
+        <><CustomTopBar navigation={navigation} title={"Select Delivery Address"} />
+            <SafeAreaView style={styles.safeArea}>
+                {/* Address List */}
+                <FlatList
+                    data={addresses}
+                    keyExtractor={(item) => item._id}
+                    contentContainerStyle={styles.listContainer}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={[
+                                styles.addressContainer,
+                                selectedAddress?._id === item._id && styles.selectedAddress,
+                            ]}
+                            onPress={() => handleSelectAddress(item)}
+                        >
+                            <Text style={styles.nameText}>
+                                {item.firstName} {item.lastName}
+                            </Text>
+                            <Text style={styles.addressText}>{item.streetAddress}</Text>
+                            <Text style={styles.addressText}>
+                                {item.city}, {item.state} - {item.zipCode}
+                            </Text>
+                            <Text style={styles.phoneText}>Mobile: {item.mobile}</Text>
+                        </TouchableOpacity>
+                    )}
+                />
+
+                {/* Buttons */}
                 <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => navigation.goBack()}
+                    style={styles.addButton}
+                    onPress={() => navigation.navigate('AddAddress')}
                 >
-                    <Ionicons name="arrow-back" size={24} color="#fff" />
+                    <Text style={styles.addButtonText}>+ Add New Address</Text>
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Select Address</Text>
-            </View>
-
-            {/* Address List */}
-            <FlatList
-                data={addresses}
-                keyExtractor={(item) => item._id}
-                contentContainerStyle={styles.listContainer}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={[
-                            styles.addressContainer,
-                            selectedAddress?._id === item._id && styles.selectedAddress,
-                        ]}
-                        onPress={() => handleSelectAddress(item)}
-                    >
-                        <Text style={styles.nameText}>
-                            {item.firstName} {item.lastName}
-                        </Text>
-                        <Text style={styles.addressText}>{item.streetAddress}</Text>
-                        <Text style={styles.addressText}>
-                            {item.city}, {item.state} - {item.zipCode}
-                        </Text>
-                        <Text style={styles.phoneText}>Mobile: {item.mobile}</Text>
-                    </TouchableOpacity>
-                )}
-            />
-
-            {/* Buttons */}
-            <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => navigation.navigate('AddAddress')}
-            >
-                <Text style={styles.addButtonText}>+ Add New Address</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
-                <Text style={styles.continueButtonText}>Continue</Text>
-            </TouchableOpacity>
-        </SafeAreaView>
+                <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
+                    <Text style={styles.continueButtonText}>Continue</Text>
+                </TouchableOpacity>
+            </SafeAreaView>
+        </>
     );
 };
 

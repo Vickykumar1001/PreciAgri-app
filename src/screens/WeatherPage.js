@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, FlatList } from 'react-native';
 import * as Location from 'expo-location';
 import axios from 'axios';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
 import WeatherTopBar from '../components/WeatherTopBar';
 const API_KEY = '4847a8e8b971aada91d76b104b8b2c7c'; // Replace with your API key
 
@@ -20,7 +19,6 @@ export default function WeatherPage({ navigation }) {
             const response = await axios.get(
                 `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
             );
-            console.log(response.data);
             setWeatherData(response.data);
             setIsLoading(false);
 
@@ -100,87 +98,81 @@ export default function WeatherPage({ navigation }) {
         setDetailedForecast(forecast[day]);
     };
     return (
+        <><WeatherTopBar navigation={navigation} city={city} setCity={setCity} fetchWeatherByCity={fetchWeatherByCity} getLocation={getLocation} />
 
-        <View style={styles.container}>
-            {/* Search Section */}
-            <WeatherTopBar navigation={navigation} city={city} setCity={setCity} fetchWeatherByCity={fetchWeatherByCity} />
-
-            {/* Location Button */}
-            <TouchableOpacity style={styles.locationButton} onPress={getLocation}>
-                <MaterialIcons name="my-location" size={24} color="#ffffff" />
-                <Text style={styles.locationButtonText}>Use My Location</Text>
-            </TouchableOpacity>
-            {(isError && !weatherData) && <View style={styles.weatherCard}>
-                <Text style={styles.cityName}> Some Error Occured.. </Text>
-                <Text style={styles.details}> Please try again later..! </Text>
-            </View>}
-            {isloading && <View style={styles.weatherCard}>
-                <Text style={styles.cityName}> Loading...</Text>
-            </View>}
-            {/* Current Weather Display */}
-            {weatherData && (
-                <View style={styles.weatherCard}>
-                    <Text style={styles.cityName}>{weatherData.name}, {weatherData.sys.country}</Text>
-                    <Text style={styles.temp}>{Math.round(weatherData.main.temp)}°C</Text>
-                    <Text style={styles.description}>{weatherData.weather[0].description}</Text>
-                    <Text style={styles.details}>Humidity: {weatherData.main.humidity}%</Text>
-                    <Text style={styles.details}>Wind: {weatherData.wind.speed} m/s</Text>
-                </View>
-            )}
-
-            {/* Forecast Slider for Selected Day */}
-            {(!isloading && !isError) && <Text style={styles.sectionTitle}>Forecast for {selectedDay}</Text>}
-            <ScrollView horizontal style={styles.forecastContainer} showsHorizontalScrollIndicator={false}>
-                {detailedForecast.map((item, index) => (
-
-                    <View key={index} style={styles.forecastItem}>
-                        <Text style={styles.forecastTime}>{new Date(item.dt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-                        <Image
-                            style={styles.icon}
-                            source={{ uri: `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png` }}
-                        />
-                        <Text style={styles.forecastTemp}>{Math.round(item.main.temp)}°C</Text>
-                        <Text style={styles.forecastTime}>{item.weather[0].description}</Text>
+            <View style={styles.container}>
+                {/* Search Section */}
+                {(isError && !weatherData) && <View style={styles.weatherCard}>
+                    <Text style={styles.cityName}> Some Error Occured.. </Text>
+                    <Text style={styles.details}> Please try again later..! </Text>
+                </View>}
+                {isloading && <View style={styles.weatherCard}>
+                    <Text style={styles.cityName}> Loading...</Text>
+                </View>}
+                {/* Current Weather Display */}
+                {weatherData && (
+                    <View style={styles.weatherCard}>
+                        <Text style={styles.cityName}>{weatherData.name}, {weatherData.sys.country}</Text>
+                        <Text style={styles.temp}>{Math.round(weatherData.main.temp)}°C</Text>
+                        <Text style={styles.description}>{weatherData.weather[0].description}</Text>
+                        <Text style={styles.details}>Humidity: {weatherData.main.humidity}%</Text>
+                        <Text style={styles.details}>Wind: {weatherData.wind.speed} m/s</Text>
                     </View>
-                ))}
-            </ScrollView>
+                )}
 
-            {/* Upcoming Days List */}
-            {(!isloading && !isError) && <Text style={styles.sectionTitle}>Upcoming days Forecast</Text>}
-            <ScrollView horizontal style={styles.daysList} showsHorizontalScrollIndicator={false}>
-                {Object.keys(forecast).map((day, index) => {
-                    const dayForecast = forecast[day];
-                    const firstItem = dayForecast[0]; // Get the first item of the day's forecast for highlights
-                    const dayTemp = Math.round(firstItem.main.temp);
-                    const weatherIcon = firstItem.weather[0].icon;
-                    const weatherDescription = firstItem.weather[0].main;
-                    const minTemp = Math.min(...dayForecast.map(item => item.main.temp_min));
-                    const maxTemp = Math.max(...dayForecast.map(item => item.main.temp_max));
-                    const humidity = firstItem.main.humidity;
-                    const [dayPart, monthPart, yearPart] = day.split('/');
-                    const formattedDate = new Date(`${yearPart}-${monthPart}-${dayPart}T00:00:00`);
-                    return (
-                        <TouchableOpacity
-                            key={index}
-                            style={[styles.dayItem, day === selectedDay && styles.selectedDayItem]}
-                            onPress={() => handleDaySelect(day)}
-                        >
+                {/* Forecast Slider for Selected Day */}
+                {(!isloading && !isError) && <Text style={styles.sectionTitle}>Forecast for {selectedDay}</Text>}
+                <ScrollView horizontal style={styles.forecastContainer} showsHorizontalScrollIndicator={false}>
+                    {detailedForecast.map((item, index) => (
 
-                            <Text style={styles.dayText}>{formattedDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })}</Text>
+                        <View key={index} style={styles.forecastItem}>
+                            <Text style={styles.forecastTime}>{new Date(item.dt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
                             <Image
-                                style={styles.dayIcon}
-                                source={{ uri: `https://openweathermap.org/img/wn/${weatherIcon}@2x.png` }}
+                                style={styles.icon}
+                                source={{ uri: `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png` }}
                             />
-                            <Text style={styles.dayTemp}>{dayTemp}°C</Text>
-                            <Text style={styles.dayDescription}>{weatherDescription}</Text>
-                            <Text style={styles.minMaxTemp}>Min: {Math.round(minTemp)}°C / Max: {Math.round(maxTemp)}°C</Text>
-                            <Text style={styles.humidity}>Humidity: {humidity}%</Text>
-                        </TouchableOpacity>
-                    )
-                })}
-            </ScrollView>
+                            <Text style={styles.forecastTemp}>{Math.round(item.main.temp)}°C</Text>
+                            <Text style={styles.forecastTime}>{item.weather[0].description}</Text>
+                        </View>
+                    ))}
+                </ScrollView>
 
-        </View>
+                {/* Upcoming Days List */}
+                {(!isloading && !isError) && <Text style={styles.sectionTitle}>Upcoming days Forecast</Text>}
+                <ScrollView horizontal style={styles.daysList} showsHorizontalScrollIndicator={false}>
+                    {Object.keys(forecast).map((day, index) => {
+                        const dayForecast = forecast[day];
+                        const firstItem = dayForecast[0]; // Get the first item of the day's forecast for highlights
+                        const dayTemp = Math.round(firstItem.main.temp);
+                        const weatherIcon = firstItem.weather[0].icon;
+                        const weatherDescription = firstItem.weather[0].main;
+                        const minTemp = Math.min(...dayForecast.map(item => item.main.temp_min));
+                        const maxTemp = Math.max(...dayForecast.map(item => item.main.temp_max));
+                        const humidity = firstItem.main.humidity;
+                        const [dayPart, monthPart, yearPart] = day.split('/');
+                        const formattedDate = new Date(`${yearPart}-${monthPart}-${dayPart}T00:00:00`);
+                        return (
+                            <TouchableOpacity
+                                key={index}
+                                style={[styles.dayItem, day === selectedDay && styles.selectedDayItem]}
+                                onPress={() => handleDaySelect(day)}
+                            >
+
+                                <Text style={styles.dayText}>{formattedDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })}</Text>
+                                <Image
+                                    style={styles.dayIcon}
+                                    source={{ uri: `https://openweathermap.org/img/wn/${weatherIcon}@2x.png` }}
+                                />
+                                <Text style={styles.dayTemp}>{dayTemp}°C</Text>
+                                <Text style={styles.dayDescription}>{weatherDescription}</Text>
+                                <Text style={styles.minMaxTemp}>Min: {Math.round(minTemp)}°C / Max: {Math.round(maxTemp)}°C</Text>
+                                <Text style={styles.humidity}>Humidity: {humidity}%</Text>
+                            </TouchableOpacity>
+                        )
+                    })}
+                </ScrollView>
+            </View>
+        </>
     );
 }
 
@@ -207,21 +199,6 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontSize: 16,
         color: '#4CAF50', // Green text to blend with farming theme
-    },
-    locationButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#2E7D32',
-        borderRadius: 15,
-        padding: 10,
-        marginBottom: 15,
-        elevation: 3,
-    },
-    locationButtonText: {
-        color: '#ffffff',
-        fontSize: 16,
-        marginLeft: 5,
     },
     weatherCard: {
         backgroundColor: '#b3e5b3',

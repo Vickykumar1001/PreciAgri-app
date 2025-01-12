@@ -80,7 +80,7 @@ export default function RegisterScreen({ navigation }) {
     }
     console.log("Signup")
     axios
-      .post("http://192.168.158.195:5454/auth/signup", userData)
+      .post("http://192.168.198.195:5454/auth/signup", userData)
       .then((response) => {
         console.log(response.data.message);
         Alert.alert('Registration Successfull! Verify OTP sent on you email.');

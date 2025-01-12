@@ -41,14 +41,14 @@ const styles = {
         flexDirection: 'row',     // Arrange items horizontally
         alignItems: 'center',     // Align items vertically
         justifyContent: 'space-between', // Space between drawer, title, and icons
-        marginBottom: 10,
+        // marginBottom: 10,
         padding: 10,    // Optional: Horizontal padding for layout
         backgroundColor: '#FFFFFF', // Set background color to white
-        elevation: 4,             // Optional: Add shadow (Android)
-        shadowColor: '#000',      // Optional: Shadow (iOS)
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
+        // elevation: 4,             // Optional: Add shadow (Android)
+        // shadowColor: '#000',      // Optional: Shadow (iOS)
+        // shadowOffset: { width: 0, height: 2 },
+        // shadowOpacity: 0.1,
+        // shadowRadius: 4,
     },
     appTitle: {
         fontSize: 24,

@@ -25,7 +25,7 @@ export default function ResetForgotPassword({ route, navigation }) {
         }
 
         try {
-            const response = await axios.post('http://192.168.158.195:5454/auth/reset-password', {
+            const response = await axios.post('http://192.168.198.195:5454/auth/reset-password', {
                 email: route.params.email, // Assuming email is passed via route params
                 newPassword,
                 confirmPassword,

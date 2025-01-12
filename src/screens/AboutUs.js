@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
-import AboutTopBar from '../components/AboutTopBar';
+import CustomTopBar from '../components/CustomTopBar';
 
 const AboutUsPage = ({ navigation }) => {
     return (
         <ScrollView style={styles.container}>
-            <AboutTopBar navigation={navigation} />
+            <CustomTopBar navigation={navigation} title={"About Us"} />
             {/* Header Section */}
             <View style={styles.headerSection}>
                 <Image

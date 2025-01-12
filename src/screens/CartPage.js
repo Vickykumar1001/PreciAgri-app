@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import CartTopBar from '../components/CartTopBar';
+import CustomTopBar from '../components/CustomTopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 const CartPage = ({ navigation }) => {
@@ -14,7 +14,7 @@ const CartPage = ({ navigation }) => {
         const fetchCartData = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
-                const response = await axios.get(`http://192.168.158.195:5454/api/cart`, {
+                const response = await axios.get(`http://192.168.198.195:5454/api/cart`, {
                     headers: {
                         Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
                     },
@@ -63,7 +63,7 @@ const CartPage = ({ navigation }) => {
         try {
             // Send PUT request to update the quantity
             await axios.put(
-                `http://192.168.158.195:5454/api/cart_items/${id}`,
+                `http://192.168.198.195:5454/api/cart_items/${id}`,
                 { quantity: newQuantity },
                 {
                     headers: {
@@ -133,7 +133,7 @@ const CartPage = ({ navigation }) => {
         const token = await AsyncStorage.getItem('token'); // Replace with your token retrieval logic
 
         try {
-            await axios.delete(`http://192.168.158.195:5454/api/cart_items/${id}`, {
+            await axios.delete(`http://192.168.198.195:5454/api/cart_items/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -184,58 +184,60 @@ const CartPage = ({ navigation }) => {
     );
 
     return (
-        <View style={styles.container}>
-            <CartTopBar navigation={navigation} />
-            <FlatList
-                data={cartItems}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
-                ListHeaderComponent={
-                    <Text style={styles.savingsText}>
-                        You save a total of ₹ {discount} on this order
-                    </Text>
-                }
-            />
-            <View style={styles.orderSummary}>
-                <Text style={styles.summaryTitle}>Order Summary</Text>
-                <View style={styles.summaryRow}>
-                    <Text style={styles.summaryText}>Total MRP</Text>
-                    <Text style={styles.summaryText}>₹ {totalMRP}</Text>
+        <><CustomTopBar navigation={navigation} title={"My Cart"} />
+            <View style={styles.container}>
+
+                <FlatList
+                    data={cartItems}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id}
+                    ListHeaderComponent={
+                        <Text style={styles.savingsText}>
+                            You save a total of ₹ {discount} on this order
+                        </Text>
+                    }
+                />
+                <View style={styles.orderSummary}>
+                    <Text style={styles.summaryTitle}>Order Summary</Text>
+                    <View style={styles.summaryRow}>
+                        <Text style={styles.summaryText}>Total MRP</Text>
+                        <Text style={styles.summaryText}>₹ {totalMRP}</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                        <Text style={styles.summaryText}>Discount</Text>
+                        <Text style={styles.summaryText}>₹ {discount}</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                        <Text style={styles.summaryText}>Total Selling Price</Text>
+                        <Text style={styles.summaryText}>₹ {totalSellingPrice}</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                        <Text style={styles.summaryText}>Shipping Charges</Text>
+                        <Text style={styles.summaryText}>₹ 0.00</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                        <Text style={styles.grandTotalText}>Grand Total</Text>
+                        <Text style={styles.grandTotalText}>₹ {totalSellingPrice}</Text>
+                    </View>
                 </View>
-                <View style={styles.summaryRow}>
-                    <Text style={styles.summaryText}>Discount</Text>
-                    <Text style={styles.summaryText}>₹ {discount}</Text>
-                </View>
-                <View style={styles.summaryRow}>
-                    <Text style={styles.summaryText}>Total Selling Price</Text>
-                    <Text style={styles.summaryText}>₹ {totalSellingPrice}</Text>
-                </View>
-                <View style={styles.summaryRow}>
-                    <Text style={styles.summaryText}>Shipping Charges</Text>
-                    <Text style={styles.summaryText}>₹ 0.00</Text>
-                </View>
-                <View style={styles.summaryRow}>
-                    <Text style={styles.grandTotalText}>Grand Total</Text>
-                    <Text style={styles.grandTotalText}>₹ {totalSellingPrice}</Text>
+                <View style={styles.checkoutContainer}>
+                    <Text style={styles.totalAmountText}>₹ {totalSellingPrice}</Text>
+                    <TouchableOpacity
+                        style={styles.checkoutButton}
+                        onPress={() => navigation.navigate('SelectAddress')}
+                    >
+                        <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
-            <View style={styles.checkoutContainer}>
-                <Text style={styles.totalAmountText}>₹ {totalSellingPrice}</Text>
-                <TouchableOpacity
-                    style={styles.checkoutButton}
-                    onPress={() => navigation.navigate('SelectAddress')}
-                >
-                    <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+        </>
     );
 };
 
 const styles = StyleSheet.create({
     // Styles remain the same as provided in your original code
     savingsText: { color: 'green' },
-    container: { flex: 1, backgroundColor: '#f2f2f2', marginTop: 10, marginHorizontal: 10 },
+    container: { flex: 1, backgroundColor: '#f2f2f2', marginTop: 10, },
     cartItem: { flexDirection: 'row', backgroundColor: '#fff', padding: 10, marginVertical: 5, borderRadius: 8 },
     productImage: { width: 80, height: 80, borderRadius: 8 },
     productDetails: { flex: 1, marginLeft: 10 },

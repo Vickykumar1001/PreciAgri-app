@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { FontAwesome } from '@expo/vector-icons';
 import ProfileTopBar from '../components/ProfileTopBar';
+import CustomTopBar from '../components/CustomTopBar';
 const profileIcon = require('../assets/images/user-icon.png');
 export default function EditProfilePage({ route, navigation }) {
     const { profileData } = route.params
@@ -18,7 +19,7 @@ export default function EditProfilePage({ route, navigation }) {
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.put(
-                'http://192.168.158.195:5454/api/users/profile/edit',
+                'http://192.168.198.195:5454/api/users/profile/edit',
                 { firstName, lastName, mobile: contactNumber },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -32,17 +33,17 @@ export default function EditProfilePage({ route, navigation }) {
     };
 
     return (
-        <View style={styles.container}>
-            {/* Header */}
-            <ProfileTopBar navigation={navigation} />
+        <><CustomTopBar navigation={navigation} title={"Edit Profile"} />
+            <View style={styles.container}>
+                {/* Header */}
 
-            {/* Profile Picture */}
-            <View style={styles.profileContainer}>
-                <Image
-                    source={profileIcon}
-                    style={styles.profileImage}
-                />
-                {/* <View style={styles.imageButtons}>
+                {/* Profile Picture */}
+                <View style={styles.profileContainer}>
+                    <Image
+                        source={profileIcon}
+                        style={styles.profileImage}
+                    />
+                    {/* <View style={styles.imageButtons}>
                     <TouchableOpacity style={styles.cameraButton}>
                         <FontAwesome name="camera" size={16} color="white" />
                     </TouchableOpacity>
@@ -50,37 +51,37 @@ export default function EditProfilePage({ route, navigation }) {
                         <FontAwesome name="trash" size={16} color="white" />
                     </TouchableOpacity>
                 </View> */}
-            </View>
-
-            {/* Form */}
-            <View style={styles.formContainer}>
-                <Text style={styles.label}>First Name</Text>
-                <TextInput
-                    style={styles.input}
-                    value={firstName}
-                    onChangeText={setFirstName}
-                    placeholder="Enter full name"
-                />
-                <Text style={styles.label}>Last Name</Text>
-                <TextInput
-                    style={styles.input}
-                    value={lastName}
-                    onChangeText={setLastName}
-                    placeholder="Enter full name"
-                />
-
-                <Text style={styles.label}>Email Address*</Text>
-                <View style={styles.emailContainer}>
-                    <TextInput
-                        style={[styles.input, { flex: 1 }]}
-                        value={email}
-                        onChangeText={setEmail}
-                        editable={false}
-                    />
-                    <Text style={styles.verifiedText}>Verified</Text>
                 </View>
 
-                {/* <Text style={styles.label}>Category*</Text>
+                {/* Form */}
+                <View style={styles.formContainer}>
+                    <Text style={styles.label}>First Name</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={firstName}
+                        onChangeText={setFirstName}
+                        placeholder="Enter full name"
+                    />
+                    <Text style={styles.label}>Last Name</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={lastName}
+                        onChangeText={setLastName}
+                        placeholder="Enter full name"
+                    />
+
+                    <Text style={styles.label}>Email Address*</Text>
+                    <View style={styles.emailContainer}>
+                        <TextInput
+                            style={[styles.input, { flex: 1 }]}
+                            value={email}
+                            onChangeText={setEmail}
+                            editable={false}
+                        />
+                        <Text style={styles.verifiedText}>Verified</Text>
+                    </View>
+
+                    {/* <Text style={styles.label}>Category*</Text>
                 <View style={styles.input}>
                     <Picker
                         style={styles.picker}
@@ -92,21 +93,22 @@ export default function EditProfilePage({ route, navigation }) {
                     </Picker>
                 </View> */}
 
-                <Text style={styles.label}>Contact Number*</Text>
-                <TextInput
-                    style={styles.input}
-                    value={contactNumber}
-                    onChangeText={setContactNumber}
-                    placeholder="Enter contact number"
-                    keyboardType="phone-pad"
-                />
-            </View>
+                    <Text style={styles.label}>Contact Number*</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={contactNumber}
+                        onChangeText={setContactNumber}
+                        placeholder="Enter contact number"
+                        keyboardType="phone-pad"
+                    />
+                </View>
 
-            {/* Save Changes Button */}
-            <TouchableOpacity style={styles.saveButton} onPress={handleSaveChanges}>
-                <Text style={styles.saveButtonText}>Save Changes</Text>
-            </TouchableOpacity>
-        </View>
+                {/* Save Changes Button */}
+                <TouchableOpacity style={styles.saveButton} onPress={handleSaveChanges}>
+                    <Text style={styles.saveButtonText}>Save Changes</Text>
+                </TouchableOpacity>
+            </View>
+        </>
     );
 }
 

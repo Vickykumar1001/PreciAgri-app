@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo } from 'react';
 import { View, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ProductCardWishlist from './ProductCardWishlist';
-import WishlistTopBar from '../components/WishListTopBar';
+import CustomTopBar from '../components/CustomTopBar';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -21,7 +21,7 @@ const WishlistPage = ({ navigation }) => {
                 console.error('Token not found');
                 return;
             }
-            const response = await axios.get('http://192.168.158.195:5454/api/wishlist/products', {
+            const response = await axios.get('http://192.168.198.195:5454/api/wishlist/products', {
                 headers: { Authorization: `Bearer ${token}` },
             });
             console.log(response.data.products);
@@ -41,7 +41,7 @@ const WishlistPage = ({ navigation }) => {
                 console.error('Token not found');
                 return;
             }
-            await axios.delete(`http://192.168.158.195:5454/api/wishlist`, {
+            await axios.delete(`http://192.168.198.195:5454/api/wishlist`, {
                 headers: { Authorization: `Bearer ${token}` },
                 data: { productId },
             });
@@ -63,20 +63,22 @@ const WishlistPage = ({ navigation }) => {
     ));
 
     return (
-        <View style={styles.container}>
-            <WishlistTopBar navigation={navigation} />
-            {loading ? (
-                <ActivityIndicator size="large" color="#0000ff" />
-            ) : (
-                <FlatList
-                    data={wishlistProducts}
-                    keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => <MemoizedProductCard item={item} />}
-                    numColumns={2}
-                    columnWrapperStyle={styles.row}
-                />
-            )}
-        </View>
+        <><CustomTopBar navigation={navigation} title={"Wishlist"} />
+            <View style={styles.container}>
+
+                {loading ? (
+                    <ActivityIndicator size="large" color="#0000ff" />
+                ) : (
+                    <FlatList
+                        data={wishlistProducts}
+                        keyExtractor={(item) => item._id}
+                        renderItem={({ item }) => <MemoizedProductCard item={item} />}
+                        numColumns={2}
+                        columnWrapperStyle={styles.row}
+                    />
+                )}
+            </View>
+        </>
     );
 };
 

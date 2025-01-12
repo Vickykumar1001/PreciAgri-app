@@ -19,7 +19,6 @@ import ReviewComponent from '../components/Review';
 
 const ProductDetailScreen = ({ navigation, route }) => {
     const { product } = route.params; // Product ID passed from route
-    console.log(product);
     const [seller, setSeller] = useState(null); // State to store seller details
     const [quantity, setQuantity] = useState(1); // Start with quantity of 1
     const [wishlist, setWishlist] = useState(new Set()); // Wishlist state
@@ -32,19 +31,19 @@ const ProductDetailScreen = ({ navigation, route }) => {
             try {
                 // Fetch Seller Data
                 const token = await AsyncStorage.getItem('token');
-                const response = await axios.get(`http://192.168.158.195:5454/api/users/sellerDetail/${product.sellerId}`, {
+                const response = await axios.get(`http://192.168.198.195:5454/api/users/sellerDetail/${product.sellerId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
                     },
                 });
                 setSeller(response.data);
-                const products = await axios.get(`http://192.168.158.195:5454/api/products`, {
+                const products = await axios.get(`http://192.168.198.195:5454/api/products`, {
                     headers: {
                         Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
                     },
                 });
                 setAllProducts(products.data.content);
-                const wishlistResponse = await axios.get(`http://192.168.158.195:5454/api/wishlist`, {
+                const wishlistResponse = await axios.get(`http://192.168.198.195:5454/api/wishlist`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setWishlist(new Set(wishlistResponse.data));
@@ -77,7 +76,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
             if (wishlist.has(product._id)) {
                 // Remove from wishlist
-                await axios.delete(`http://192.168.158.195:5454/api/wishlist`, {
+                await axios.delete(`http://192.168.198.195:5454/api/wishlist`, {
                     headers: { Authorization: `Bearer ${token}` },
                     data: { productId: product._id },
                 });
@@ -89,7 +88,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
             } else {
                 // Add to wishlist
                 await axios.post(
-                    `http://192.168.158.195:5454/api/wishlist`,
+                    `http://192.168.198.195:5454/api/wishlist`,
                     { productId: product._id },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
@@ -107,7 +106,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
             const token = await AsyncStorage.getItem('token'); // Fetch the token from AsyncStorage
 
             const response = await axios.put(
-                'http://192.168.158.195:5454/api/cart/add',
+                'http://192.168.198.195:5454/api/cart/add',
                 {
                     productId: product._id,
                     sizeIndx: selectedSize,
@@ -299,17 +298,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        padding: 10,
+        padding: 7,
     },
     scrollContent: {
         paddingBottom: 100,
     },
     productImage: {
-        width: Dimensions.get('window').width - 40,
+        width: Dimensions.get('window').width - 45,
         height: 300,
         borderRadius: 15,
         marginHorizontal: 15,
-        backgroundColor: '#eee',
+        backgroundColor: '#fff',
         resizeMode: 'contain'
     },
     wishlistIcon: {
@@ -323,7 +322,7 @@ const styles = StyleSheet.create({
     backIcon: {
         position: 'absolute',
         top: 20,
-        left: 10,
+        left: 7,
 
     },
     productInfo: {
@@ -334,7 +333,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 20,
     },
     productName: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 8,
         color: '#333',

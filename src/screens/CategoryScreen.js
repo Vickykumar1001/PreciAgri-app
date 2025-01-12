@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import CategoryTopBar from '../components/CategoryTopBar';
+import CustomTopBar from '../components/CustomTopBar';
 
 const sidebarCategories = [
     { name: 'Farm Equipment' },
@@ -8,10 +8,6 @@ const sidebarCategories = [
     { name: 'Fertilizers' },
     { name: 'Soil and Soil Amendments' },
     { name: 'Crop Protection' },
-    { name: 'Livestock Management' },
-    { name: 'Farm Management Tools' },
-    { name: 'E-commerce and Farm-to-Market' },
-    { name: 'Educational Resources' }
 ];
 
 const mainCategories = {
@@ -19,31 +15,31 @@ const mainCategories = {
         {
             title: 'Irrigation Equipment',
             items: [
-                { label: 'Water Pumps', image: require('../assets/images/icons/water-pump.png') },
-                { label: 'Sprinklers', image: require('../assets/images/icons/sprinkler.png') },
-                { label: 'Drip Systems', image: require('../assets/images/icons/irrigation.png') },
+                { label: 'Water Pumps', image: require('../assets/images/icons/category/water-pump.png') },
+                { label: 'Sprinklers', image: require('../assets/images/icons/category/sprinkler.png') },
+                { label: 'Drip Systems', image: require('../assets/images/icons/category/irrigation.png') },
             ],
         },
         {
             title: 'Hand Tools',
             items: [
-                { label: 'Hoes', image: require('../assets/images/icons/hoe.png') },
-                { label: 'Trowels', image: require('../assets/images/icons/trowel.png') },
-                { label: 'Pruners', image: require('../assets/images/icons/pruners.png') },
+                { label: 'Hoes', image: require('../assets/images/icons/category/hoe.png') },
+                { label: 'Trowels', image: require('../assets/images/icons/category/trowel.png') },
+                { label: 'Pruners', image: require('../assets/images/icons/category/pruners.png') },
             ],
         },
         {
             title: 'Machinery',
             items: [
-                { label: 'Tractors', image: require('../assets/images/icons/tractor.png') },
-                { label: 'Harvesters', image: require('../assets/images/icons/harvester.png') }
+                { label: 'Tractors', image: require('../assets/images/icons/category/tractor.png') },
+                { label: 'Harvesters', image: require('../assets/images/icons/category/harvester.png') }
             ],
         },
         {
             title: 'Sprayers',
             items: [
-                { label: 'Crop Sprayers', image: require('../assets/images/icons/sprayer.png') },
-                { label: 'Agri Sprayers', image: require('../assets/images/icons/sprayer.png') },
+                { label: 'Crop Sprayers', image: require('../assets/images/icons/category/sprayer.png') },
+                { label: 'Agri Sprayers', image: require('../assets/images/icons/category/sprayer.png') },
             ],
         },
     ],
@@ -189,7 +185,7 @@ const App = ({ navigation }) => {
 
     return (
         <>
-            <CategoryTopBar navigation={navigation} />
+            <CustomTopBar navigation={navigation} title={"Category"} />
 
             <View style={styles.container}>
                 {/* Sidebar */}

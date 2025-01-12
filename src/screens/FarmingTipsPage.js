@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-
-const FarmingTipsPage = () => {
+import CustomTopBar from '../components/CustomTopBar';
+const FarmingTipsPage = ({ navigation }) => {
     const [tips] = useState([
         {
             id: '1',
@@ -46,27 +46,29 @@ const FarmingTipsPage = () => {
     );
 
     return (
-        <View style={styles.container}>
-            {selectedTip ? (
-                <View style={styles.detailContainer}>
-                    <Text style={styles.detailTitle}>{selectedTip.title}</Text>
-                    <Text style={styles.detailContent}>{selectedTip.content}</Text>
-                    <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={() => setSelectedTip(null)}
-                    >
-                        <Text style={styles.backButtonText}>Back to Tips</Text>
-                    </TouchableOpacity>
-                </View>
-            ) : (
-                <FlatList
-                    data={tips}
-                    renderItem={renderTip}
-                    keyExtractor={(item) => item.id}
-                    contentContainerStyle={styles.tipList}
-                />
-            )}
-        </View>
+        <><CustomTopBar navigation={navigation} title={"Farming Tips"} />
+            <View style={styles.container}>
+                {selectedTip ? (
+                    <View style={styles.detailContainer}>
+                        <Text style={styles.detailTitle}>{selectedTip.title}</Text>
+                        <Text style={styles.detailContent}>{selectedTip.content}</Text>
+                        <TouchableOpacity
+                            style={styles.backButton}
+                            onPress={() => setSelectedTip(null)}
+                        >
+                            <Text style={styles.backButtonText}>Back to Tips</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <FlatList
+                        data={tips}
+                        renderItem={renderTip}
+                        keyExtractor={(item) => item.id}
+                        contentContainerStyle={styles.tipList}
+                    />
+                )}
+            </View>
+        </>
     );
 };
 

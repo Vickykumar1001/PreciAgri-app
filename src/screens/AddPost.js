@@ -81,7 +81,7 @@ export default function AddPost({ navigation }) {
             formData.append('thirdLevelCategory', thirdLevelCategory);
             formData.append('sizes', JSON.stringify(sizes));
 
-            await axios.post("http://192.168.158.195:5454/api/admin/products", formData, {
+            await axios.post("http://192.168.198.195:5454/api/admin/products", formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',

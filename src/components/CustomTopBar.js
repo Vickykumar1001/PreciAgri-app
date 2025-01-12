@@ -2,13 +2,15 @@ import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-const CustomTopBar = ({ title, navigation }) => {
+const TopBar = ({ navigation, title = "", showBackButton = true }) => {
     return (
         <View style={styles.topBar}>
             {/* Back Button */}
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="arrow-back" size={28} color="#333" />
-            </TouchableOpacity>
+            {showBackButton && (
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Ionicons name="arrow-back" size={28} color="#333" />
+                </TouchableOpacity>
+            )}
 
             {/* Centered Title */}
             <Text style={styles.sectionTitle}>
@@ -18,7 +20,7 @@ const CustomTopBar = ({ title, navigation }) => {
     );
 };
 
-export default CustomTopBar;
+export default TopBar;
 
 const styles = StyleSheet.create({
     topBar: {

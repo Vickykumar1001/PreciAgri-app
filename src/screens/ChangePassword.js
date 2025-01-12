@@ -32,7 +32,7 @@ export default function ChangePassword({ route, navigation }) {
 
             // Make the API request
             const response = await axios.post(
-                'http://192.168.158.195:5454/api/users/change-password',
+                'http://192.168.198.195:5454/api/users/change-password',
                 {
                     oldPassword,
                     newPassword,

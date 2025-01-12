@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
-const SellerOrdersPage = () => {
+import CustomTopBar from '../components/CustomTopBar';
+const SellerOrdersPage = (navigation) => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -17,7 +17,7 @@ const SellerOrdersPage = () => {
                     return;
                 }
 
-                const response = await axios.get('http://192.168.158.195:5454/api/seller/orders', {
+                const response = await axios.get('http://192.168.198.195:5454/api/seller/orders', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -66,20 +66,21 @@ const SellerOrdersPage = () => {
     );
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.header}>Seller Orders</Text>
-            {loading ? (
-                <ActivityIndicator size="large" color="#00f" />
-            ) : orders.length > 0 ? (
-                <FlatList
-                    data={orders}
-                    renderItem={renderOrderItem}
-                    keyExtractor={(item) => item._id}
-                />
-            ) : (
-                <Text style={styles.noOrdersText}>No orders found.</Text>
-            )}
-        </ScrollView>
+        <><CustomTopBar navigation={navigation} title={"Orders Received"} />
+            <ScrollView style={styles.container}>
+                {loading ? (
+                    <ActivityIndicator size="large" color="#00f" />
+                ) : orders.length > 0 ? (
+                    <FlatList
+                        data={orders}
+                        renderItem={renderOrderItem}
+                        keyExtractor={(item) => item._id}
+                    />
+                ) : (
+                    <Text style={styles.noOrdersText}>No orders found.</Text>
+                )}
+            </ScrollView>
+        </>
     );
 };
 

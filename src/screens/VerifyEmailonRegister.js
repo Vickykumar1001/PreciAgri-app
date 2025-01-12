@@ -40,7 +40,7 @@ export default function VerifyEmailonRegister({ route, navigation }) {
     const handleContinue = () => {
         if (otp.length === 6) {
             axios
-                .post('http://192.168.158.195:5454/auth/verify-email', { otp, email: email.value })
+                .post('http://192.168.198.195:5454/auth/verify-email', { otp, email: email.value })
                 .then((response) => {
                     if (response.status === 200) {
                         Alert.alert('Logged In Successfull');
@@ -57,7 +57,7 @@ export default function VerifyEmailonRegister({ route, navigation }) {
 
     const handleResend = () => {
         axios
-            .post('http://192.168.158.195:5454/auth/resend-otp', { email: email.value })
+            .post('http://192.168.198.195:5454/auth/resend-otp', { email: email.value })
             .then(() => {
                 setOtp('');
                 setResendTimer(30);

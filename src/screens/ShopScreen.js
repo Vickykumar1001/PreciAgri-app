@@ -30,14 +30,14 @@ const ShopPage = ({ navigation, route }) => {
                 }
 
                 // Fetch products
-                const productsResponse = await axios.get('http://192.168.158.195:5454/api/products', {
+                const productsResponse = await axios.get('http://192.168.198.195:5454/api/products', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setAllProducts(productsResponse.data.content);
                 setFilteredProducts(productsResponse.data.content);
 
                 // Fetch wishlist
-                const wishlistResponse = await axios.get(`http://192.168.158.195:5454/api/wishlist`, {
+                const wishlistResponse = await axios.get(`http://192.168.198.195:5454/api/wishlist`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setWishlist(new Set(wishlistResponse.data));
@@ -106,7 +106,7 @@ const ShopPage = ({ navigation, route }) => {
 
             if (wishlist.has(productId)) {
                 // Remove from wishlist
-                await axios.delete(`http://192.168.158.195:5454/api/wishlist`, {
+                await axios.delete(`http://192.168.198.195:5454/api/wishlist`, {
                     headers: { Authorization: `Bearer ${token}` },
                     data: { productId },
                 });
@@ -118,7 +118,7 @@ const ShopPage = ({ navigation, route }) => {
             } else {
                 // Add to wishlist
                 await axios.post(
-                    `http://192.168.158.195:5454/api/wishlist`,
+                    `http://192.168.198.195:5454/api/wishlist`,
                     { productId },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
@@ -148,53 +148,55 @@ const ShopPage = ({ navigation, route }) => {
     }
 
     return (
-        <View style={styles.container}>
-            <SearchTopBar navigation={navigation} setCategory={setCategory} inputRef={inputRef} />
+        <><SearchTopBar navigation={navigation} setCategory={setCategory} inputRef={inputRef} />
+            <View style={styles.container}>
 
-            <View style={styles.sortFilterContainer}>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => setShowSortDropdown((prev) => !prev)}
-                >
-                    <Text style={styles.buttonText}>Sort</Text>
-                    <Ionicons name="caret-down" size={20} />
-                </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => console.log('Filter button pressed')}
-                >
-                    <Text style={styles.buttonText}>Filter</Text>
-                    <Ionicons name="filter" size={20} />
-                </TouchableOpacity>
-            </View>
-
-            {showSortDropdown && (
-                <View style={styles.pickerContainer}>
-                    <Picker
-                        selectedValue={sortOption}
-                        onValueChange={(value) => {
-                            setSortOption(value);
-                            setShowSortDropdown(false);
-                        }}
+                <View style={styles.sortFilterContainer}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => setShowSortDropdown((prev) => !prev)}
                     >
-                        <Picker.Item label="Relevance" value="relevance" />
-                        <Picker.Item label="Popularity" value="popularity" />
-                        <Picker.Item label="Price (High to Low)" value="priceHighToLow" />
-                        <Picker.Item label="Price (Low to High)" value="priceLowToHigh" />
-                    </Picker>
-                </View>
-            )}
+                        <Text style={styles.buttonText}>Sort</Text>
+                        <Ionicons name="caret-down" size={20} />
+                    </TouchableOpacity>
 
-            <FlatList
-                data={filteredProducts}
-                keyExtractor={(item) => item._id}
-                renderItem={({ item }) => <MemoizedProductCard item={item} />}
-                numColumns={2}
-                columnWrapperStyle={styles.row}
-                ListEmptyComponent={<Text style={styles.emptyText}>No products available</Text>}
-            />
-        </View>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => console.log('Filter button pressed')}
+                    >
+                        <Text style={styles.buttonText}>Filter</Text>
+                        <Ionicons name="filter" size={20} />
+                    </TouchableOpacity>
+                </View>
+
+                {showSortDropdown && (
+                    <View style={styles.pickerContainer}>
+                        <Picker
+                            selectedValue={sortOption}
+                            onValueChange={(value) => {
+                                setSortOption(value);
+                                setShowSortDropdown(false);
+                            }}
+                        >
+                            <Picker.Item label="Relevance" value="relevance" />
+                            <Picker.Item label="Popularity" value="popularity" />
+                            <Picker.Item label="Price (High to Low)" value="priceHighToLow" />
+                            <Picker.Item label="Price (Low to High)" value="priceLowToHigh" />
+                        </Picker>
+                    </View>
+                )}
+
+                <FlatList
+                    data={filteredProducts}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => <MemoizedProductCard item={item} />}
+                    numColumns={2}
+                    columnWrapperStyle={styles.row}
+                    ListEmptyComponent={<Text style={styles.emptyText}>No products available</Text>}
+                />
+            </View>
+        </>
     );
 };
 
