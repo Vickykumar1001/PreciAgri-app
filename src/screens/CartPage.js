@@ -20,7 +20,6 @@ const CartPage = ({ navigation }) => {
                     },
                 });
                 const data = response.data;
-                console.log('Cart data fetched:', data);
                 const updatedCartItems = data.cartItems.map((item) => ({
                     id: item._id,
                     name: item.product.title,

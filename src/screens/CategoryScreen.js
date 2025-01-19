@@ -3,11 +3,11 @@ import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'rea
 import CustomTopBar from '../components/CustomTopBar';
 
 const sidebarCategories = [
-    { name: 'Farm Equipment' },
-    { name: 'Seeds' },
-    { name: 'Fertilizers' },
-    { name: 'Soil and Soil Amendments' },
-    { name: 'Crop Protection' },
+    { name: 'Farm Equipment', image: require('../assets/images/icons/category/farmer.png') },
+    { name: 'Seeds', image: require('../assets/images/seed.png') },
+    { name: 'Fertilizers', image: require('../assets/images/fertilizer.png') },
+    { name: 'Soil Amendments', image: require('../assets/images/icons/category/soilAmendments.png') },
+    { name: 'Crop Protection', image: require('../assets/images/icons/category/cropProtection.png') },
 ];
 
 const mainCategories = {
@@ -47,28 +47,28 @@ const mainCategories = {
         {
             title: 'Vegetable Seeds',
             items: [
-                { label: 'Carrot', image: require('../assets/images/seed.png') },
-                { label: 'Radish', image: require('../assets/images/seed.png') },
-                { label: 'Tomato', image: require('../assets/images/seed.png') },
-                { label: 'Beans', image: require('../assets/images/seed.png') },
-                { label: 'Pumpkin', image: require('../assets/images/seed.png') },
+                { label: 'Carrot', image: require('../assets/images/icons/category/carrot.png') },
+                { label: 'Radish', image: require('../assets/images/icons/category/food.png') },
+                { label: 'Tomato', image: require('../assets/images/icons/category/tomato.png') },
+                { label: 'Beans', image: require('../assets/images/icons/category/beans.png') },
+                { label: 'Pumpkin', image: require('../assets/images/icons/category/pumpkin.png') },
             ],
         },
         {
             title: 'Fruit Seeds',
             items: [
-                { label: 'Watermelon', image: require('../assets/images/seed.png') },
-                { label: 'Chilli', image: require('../assets/images/seed.png') },
-                { label: 'Onion', image: require('../assets/images/seed.png') },
+                { label: 'Watermelon', image: require('../assets/images/icons/category/watermelon.png') },
+                { label: 'Orange', image: require('../assets/images/icons/category/orange.png') },
+                { label: 'Pine Apple', image: require('../assets/images/icons/category/pine_apple.png') },
             ],
         },
-        {
-            title: 'Herb Seeds',
-            items: [
-                { label: 'Tulsi', image: require('../assets/images/seed.png') },
-                { label: 'Pakchoy', image: require('../assets/images/seed.png') },
-            ],
-        },
+        // {
+        //     title: 'Herb Seeds',
+        //     items: [
+        //         { label: 'Tulsi', image: require('../assets/images/seed.png') },
+        //         { label: 'Pakchoy', image: require('../assets/images/seed.png') },
+        //     ],
+        // },
     ],
     "Fertilizers": [
         {
@@ -199,6 +199,7 @@ const App = ({ navigation }) => {
                             ]}
                             onPress={() => setSelectedCategory(category.name)}
                         >
+                            <Image source={category.image} style={styles.categoryImage} />
                             <Text
                                 style={[
                                     styles.sidebarItemText,
@@ -218,7 +219,7 @@ const App = ({ navigation }) => {
                             <Text style={styles.categoryTitle}>{category.title}</Text>
                             <View style={styles.itemsContainer}>
                                 {category.items.map((item, index) => (
-                                    <TouchableOpacity key={index} style={styles.item}>
+                                    <TouchableOpacity key={index} style={styles.item} onPress={() => { navigation.navigate('Shop', { category: item.label }); }} >
                                         <Image source={item.image} style={styles.itemImage} />
                                         <Text style={styles.itemLabel}>{item.label}</Text>
                                     </TouchableOpacity>
@@ -253,8 +254,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#e6e6e6',
     },
     sidebarItemText: {
-        fontSize: 14,
+        fontSize: 13,
+        fontWeight: 600,
         color: '#333',
+        marginTop: 5,
+
     },
     sidebarItemTextSelected: {
         fontWeight: 'bold',
@@ -271,6 +275,12 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginVertical: 10,
+    },
+    categoryImage: {
+        alignContent: 'center',
+        width: 35,
+        height: 35,
+        resizeMode: 'contain',
     },
     itemsContainer: {
         flexDirection: 'row',

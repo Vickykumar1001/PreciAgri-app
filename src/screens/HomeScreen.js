@@ -66,11 +66,6 @@ const HomePage = ({ navigation }) => {
         // { id: '4', name: 'Crop Insurance', image: require('../assets/images/insurance.png') },
         // { id: '9', name: 'Soil Testing', image: require('../assets/images/soil.png') },
     ];
-
-    const farmers = [
-        { id: '1', name: 'Farmer Ram Singh', location: 'Maharashtra' },
-        { id: '2', name: 'Farmer Priya Patel', location: 'Gujarat' },
-    ];
     const handleCategoryPress = (category) => {
         if (category.name === 'Weather') {
             navigation.navigate('Weather');

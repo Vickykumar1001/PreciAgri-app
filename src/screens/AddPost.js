@@ -89,6 +89,7 @@ export default function AddPost({ navigation }) {
             });
 
             Alert.alert('Success', 'Product added successfully!');
+            navigation.goBack();
         } catch (error) {
             console.error(error);
             Alert.alert('Error', 'Could not add product. Please try again.');
