@@ -1,27 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Text } from 'react-native-paper';
-import axios from 'axios';
-import Background from '../components/Background';
-import Header from '../components/Header';
-import TextInput from '../components/TextInput';
-import Button from '../components/Button';
-import BackButton from '../components/BackButton';
-import Logo from '../components/Logo';
-import { theme } from '../core/theme';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message'
+
+import Background from '../../components/Background';
+import Header from '../../components/Header';
+import TextInput from '../../components/TextInput';
+import BackButton from '../../components/BackButton';
+import Logo from '../../components/Logo';
+import customFetch from '../../utils/axios';
+import { addUserToLocalStorage } from '../../utils/localStorage'
+
 export default function VerifyEmailonRegister({ route, navigation }) {
-    const { email } = route.params;
-    console.log(email)
+    const { userData } = route.params;
     const [otp, setOtp] = useState('');
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [resendTimer, setResendTimer] = useState(30);
     const resendTimerRef = useRef(null);
 
+    // Enable button only when OTP length is 6
     useEffect(() => {
         setIsButtonEnabled(otp.length === 6);
     }, [otp]);
 
+    // Countdown timer for OTP resend
     useEffect(() => {
         resendTimerRef.current = setInterval(() => {
             setResendTimer((prev) => (prev > 0 ? prev - 1 : 0));
@@ -30,42 +32,58 @@ export default function VerifyEmailonRegister({ route, navigation }) {
         return () => clearInterval(resendTimerRef.current);
     }, []);
 
+    // Handle OTP input change
     const handleOtpChange = (text) => {
         if (/^\d*$/.test(text) && text.length <= 6) {
-            console.log(text)
             setOtp(text);
         }
     };
 
-    const handleContinue = () => {
-        if (otp.length === 6) {
-            axios
-                .post('http://192.168.198.195:5454/auth/verify-email', { otp, email: email.value })
-                .then((response) => {
-                    if (response.status === 200) {
-                        Alert.alert('Logged In Successfull');
-                        navigation.replace('HomePage');
-                        AsyncStorage.setItem('token', response.data.jwt);
-                        AsyncStorage.setItem('role', response.data.user.role);
-                    }
-                })
-                .catch((error) => {
-                    Alert.alert(error.message);
+    // Handle OTP verification
+    const handleContinue = async () => {
+        if (otp.length !== 6) {
+            Toast.show({ type: 'error', text1: 'Invalid OTP', text2: 'Please enter a 6-digit OTP.' });
+
+            return;
+        }
+        try {
+            userData.otp = otp;
+            const response = await customFetch.post("auth/signup", userData);
+
+            if (response.status === 200) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Account Created Successfully!',
+                    text2: 'Welcome to PreciAgri.',
                 });
+
+                const data = response?.data;
+                const user = {
+                    id: data.user?._id,
+                    name: data.user?.Name,
+                    email: data.user?.email,
+                    accountType: data.user?.accountType,
+                    token: data.token
+                };
+
+                await addUserToLocalStorage(user);
+                navigation.replace('HomePage');
+            }
+        } catch (error) {
+            Toast.show({ type: 'error', text1: error.response?.data?.message || 'Failed to verify OTP. Please try again.' });
         }
     };
 
-    const handleResend = () => {
-        axios
-            .post('http://192.168.198.195:5454/auth/resend-otp', { email: email.value })
-            .then(() => {
-                setOtp('');
-                setResendTimer(30);
-                Alert.alert('OTP Resent', 'A new OTP has been sent to your email.');
-            })
-            .catch((error) => {
-                Alert.alert('Error', error.response?.data?.message || error.message);
-            });
+    // Handle OTP resend
+    const handleResend = async () => {
+        try {
+            await customFetch.post("/auth/sendotp", { email: userData.email });
+            setOtp('');
+            setResendTimer(30);
+            Toast.show({ type: 'success', text1: 'OTP Resent', text2: 'A new OTP has been sent to your email.' });
+        } catch (error) {
+            Toast.show({ type: 'error', text1: err.response?.data?.message || 'Failed to resend OTP. Please try again.' });
+        }
     };
 
     return (
@@ -107,25 +125,12 @@ const styles = StyleSheet.create({
         padding: 20,
         flexGrow: 1,
         alignItems: 'center',
-        justifyContent: 'space-evenly',
     },
     subtitle: {
         fontSize: 16,
         textAlign: 'center',
         color: '#666',
-        marginBottom: 20,
-    },
-    otpInput: {
-        height: 50,
-        borderColor: 'grey',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 15,
-        fontSize: 18,
-        backgroundColor: theme.colors.surface,
-        width: '100%',
-        textAlign: 'center',
-        marginBottom: 10,
+        marginVertical: 10,
     },
     button: {
         height: 50,
@@ -133,7 +138,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5,
-        marginTop: 24,
+        marginVertical: 20,
+    },
+    buttonText: {
+        fontSize: 18,
+        color: 'white',
+        fontWeight: 'bold',
+        letterSpacing: 1,
     },
     buttonEnabled: {
         backgroundColor: 'green',
@@ -144,6 +155,7 @@ const styles = StyleSheet.create({
     resendLink: {
         textAlign: 'center',
         fontSize: 16,
+        fontWeight: '600',
         color: '#1E90FF',
     },
     resendDisabled: {

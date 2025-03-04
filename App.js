@@ -9,11 +9,11 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { theme } from './src/core/theme';
-
+import Toast from 'react-native-toast-message';
 import {
   StartScreen,
   LoginScreen,
-  RegisterScreen,
+  SignUpScreen,
   ResetPasswordScreen,
   Dashboard,
   VerifyEmail,
@@ -71,7 +71,7 @@ const StackNav = ({ route }) => {
     >
       <Stack.Screen name="StartScreen" component={StartScreen} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+      <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
       <Stack.Screen name="VerifyEmailonRegister" component={VerifyEmailonRegister} />
       <Stack.Screen name="ChangePassword" component={ChangePassword} />
@@ -128,10 +128,9 @@ const App = () => {
           setIsFirstLaunch(false);
         }
 
-        // Check authentication status (you can also use an API call if needed)
-        const userToken = await AsyncStorage.getItem('token');
-        if (userToken) {
-          console.log(userToken);
+        // Check authentication status (you can also use an API callr if needed)
+        const user = await AsyncStorage.getItem('user');
+        if (user) {
           setIsAuthenticated(true); // Set based on the token presence
         } else {
           setIsAuthenticated(false);
@@ -175,6 +174,7 @@ const App = () => {
             </Drawer.Navigator>
 
             )}
+            <Toast />
           </NavigationContainer>
         </Provider>
       </SafeAreaView>
