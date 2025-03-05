@@ -1,8 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const FooterNavigation = ({ navigation, activePage, role }) => {
+const FooterNavigation = ({ navigation, activePage }) => {
+    const [role, setRole] = useState(null);
+
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            try {
+                // Retrieve user data from AsyncStorage
+                const userData = await AsyncStorage.getItem('user');
+                if (userData) {
+                    const user = JSON.parse(userData); // Parse stored JSON string
+                    if (user.accountType) {
+                        setRole(user.accountType); // Set role if available
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+            }
+        };
+
+        fetchUserRole(); // Fetch role when component mounts
+    }, []);
+
+    // Define common footer navigation items
     const footerItems = [
         { name: 'Home', icon: 'home', route: 'HomePage', params: {}, activeColor: '#4CAF50' },
         { name: 'Shop', icon: 'storefront', route: 'Shop', params: { category: '' }, activeColor: '#4CAF50' },
@@ -10,6 +33,7 @@ const FooterNavigation = ({ navigation, activePage, role }) => {
         { name: 'Profile', icon: 'person', route: 'Profile', params: {}, activeColor: '#4CAF50' },
     ];
 
+    // Add "Sell" option for sellers dynamically
     if (role === 'Seller') {
         footerItems.splice(3, 0, {
             name: 'Sell',

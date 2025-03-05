@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
-import TopBar from '../components/TopBar';
+import TopBar from '../components/topBar/HomeTopBar';
 import FooterNavigation from '../components/FooterNavigation';
 import Banner from '../components/home/Banner';
 import Categories from '../components/home/Categories';

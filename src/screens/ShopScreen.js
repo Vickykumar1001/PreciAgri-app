@@ -30,14 +30,14 @@ const ShopPage = ({ navigation, route }) => {
                 }
 
                 // Fetch products
-                const productsResponse = await axios.get('http://192.168.198.195:5454/api/products', {
+                const productsResponse = await axios.get('http://172.16.1.240:4000/api/products', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setAllProducts(productsResponse.data.content);
                 setFilteredProducts(productsResponse.data.content);
 
                 // Fetch wishlist
-                const wishlistResponse = await axios.get(`http://192.168.198.195:5454/api/wishlist`, {
+                const wishlistResponse = await axios.get(`http://172.16.1.240:4000/api/wishlist`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setWishlist(new Set(wishlistResponse.data));
@@ -106,7 +106,7 @@ const ShopPage = ({ navigation, route }) => {
 
             if (wishlist.has(productId)) {
                 // Remove from wishlist
-                await axios.delete(`http://192.168.198.195:5454/api/wishlist`, {
+                await axios.delete(`http://172.16.1.240:4000/api/wishlist`, {
                     headers: { Authorization: `Bearer ${token}` },
                     data: { productId },
                 });
@@ -118,7 +118,7 @@ const ShopPage = ({ navigation, route }) => {
             } else {
                 // Add to wishlist
                 await axios.post(
-                    `http://192.168.198.195:5454/api/wishlist`,
+                    `http://172.16.1.240:4000/api/wishlist`,
                     { productId },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );

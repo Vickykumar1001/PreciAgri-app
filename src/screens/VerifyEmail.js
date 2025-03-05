@@ -39,7 +39,7 @@ export default function VerifyEmailonForgotPassword({ route, navigation }) {
     const handleContinue = () => {
         if (otp.length === 6) {
             axios
-                .post('http://192.168.198.195:5454/auth/verify-otp-forgot-password', { otp, email })
+                .post('http://172.16.1.240:4000/auth/verify-otp-forgot-password', { otp, email })
                 .then((response) => {
                     if (response.status === 200) {
                         Alert.alert('OTP Verified Successfully');
@@ -55,7 +55,7 @@ export default function VerifyEmailonForgotPassword({ route, navigation }) {
     const handleResend = () => {
         console.log(email)
         axios
-            .post('http://192.168.198.195:5454/auth/resend-otp-forgot-password', { email })
+            .post('http://172.16.1.240:4000/auth/resend-otp-forgot-password', { email })
             .then(() => {
                 setOtp('');
                 setResendTimer(30);

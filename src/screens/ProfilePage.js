@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { MaterialIcons, Ionicons, FontAwesome, AntDesign } from '@expo/vector-icons';
-import CustomTopBar from '../components/CustomTopBar';
+import CustomTopBar from '../components/topBar/CustomTopBar';
 const profileIcon = require('../assets/images/user-icon.png');
 import FooterNavigation from '../components/FooterNavigation';
 export default function ProfilePage({ navigation }) {
@@ -18,7 +18,7 @@ export default function ProfilePage({ navigation }) {
             setRole(role)
             if (!token) throw new Error("No token found");
 
-            const response = await axios.get("http://192.168.198.195:5454/api/users/profile", {
+            const response = await axios.get("http://172.16.1.240:4000/api/users/profile", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

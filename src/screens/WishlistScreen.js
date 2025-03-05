@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo } from 'react';
 import { View, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ProductCardWishlist from './ProductCardWishlist';
-import CustomTopBar from '../components/CustomTopBar';
+import CustomTopBar from '../components/topBar/CustomTopBar';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -21,7 +21,7 @@ const WishlistPage = ({ navigation }) => {
                 console.error('Token not found');
                 return;
             }
-            const response = await axios.get('http://192.168.198.195:5454/api/wishlist/products', {
+            const response = await axios.get('http://172.16.1.240:4000/api/wishlist/products', {
                 headers: { Authorization: `Bearer ${token}` },
             });
             console.log(response.data.products);
@@ -41,7 +41,7 @@ const WishlistPage = ({ navigation }) => {
                 console.error('Token not found');
                 return;
             }
-            await axios.delete(`http://192.168.198.195:5454/api/wishlist`, {
+            await axios.delete(`http://172.16.1.240:4000/api/wishlist`, {
                 headers: { Authorization: `Bearer ${token}` },
                 data: { productId },
             });

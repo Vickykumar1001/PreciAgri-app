@@ -5,7 +5,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CustomTopBar from '../components/CustomTopBar';
+import CustomTopBar from '../components/topBar/CustomTopBar';
 
 export default function EditProduct({ route, navigation }) {
     const { productId } = route.params; // Product ID passed from the product list or details page
@@ -26,7 +26,7 @@ export default function EditProduct({ route, navigation }) {
         const fetchProductDetails = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
-                const response = await axios.get(`http://192.168.198.195:5454/api/products/id/${productId}`, {
+                const response = await axios.get(`http://172.16.1.240:4000/api/products/id/${productId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -116,7 +116,7 @@ export default function EditProduct({ route, navigation }) {
             formData.append('thirdLevelCategory', thirdLevelCategory);
             formData.append('sizes', JSON.stringify(sizes));
 
-            await axios.put(`http://192.168.198.195:5454/api/admin/products/${productId}`, formData, {
+            await axios.put(`http://172.16.1.240:4000/api/admin/products/${productId}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',

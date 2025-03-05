@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import CustomTopBar from '../components/CustomTopBar';
+import CustomTopBar from '../components/topBar/CustomTopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 const CartPage = ({ navigation }) => {
@@ -14,7 +14,7 @@ const CartPage = ({ navigation }) => {
         const fetchCartData = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
-                const response = await axios.get(`http://192.168.198.195:5454/api/cart`, {
+                const response = await axios.get(`http://172.16.1.240:4000/api/cart`, {
                     headers: {
                         Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
                     },
@@ -62,7 +62,7 @@ const CartPage = ({ navigation }) => {
         try {
             // Send PUT request to update the quantity
             await axios.put(
-                `http://192.168.198.195:5454/api/cart_items/${id}`,
+                `http://172.16.1.240:4000/api/cart_items/${id}`,
                 { quantity: newQuantity },
                 {
                     headers: {
@@ -132,7 +132,7 @@ const CartPage = ({ navigation }) => {
         const token = await AsyncStorage.getItem('token'); // Replace with your token retrieval logic
 
         try {
-            await axios.delete(`http://192.168.198.195:5454/api/cart_items/${id}`, {
+            await axios.delete(`http://172.16.1.240:4000/api/cart_items/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

@@ -10,7 +10,7 @@ import {
     ToastAndroid
 } from "react-native";
 import ContactTopBar from "../components/ContactTopBar";
-import CustomTopBar from '../components/CustomTopBar';
+import CustomTopBar from '../components/topBar/CustomTopBar';
 const ContactUs = ({ navigation }) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");

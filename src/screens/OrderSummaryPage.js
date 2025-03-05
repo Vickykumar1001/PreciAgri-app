@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay';
-import CustomTopBar from '../components/CustomTopBar';
+import CustomTopBar from '../components/topBar/CustomTopBar';
 const OrderSummaryPage = ({ navigation, route }) => {
     const { orderItems, shippingAddress, totalPrice, totalDiscountedPrice, totalItem } = route.params.order;
 

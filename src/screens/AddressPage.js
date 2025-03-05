@@ -39,7 +39,7 @@ const AddAddressPage = ({ navigation }) => {
 
         try {
             const token = await AsyncStorage.getItem('token');
-            const response = await axios.post('http://192.168.198.195:5454/api/users/address', payload, {
+            const response = await axios.post('http://172.16.1.240:4000/api/users/address', payload, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (response.status === 200 || response.status === 201) {

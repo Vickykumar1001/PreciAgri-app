@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import CustomTopBar from '../components/CustomTopBar';
+import CustomTopBar from '../components/topBar/CustomTopBar';
 const SellerOrdersPage = (navigation) => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ const SellerOrdersPage = (navigation) => {
                     return;
                 }
 
-                const response = await axios.get('http://192.168.198.195:5454/api/seller/orders', {
+                const response = await axios.get('http://172.16.1.240:4000/api/seller/orders', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 

@@ -14,7 +14,7 @@ import { Icon, Rating } from 'react-native-elements';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ProductCardMini from './ProductCardMini';
+import ProductCardMini from '../components/product/ProductCardMini';
 import ReviewComponent from '../components/Review';
 
 const ProductDetailScreen = ({ navigation, route }) => {
@@ -31,19 +31,19 @@ const ProductDetailScreen = ({ navigation, route }) => {
             try {
                 // Fetch Seller Data
                 const token = await AsyncStorage.getItem('token');
-                const response = await axios.get(`http://192.168.198.195:5454/api/users/sellerDetail/${product.sellerId}`, {
+                const response = await axios.get(`http://172.16.1.240:4000/api/users/sellerDetail/${product.sellerId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
                     },
                 });
                 setSeller(response.data);
-                const products = await axios.get(`http://192.168.198.195:5454/api/products`, {
+                const products = await axios.get(`http://172.16.1.240:4000/api/products`, {
                     headers: {
                         Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
                     },
                 });
                 setAllProducts(products.data.content);
-                const wishlistResponse = await axios.get(`http://192.168.198.195:5454/api/wishlist`, {
+                const wishlistResponse = await axios.get(`http://172.16.1.240:4000/api/wishlist`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setWishlist(new Set(wishlistResponse.data));
@@ -76,7 +76,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
             if (wishlist.has(product._id)) {
                 // Remove from wishlist
-                await axios.delete(`http://192.168.198.195:5454/api/wishlist`, {
+                await axios.delete(`http://172.16.1.240:4000/api/wishlist`, {
                     headers: { Authorization: `Bearer ${token}` },
                     data: { productId: product._id },
                 });
@@ -88,7 +88,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
             } else {
                 // Add to wishlist
                 await axios.post(
-                    `http://192.168.198.195:5454/api/wishlist`,
+                    `http://172.16.1.240:4000/api/wishlist`,
                     { productId: product._id },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
@@ -106,7 +106,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
             const token = await AsyncStorage.getItem('token'); // Fetch the token from AsyncStorage
 
             const response = await axios.put(
-                'http://192.168.198.195:5454/api/cart/add',
+                'http://172.16.1.240:4000/api/cart/add',
                 {
                     productId: product._id,
                     sizeIndx: selectedSize,

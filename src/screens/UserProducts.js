@@ -4,7 +4,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import CustomTopBar from '../components/CustomTopBar';
+import CustomTopBar from '../components/topBar/CustomTopBar';
 export default function UserProducts({ navigation }) {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -14,7 +14,7 @@ export default function UserProducts({ navigation }) {
     const fetchProducts = async () => {
         try {
             const token = await AsyncStorage.getItem('token');
-            const response = await axios.get('http://192.168.198.195:5454/api/users/my-products', {
+            const response = await axios.get('http://172.16.1.240:4000/api/users/my-products', {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setProducts(response.data.products);

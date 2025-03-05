@@ -5,7 +5,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CustomTopBar from '../components/CustomTopBar';
+import CustomTopBar from '../components/topBar/CustomTopBar';
 
 export default function AddPost({ navigation }) {
     const [images, setImages] = useState([]); // For preview of selected images
@@ -81,7 +81,7 @@ export default function AddPost({ navigation }) {
             formData.append('thirdLevelCategory', thirdLevelCategory);
             formData.append('sizes', JSON.stringify(sizes));
 
-            await axios.post("http://192.168.198.195:5454/api/admin/products", formData, {
+            await axios.post("http://172.16.1.240:4000/api/admin/products", formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',

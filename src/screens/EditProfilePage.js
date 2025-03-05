@@ -4,8 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { FontAwesome } from '@expo/vector-icons';
-import ProfileTopBar from '../components/ProfileTopBar';
-import CustomTopBar from '../components/CustomTopBar';
+import CustomTopBar from '../components/topBar/CustomTopBar';
 const profileIcon = require('../assets/images/user-icon.png');
 export default function EditProfilePage({ route, navigation }) {
     const { profileData } = route.params
@@ -19,7 +18,7 @@ export default function EditProfilePage({ route, navigation }) {
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.put(
-                'http://192.168.198.195:5454/api/users/profile/edit',
+                'http://172.16.1.240:4000/api/users/profile/edit',
                 { firstName, lastName, mobile: contactNumber },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
