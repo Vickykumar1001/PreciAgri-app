@@ -1,186 +1,46 @@
-import React, { useState } from 'react';
-import {
-    View, Text, TextInput, Image, Button, FlatList, ScrollView, TouchableOpacity, StyleSheet
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import Banner from "../Shared/Banner"
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import TopBar from '../components/TopBar';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import ProductCardMini from './ProductCardMini';
 import FooterNavigation from '../components/FooterNavigation';
-import { useEffect } from 'react';
-import axios from 'axios';
-const HomePage = ({ navigation }) => {
-    const [search, setSearch] = useState('');
+import Banner from '../components/home/Banner';
+import Categories from '../components/home/Categories';
+import Services from '../components/home/Services';
+import ProductList from '../components/product/ProductList';
+import customFetch from '../utils/axios';
 
-    const [role, setRole] = useState(null);
-    const [allProducts, setProducts] = useState([]);
+const HomePage = ({ navigation }) => {
+    const [allProducts, setAllProducts] = useState([]);
 
     useEffect(() => {
-        // Async function to fetch role and products
-        const fetchData = async () => {
+        // Fetch all products for different sections
+        const fetchProducts = async () => {
             try {
-                // Retrieve role from AsyncStorage
-                const storedRole = await AsyncStorage.getItem('role');
-                if (storedRole !== null) {
-                    setRole(storedRole); // Set the role state
-                }
-
-                // Retrieve token from AsyncStorage for the API request
-                const token = await AsyncStorage.getItem('token');
-                if (token) {
-                    // If token is available, fetch products from the API
-                    const response = await axios.get('http://192.168.198.195:5454/api/products', {
-                        headers: {
-                            Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
-                        },
-                    });
-                    setProducts(response.data.content); // Set the products in state
-                } else {
-                    setError('Token not found');
+                const response = await customFetch.get('/products/searchProducts/search?query= &limit=15');
+                if (response.status === 200) {
+                    setAllProducts(response.data.products);
                 }
             } catch (error) {
-                console.error('Error fetching data:', error);
-                setError('Failed to fetch data');
+                console.error('Error fetching products:', error);
             }
         };
-
-        fetchData(); // Call the async function to fetch role and products
+        fetchProducts();
     }, []);
-    const categories = [
-        { id: '1', name: 'Seeds', image: require('../assets/images/seed.png') },
-        { id: '2', name: 'Fertilizer', image: require('../assets/images/fertilizer.png') },
-        { id: '3', name: 'Pesticide', image: require('../assets/images/pesticide.png') },
-        { id: '4', name: 'Irrigation', image: require('../assets/images/irrigation.png') },
-        { id: '5', name: 'Tools', image: require('../assets/images/tools.png') },
-        { id: '6', name: 'Machinery', image: require('../assets/images/machinery.png') },
-        { id: '7', name: 'Mulch & Covering', image: require('../assets/images/mulch.png') },
-    ];
-
-    const services = [
-        { id: '1', name: 'Weather', image: require('../assets/images/weather.png') },
-        { id: '2', name: 'Loans ', image: require('../assets/images/loan.png') },
-        { id: '5', name: 'Shop', image: require('../assets/images/shop.png') },
-        { id: '7', name: 'FarmingTips', image: require('../assets/images/tips.png') },
-        { id: '3', name: 'Market-price', image: require('../assets/images/market.png') },
-        // { id: '4', name: 'Crop Insurance', image: require('../assets/images/insurance.png') },
-        // { id: '9', name: 'Soil Testing', image: require('../assets/images/soil.png') },
-    ];
-    const handleCategoryPress = (category) => {
-        if (category.name === 'Weather') {
-            navigation.navigate('Weather');
-            return;
-        }
-        if (category.name === 'FarmingTips') {
-
-            navigation.navigate('FarmingTips');
-            return;
-        }
-        navigation.navigate('Shop', { category: category.name });
-    };
-    const handleProductPress = (product) => {
-        navigation.navigate('ProductDetail', { product });
-    };
 
     return (
-        <><TopBar navigation={navigation} />
+        <>
+            <TopBar navigation={navigation} />
             <View style={styles.container}>
-                {/* Top Bar with Cart Icon */}
-                {/* <View style={styles.topBar}>
-                <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.openDrawer()}>
-                    <Ionicons name="menu" size={28} color="#333" />
-                </TouchableOpacity>
-                <Text style={[styles.appTitle, { color: '#4A90E2' }]}>Preci</Text>
-                <Text style={[styles.appTitle, { color: '#4CAF50' }]}>Agri</Text>
-                <View style={styles.icons}>
-                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('search')}>
-                        <Ionicons name="search" size={28} color="#333" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('notification')}>
-                        <Ionicons name="notifications" size={28} color="#333" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Wishlist')}>
-                        <Ionicons name="heart" size={28} color="#333" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Cart')}>
-                        <Ionicons name="cart" size={28} color="#333" />
-                    </TouchableOpacity>
-                </View>
-            </View> */}
-
-
-                {/* Search Bar */}
-                {/* <View style={styles.searchContainer}>
-                <Ionicons name="search" size={20} color="#777" />
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search for fresh produce..."
-                    value={search}
-                    onChangeText={(text) => setSearch(text)}
-                />
-            </View> */}
                 <ScrollView>
                     <Banner />
-                    {/* Categories Section */}
-                    <Text style={styles.sectionTitle}>Categories</Text>
-                    <FlatList
-                        style={styles.iconList}
-                        data={categories}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity style={styles.categoryCard} onPress={() => handleCategoryPress(item)}>
-                                <Image source={item.image} style={styles.categoryImage} />
-                                <Text style={styles.categoryName}>{item.name}</Text>
-                            </TouchableOpacity>
-                        )}
-                    />
-                    <Text style={styles.sectionTitle}>Services</Text>
-                    <FlatList
-                        data={services}
-                        horizontal
-                        style={styles.iconList}
-                        showsHorizontalScrollIndicator={false}
-                        keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity style={styles.categoryCard} onPress={() => handleCategoryPress(item)}>
-                                <Image source={item.image} style={styles.categoryImage} />
-                                <Text style={styles.categoryName}>{item.name}</Text>
-                            </TouchableOpacity>
-                        )}
-                    />
-
-                    {/* Featured Products Section */}
-                    <Text style={styles.sectionTitle}>Featured Products</Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        {allProducts.map((product) => (
-                            <TouchableOpacity
-                                key={product._id}
-
-                                onPress={() => handleProductPress(product)}
-                            >
-                                <ProductCardMini navigation={navigation} product={product} />
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                    <Text style={styles.sectionTitle}>Most Selling Products</Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        {allProducts.map((product) => (
-                            <TouchableOpacity
-                                key={product._id}
-                                onPress={() => handleProductPress(product)}
-                            >
-                                <ProductCardMini navigation={navigation} product={product} />
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-
+                    <Categories navigation={navigation} />
+                    <Services navigation={navigation} />
+                    <ProductList title="📌 Featured Products" products={allProducts} navigation={navigation} />
+                    <ProductList title="🔥 Most selling product" products={allProducts} navigation={navigation} />
+                    <ProductList title="🆕 New Arrivals" products={allProducts} navigation={navigation} />
+                    <ProductList title="🎯 Deals & Discounts" products={allProducts} navigation={navigation} />
+                    <ProductList title="🔄 Continue Your Search.." products={allProducts} navigation={navigation} />
                 </ScrollView>
-
-                {/* Footer Navigation */}
-
-                <FooterNavigation navigation={navigation} activePage={"Home"} role={role} />
+                <FooterNavigation navigation={navigation} activePage="Home" />
             </View>
         </>
     );
@@ -189,109 +49,7 @@ const HomePage = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
-        // paddingTop: 5,
-    },
-    icons: {
-        padding: 5,
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
-    appTitle: {
-        marginLeft: -70,
-        marginHorizontal: 0,
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#4CAF50',
-    },
-    searchContainer: {
-        flexDirection: 'row',
-        backgroundColor: '#FFF',
-        borderRadius: 8,
-        padding: 10,
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    searchInput: {
-        flex: 1,
-        marginLeft: 10,
-        fontSize: 16,
-    },
-    sectionTitle: {
-        marginTop: 15,
-        paddingLeft: 8,
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    iconList: {
-        backgroundColor: '#F0FDF0',
-        paddingVertical: 14,
-    },
-    categoryCard: {
-        width: 95,
-        marginRight: 15,
-        alignItems: 'center',
-        backgroundColor: "#DAF9DA",
-        paddingHorizontal: 3,
-        paddingVertical: 7,
-        borderRadius: 15,
-    },
-    categoryImage: {
-        width: 45,
-        height: 45,
-        borderRadius: 8,
-        marginBottom: 5,
-    },
-    categoryName: {
-        fontSize: 15,
-    },
-    productCard: {
-        width: 150,
-        backgroundColor: '#FFF',
-        borderRadius: 8,
-        padding: 10,
-        marginRight: 15,
-        alignItems: 'center',
-    },
-    productImage: {
-        width: 100,
-        height: 100,
-        marginBottom: 10,
-    },
-    productName: {
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    productPrice: {
-        fontSize: 14,
-        color: '#777',
-    },
-    farmerCard: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#FFF',
-        padding: 10,
-        marginBottom: 10,
-        borderRadius: 8,
-    },
-    farmerName: {
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    farmerLocation: {
-        fontSize: 14,
-        color: '#777',
-    },
-    footer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        paddingVertical: 10,
-        backgroundColor: '#FFF',
-    },
-    footerText: {
-        fontSize: 14,
-        color: '#777',
+        backgroundColor: 'white',
     },
 });
 
