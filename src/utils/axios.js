@@ -7,9 +7,8 @@ const customFetch = axios.create({
 
 // Request Interceptor: Attach Authorization Token
 customFetch.interceptors.request.use(
-    (config) => {
-        const user = getUserFromLocalStorage() // Retrieve user data
-        console.log("user", user)
+    async (config) => {
+        const user = await getUserFromLocalStorage() // Retrieve user data
         if (user) {
             config.headers['Authorization'] = `Bearer ${user.token}`
         }

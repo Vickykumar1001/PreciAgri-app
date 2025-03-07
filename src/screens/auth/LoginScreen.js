@@ -42,7 +42,6 @@ export default function LoginScreen({ navigation }) {
           text2: 'Welcome back!',
         });
         const data = response.data;
-        console.log(data)
         const user = {
           id: data.user._id,
           name: data.user.Name,

@@ -7,7 +7,7 @@ const LogoutScreen = ({ navigation }) => {
         const logout = async () => {
             try {
                 // Clear the token from AsyncStorage
-                await AsyncStorage.removeItem('token');
+                await AsyncStorage.removeItem('user');
                 // Redirect to StartScreen after logout
                 navigation.navigate('StartScreen');  // `replace` to remove LogoutScreen from stack
             } catch (error) {
