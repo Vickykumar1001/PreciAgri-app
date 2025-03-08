@@ -1,44 +1,49 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons'; // Make sure to install react-native-vector-icons or @expo/vector-icons
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 
-const ReviewComponent = ({ ratings }) => {
+/**
+ * RatingComponent
+ * Displays customer rating statistics including average rating and rating distribution.
+ *
+ * @param {Object} ratings - The ratings data containing:
+ *  - distribution: Object showing number of ratings per star level
+ *  - average: Number representing the average rating
+ *  - count: Total number of ratings
+ */
+const RatingComponent = ({ ratings }) => {
+
+    // Extract data from ratings prop
     const { distribution, average, count } = ratings;
-
-    const totalRatings = count; // Total number of ratings
-    const rating = average.toFixed(1); // Average rating
+    const totalRatings = count || 0; // Total number of ratings
+    const rating = average ? average.toFixed(1) : "0.0"; // Format average rating
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Satisfied Customer Reviews</Text>
-            <TouchableOpacity style={styles.reviewButton}>
-                <Text style={styles.reviewButtonText}>WRITE REVIEW</Text>
-            </TouchableOpacity>
+            <Text style={styles.title}>Customer Ratings</Text>
+
+            {/* Average Rating Display */}
             <View style={styles.ratingContainer}>
                 <View style={styles.ratingInfo}>
                     <View style={styles.ratingBox}>
                         <Text style={styles.ratingText}>{rating}</Text>
                         <FontAwesome name="star" size={20} color="white" />
                     </View>
-                    <Text style={styles.totalRatings}>{totalRatings} Satisfied Ratings</Text>
+                    <Text style={styles.totalRatings}>{totalRatings} Ratings</Text>
                 </View>
+
+                {/* Star Ratings Breakdown */}
                 <View style={styles.starsContainer}>
                     {Object.entries(distribution)
-                        .reverse() // Start with 5 stars at the top
+                        .reverse() // Ensure 5 stars at the top
                         .map(([starLevel, starCount], index) => {
-                            const percentage =
-                                totalRatings > 0 ? (starCount / totalRatings) * 100 : 0;
+                            const percentage = totalRatings > 0 ? (starCount / totalRatings) * 100 : 0;
                             return (
                                 <View key={index} style={styles.starRow}>
                                     <Text style={styles.starLabel}>{starLevel}</Text>
                                     <FontAwesome name="star" size={16} color="black" />
                                     <View style={styles.progressBar}>
-                                        <View
-                                            style={[
-                                                styles.progressBarFilled,
-                                                { width: `${percentage}%` },
-                                            ]}
-                                        />
+                                        <View style={[styles.progressBarFilled, { width: `${percentage}%` }]} />
                                     </View>
                                     <Text style={styles.starCount}>{starCount}</Text>
                                 </View>
@@ -57,24 +62,15 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         elevation: 4,
         alignItems: 'center',
+        marginVertical: 10,
     },
     title: {
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 8,
     },
-    reviewButton: {
-        backgroundColor: '#007AFF',
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 8,
-        marginBottom: 16,
-    },
-    reviewButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
     ratingContainer: {
+        paddingTop: 10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -129,6 +125,15 @@ const styles = StyleSheet.create({
         width: 20,
         textAlign: 'right',
     },
+    loadingContainer: {
+        padding: 16,
+        alignItems: 'center',
+    },
+    loadingText: {
+        marginTop: 8,
+        fontSize: 16,
+        color: '#4CAF50',
+    },
 });
 
-export default ReviewComponent;
+export default RatingComponent;

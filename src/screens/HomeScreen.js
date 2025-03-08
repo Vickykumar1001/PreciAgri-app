@@ -21,11 +21,11 @@ const HomePage = ({ navigation }) => {
     const fetchProducts = useCallback(async () => {
         try {
             const urls = {
-                featured: '/products/searchProducts/search?query= &limit=15',
-                mostSelling: '/products/searchProducts/search?query= &limit=15&page=2',
-                newArrival: '/products/searchProducts/search?query= &limit=15&page=3',
-                deals: '/products/searchProducts/search?query= &limit=15&page=4',
-                searched: '/products/searchProducts/search?query= &limit=15&page=5'
+                featured: '/products/filterandSortProducts?maxPrice=1000&page=4',
+                mostSelling: '/products/filterandSortProducts?page=2',
+                newArrival: '/products/filterandSortProducts?sortBy=-createdAt',
+                deals: '/products/filterandSortProducts?maxDiscount=30',
+                searched: '/products/filterandSortProducts?page=5'
             };
 
             const requests = Object.entries(urls).map(async ([key, url]) => {
@@ -44,7 +44,6 @@ const HomePage = ({ navigation }) => {
             console.error('Error fetching products:', error);
         }
     }, []);
-
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts]);

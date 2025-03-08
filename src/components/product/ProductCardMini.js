@@ -4,8 +4,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 const ProductCardMini = ({ navigation, product }) => {
     // console.log(product)
-    const defaultSize = product.price_size[0];
-    const primaryImageUrl = product.images[0];
+    const defaultSize = product.price_size;
+    const primaryImageUrl = product.images;
 
     // Calculating discount percentage and amount
     const discountPercentage = Math.ceil(
@@ -16,28 +16,29 @@ const ProductCardMini = ({ navigation, product }) => {
     return (
         <TouchableOpacity
             style={styles.card}
-            onPress={() => navigation.navigate('ProductDetail', { product: product })}
+            onPress={() => navigation.navigate('ProductDetail', { productId: product._id })}
         >
             {/* Product Image */}
             <Image source={{ uri: primaryImageUrl }} style={styles.productImage} />
 
             {/* Product Name */}
-            <Text style={styles.productName}>{product.name?.slice(0, 20) + "..."}</Text>
+            <Text style={styles.productName}>{product.name.length > 20 ? (product.name.slice(0, 18) + "...") : product.name}</Text>
 
             {/* Price and Discount */}
             <View style={styles.priceContainer}>
-                <Text style={styles.currentPrice}>₹{defaultSize.discountedPrice}</Text>
-                <Text style={styles.originalPrice}>₹{defaultSize.price}</Text>
                 <Ionicons name="arrow-down" size={16} color="green" />
                 <Text style={styles.discountText}>{discountPercentage}%</Text>
+                <Text style={styles.originalPrice}>₹{defaultSize.price}</Text>
+                <Text style={styles.currentPrice}>₹{defaultSize.discountedPrice}</Text>
             </View>
 
             {/* Rating and Discount Amount */}
-            {/* <View style={styles.ratingContainer}>
+            <View style={styles.ratingContainer}>
                 <Ionicons name="star" size={16} color="#FFD700" />
-                <Text style={styles.rating}>{product.ratings.average.toFixed(1)}</Text>
-                <Text style={styles.discountAmount}>Discount: ₹{discountAmount}</Text>
-            </View> */}
+                <Text style={styles.rating}>{product.avgRating.toFixed(1)}</Text>
+                <Text style={styles.size}>({product.price_size.size})</Text>
+                {/* <Text style={styles.discountAmount}>Discount: ₹{discountAmount}</Text> */}
+            </View>
         </TouchableOpacity>
     );
 };
@@ -87,7 +88,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#000',
-        marginRight: 10,
+        marginLeft: 10,
+
     },
     originalPrice: {
         fontSize: 12,
@@ -106,6 +108,12 @@ const styles = StyleSheet.create({
     },
     discountAmount: {
         color: 'red',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    size: {
+        paddingLeft: 5,
+        color: '#424748',
         fontWeight: 'bold',
         textAlign: 'center',
     },

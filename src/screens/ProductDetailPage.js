@@ -9,20 +9,25 @@ import {
     StyleSheet,
     Dimensions,
 } from 'react-native';
-import { ToastAndroid, ActivityIndicator } from 'react-native'; // For Android Toast messages
 import { Icon, Rating } from 'react-native-elements';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductCardMini from '../components/product/ProductCardMini';
-import ReviewComponent from '../components/Review';
+import RatingComponent from '../components/rating/Rating';
+import customFetch from '../utils/axios';
+import { ActivityIndicator } from 'react-native-paper';
+import { WebView } from 'react-native-webview';
+import ProductReviews from '../components/rating/Review';
+import ProductList from '../components/product/ProductList';
 
 const ProductDetailScreen = ({ navigation, route }) => {
-    const { product } = route.params; // Product ID passed from route
-    const [seller, setSeller] = useState(null); // State to store seller details
+    const { productId } = route.params; // Product ID passed from route
+    // console.log("productID:", productId)
+    const [product, setProduct] = useState()
     const [quantity, setQuantity] = useState(1); // Start with quantity of 1
     const [wishlist, setWishlist] = useState(new Set()); // Wishlist state
-    const [allProducts, setAllProducts] = useState([]); // All products
+    const [similarProducts, setSimilarProducts] = useState([]); // All products
     const [selectedSize, setSelectedSize] = useState(0);
     const [loading, setLoading] = useState(true);
     // Fetch Product Data
@@ -31,25 +36,19 @@ const ProductDetailScreen = ({ navigation, route }) => {
             try {
                 // Fetch Seller Data
                 const token = await AsyncStorage.getItem('token');
-                const response = await axios.get(`http://172.16.1.240:4000/api/users/sellerDetail/${product.sellerId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
-                    },
-                });
-                setSeller(response.data);
-                const products = await axios.get(`http://172.16.1.240:4000/api/products`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
-                    },
-                });
-                setAllProducts(products.data.content);
-                const wishlistResponse = await axios.get(`http://172.16.1.240:4000/api/wishlist`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setWishlist(new Set(wishlistResponse.data));
+                const response = await customFetch.get(`/products/getproductbyId/${productId}`);
+                setProduct(response.data.product);
+                // console.log(response.data.product)
+                const products = await customFetch.get(`products/filterandSortProducts?category=${response.data.product.category}`);
+                setSimilarProducts(products.data.products);
+                // const wishlistResponse = await axios.get(`http://172.16.1.240:4000/api/wishlist`, {
+                //     headers: { Authorization: `Bearer ${token}` },
+                // });
+                // setWishlist(new Set(wishlistResponse.data));
             } catch (error) {
                 console.error("Error fetching product or seller data:", error);
             } finally {
+
                 setLoading(false);
             }
         };
@@ -66,38 +65,38 @@ const ProductDetailScreen = ({ navigation, route }) => {
     };
 
     // Toggle Wishlist
-    const toggleWishlist = async () => {
-        try {
-            const token = await AsyncStorage.getItem('token');
-            if (!token) {
-                console.error('Token not found');
-                return;
-            }
+    // const toggleWishlist = async () => {
+    //     try {
+    //         const token = await AsyncStorage.getItem('token');
+    //         if (!token) {
+    //             console.error('Token not found');
+    //             return;
+    //         }
 
-            if (wishlist.has(product._id)) {
-                // Remove from wishlist
-                await axios.delete(`http://172.16.1.240:4000/api/wishlist`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    data: { productId: product._id },
-                });
-                setWishlist((prev) => {
-                    const newWishlist = new Set(prev);
-                    newWishlist.delete(product._id);
-                    return newWishlist;
-                });
-            } else {
-                // Add to wishlist
-                await axios.post(
-                    `http://172.16.1.240:4000/api/wishlist`,
-                    { productId: product._id },
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-                setWishlist((prev) => new Set(prev).add(product._id));
-            }
-        } catch (error) {
-            console.error('Error updating wishlist:', error);
-        }
-    };
+    //         if (wishlist.has(product._id)) {
+    //             // Remove from wishlist
+    //             await axios.delete(`http://172.16.1.240:4000/api/wishlist`, {
+    //                 headers: { Authorization: `Bearer ${token}` },
+    //                 data: { productId: product._id },
+    //             });
+    //             setWishlist((prev) => {
+    //                 const newWishlist = new Set(prev);
+    //                 newWishlist.delete(product._id);
+    //                 return newWishlist;
+    //             });
+    //         } else {
+    //             // Add to wishlist
+    //             await axios.post(
+    //                 `http://172.16.1.240:4000/api/wishlist`,
+    //                 { productId: product._id },
+    //                 { headers: { Authorization: `Bearer ${token}` } }
+    //             );
+    //             setWishlist((prev) => new Set(prev).add(product._id));
+    //         }
+    //     } catch (error) {
+    //         console.error('Error updating wishlist:', error);
+    //     }
+    // };
 
 
 
@@ -145,7 +144,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 {/* Product Images */}
                 <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false}>
-                    {product.imagesUrl.map((url, index) => (
+                    {product.images.map((url, index) => (
                         <Image key={index} source={{ uri: url }} style={styles.productImage} />
                     ))}
                 </ScrollView>
@@ -155,7 +154,8 @@ const ProductDetailScreen = ({ navigation, route }) => {
                     <Ionicons name="arrow-back" size={28} color="black" />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.wishlistIcon} onPress={toggleWishlist}>
+                <TouchableOpacity style={styles.wishlistIcon} >
+                    {/* onPress={toggleWishlist} */}
                     <Ionicons
                         name={wishlist.has(product._id) ? "heart" : "heart-outline"}
                         size={28}
@@ -165,8 +165,8 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
                 {/* Product Info Section */}
                 <View style={styles.productInfo}>
-                    <Text style={styles.productName}>{product.title}</Text>
-                    <View style={styles.ratingRow}>
+                    <Text style={styles.productName}>{product.name}</Text>
+                    {/* <View style={styles.ratingRow}>
                         <Rating
                             imageSize={20}
                             readonly
@@ -176,14 +176,14 @@ const ProductDetailScreen = ({ navigation, route }) => {
                             type="star"
                         />
                         <Text style={styles.ratingCount}>({product.ratings.count} reviews)</Text>
-                    </View>
+                    </View> */}
                     <View style={styles.priceSection}>
-                        <Text style={styles.originalPrice}>₹{product.sizes[selectedSize]?.price}</Text>
-                        <Text style={styles.currentPrice}>₹{product.sizes[selectedSize]?.discountedPrice}</Text>
+                        <Text style={styles.originalPrice}>₹{product.price_size[selectedSize]?.price}</Text>
+                        <Text style={styles.currentPrice}>₹{product.price_size[selectedSize]?.discountedPrice}</Text>
                         <Text style={styles.discount}>
                             {Math.round(
-                                ((product.sizes[selectedSize]?.price - product.sizes[selectedSize]?.discountedPrice) /
-                                    product.sizes[selectedSize]?.price) *
+                                ((product.price_size[selectedSize]?.price - product.price_size[selectedSize]?.discountedPrice) /
+                                    product.price_size[selectedSize]?.price) *
                                 100
                             )}
                             % OFF
@@ -194,7 +194,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
                     <View style={styles.sizeSection}>
                         <Text style={styles.sectionLabel}>Select Size:</Text>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.sizeContainer}>
-                            {product.sizes.map((size, index) => (
+                            {product.price_size.map((size, index) => (
                                 <TouchableOpacity
                                     key={size._id}
                                     style={[
@@ -211,7 +211,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
                                             selectedSize === index && styles.selectedSizeText, // Change text style for selected size
                                         ]}
                                     >
-                                        {size.name}
+                                        {size.size}
                                     </Text>
                                 </TouchableOpacity>
                             ))}
@@ -232,54 +232,53 @@ const ProductDetailScreen = ({ navigation, route }) => {
                 </View>
 
                 {/* Product Description Section */}
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Product Description</Text>
-                    <View style={styles.descriptionCard}>
-                        <Text style={styles.descriptionText}>{product.description}</Text>
+                <ScrollView>
+                    <View style={{ padding: 16, }} >
+                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Product Description</Text>
+                        {product.description ? (
+                            <View style={{ minHeight: 300, marginTop: 10 }}>
+                                <WebView
+                                    originWhitelist={['*']}
+                                    source={{
+                                        html: `
+            <html>
+                <head>
+                    <style>
+                        body { font-size: 3rem; padding: 10px; line-height: 1.6; }
+                    </style>
+                </head>
+                <body>
+                    ${product.description}
+                </body>
+            </html>
+        `
+                                    }}
+                                    javaScriptEnabled={true}
+                                />
+                            </View>
+                        ) : (
+                            <Text>No description available</Text>
+                        )}
                     </View>
-                </View>
+                </ScrollView>
 
                 {/* Seller Info Section */}
                 <View style={styles.sellerInfo}>
                     <Text style={styles.sellerLabel}>Seller Information</Text>
-                    <Text style={styles.sellerName}>Name: {seller.businessName}</Text>
-                    <Text style={styles.sellerAddress}>
+                    <Text style={styles.sellerName}>{product.fullShopDetails}</Text>
+                    {/* <Text style={styles.sellerAddress}>
                         Address: {`${seller.streetAddress}, ${seller.city}, ${seller.state}, ${seller.zipCode}`}
-                    </Text>
+                    </Text> */}
                 </View>
                 {/* Customer Reviews Section */}
                 <Text style={styles.sectionTitle}>Ratings & Reviews</Text>
-                <View style={styles.reviewSection}>
-                    <ReviewComponent ratings={product.ratings} />
-                    {/* {product.reviews.map((review, index) => (
-                        <View key={index} style={styles.reviewCard}>
-                            <Rating
-                                imageSize={15}
-                                readonly
-                                startingValue={review.rating}
-                                style={styles.reviewRating}
-                                tintColor="#f1ffff"
-                            />
-                            <Text style={styles.reviewDate}>{review.date}</Text>
-                            <Text style={styles.reviewerName}>{review.name}</Text>
-                            <Text style={styles.reviewText}>{review.comment}</Text>
-                        </View>
-                    ))} */}
-                </View>
-                {/* Similar Products Section */}
-                {allProducts && <><Text style={styles.sectionTitle}>Similar Products</Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        {allProducts.map((product) => (
-                            <TouchableOpacity
-                                key={product._id}
+                {/* <View style={styles.reviewSection}> */}
+                <RatingComponent ratings={product.ratings} />
+                <ProductReviews productId={product._id} />
 
-                                onPress={() => handleProductPress(product)}
-                            >
-                                <ProductCardMini navigation={navigation} product={product} />
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                </>}
+                {/* </View> */}
+                {/* Similar Products Section */}
+                {similarProducts && <ProductList title="Similar Products" products={similarProducts} navigation={navigation} />}
             </ScrollView>
 
             {/* Footer Buttons */}
@@ -298,16 +297,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        padding: 7,
     },
     scrollContent: {
         paddingBottom: 100,
     },
     productImage: {
-        width: Dimensions.get('window').width - 45,
+        width: Dimensions.get('window').width - 40,
         height: 300,
-        borderRadius: 15,
-        marginHorizontal: 15,
+        // borderRadius: 15,
         backgroundColor: '#fff',
         resizeMode: 'contain'
     },
@@ -333,7 +330,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 20,
     },
     productName: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 8,
         color: '#333',
@@ -398,6 +395,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
     },
     sectionTitle: {
+        paddingLeft: 15,
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 8,
