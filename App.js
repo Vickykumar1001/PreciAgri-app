@@ -10,6 +10,7 @@ import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { theme } from './src/core/theme';
 import Toast from 'react-native-toast-message';
+import AppProviders from './src/context/AppProviders';
 import {
   StartScreen,
   LoginScreen,
@@ -156,26 +157,28 @@ const App = () => {
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <Provider theme={theme}>
-          <NavigationContainer>
-            {isFirstLaunch ? (
-              <AppNavigator
-                isFirstLaunch={isFirstLaunch}
-                setIsFirstLaunch={setIsFirstLaunch}
-                isAuthenticated={isAuthenticated}
-              />
-            ) : (<Drawer.Navigator screenOptions={{ headerShown: false }} >
-              <Drawer.Screen name="Home" component={StackNav} initialParams={{ isAuthenticated }} />
-              <Drawer.Screen name="Profile" component={ProfilePage} />
-              <Drawer.Screen name="Wishlist" component={Wishlist} />
-              <Drawer.Screen name="Cart" component={CartPage} />
-              <Drawer.Screen name="About" component={AboutUs} />
-              <Drawer.Screen name="Contact-Us" component={ContactUs} />
-              <Drawer.Screen name="Logout" component={LogoutScreen} />
-            </Drawer.Navigator>
+          <AppProviders>
+            <NavigationContainer>
+              {isFirstLaunch ? (
+                <AppNavigator
+                  isFirstLaunch={isFirstLaunch}
+                  setIsFirstLaunch={setIsFirstLaunch}
+                  isAuthenticated={isAuthenticated}
+                />
+              ) : (<Drawer.Navigator screenOptions={{ headerShown: false }} >
+                <Drawer.Screen name="Home" component={StackNav} initialParams={{ isAuthenticated }} />
+                <Drawer.Screen name="Profile" component={ProfilePage} />
+                <Drawer.Screen name="Wishlist" component={Wishlist} />
+                <Drawer.Screen name="Cart" component={CartPage} />
+                <Drawer.Screen name="About" component={AboutUs} />
+                <Drawer.Screen name="Contact-Us" component={ContactUs} />
+                <Drawer.Screen name="Logout" component={LogoutScreen} />
+              </Drawer.Navigator>
 
-            )}
-            <Toast />
-          </NavigationContainer>
+              )}
+              <Toast />
+            </NavigationContainer>
+          </AppProviders>
         </Provider>
       </SafeAreaView>
     </SafeAreaProvider>

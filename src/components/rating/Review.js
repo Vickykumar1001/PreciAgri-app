@@ -94,7 +94,6 @@ const ReviewCard = ({ review }) => {
     );
 };
 
-// Styles (Aligned with RatingComponent for consistency)
 const styles = StyleSheet.create({
     container: {
         padding: 16,

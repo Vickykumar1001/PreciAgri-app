@@ -1,33 +1,50 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { WishlistContext } from '../../context/WishlistContext';
+import { CartContext } from '../../context/CartContext';
 
-const ProductCardWishlist = ({ product, onRemove }) => {
-    const size = product.sizes[0]; // Use the first size for simplicity
+const ProductCardWishlist = ({ product, navigation }) => {
+    console.log(product)
+    const { wishlist, toggleWishlist } = useContext(WishlistContext);
+    const { addToCart } = useContext(CartContext);
+
+    const isWishlisted = wishlist.has(product._id);
+    const size = product.price_size; // First size
     const discount = Math.ceil(((size.price - size.discountedPrice) / size.price) * 100);
     const discountAmount = size.price - size.discountedPrice;
+
     const handleRemove = () => {
         Alert.alert(
             'Remove Product',
             'Are you sure you want to remove this product from your wishlist?',
             [
                 { text: 'Cancel', style: 'cancel' },
-                { text: 'Remove', onPress: () => onRemove(product._id) },
+                { text: 'Remove', onPress: () => toggleWishlist(product._id) },
             ]
         );
     };
+
     return (
         <View style={styles.card}>
             {/* Wishlist Icon */}
-            <TouchableOpacity style={styles.wishlistIcon} onPress={handleRemove}>
-                <Ionicons name="heart" size={28} color="red" />
+            <TouchableOpacity style={styles.wishlistIcon} onPress={() => toggleWishlist(product._id)}>
+                <Ionicons
+                    name={isWishlisted ? "heart" : "heart-outline"}
+                    size={28}
+                    color="red"
+                />
             </TouchableOpacity>
 
             {/* Product Image */}
-            <Image source={{ uri: product.imagesUrl[0] }} style={styles.productImage} />
+            <TouchableOpacity onPress={() => navigation.navigate('ProductDetail', { productId: product._id })}>
+                <Image source={{ uri: product.images }} style={styles.productImage} />
+            </TouchableOpacity>
 
             {/* Product Name */}
-            <Text style={styles.productName}>{product.title}</Text>
+            <Text style={styles.productName}>
+                {product.name.length > 20 ? product.name.slice(0, 18) + "..." : product.name}
+            </Text>
 
             {/* Price and Discount */}
             <View style={styles.priceContainer}>
@@ -40,9 +57,14 @@ const ProductCardWishlist = ({ product, onRemove }) => {
             {/* Ratings and Discount Amount */}
             <View style={styles.ratingContainer}>
                 <Ionicons name="star" size={16} color="#FFD700" />
-                <Text style={styles.rating}>{product.ratings.average.toFixed(1)}</Text>
-                <Text style={styles.discountAmount}>Discount: ₹{discountAmount}</Text>
+                <Text style={styles.rating}>{product.avgRating.toFixed(1)}</Text>
+                <Text style={styles.size}>({size.size})</Text>
             </View>
+
+            {/* Add to Cart Button */}
+            <TouchableOpacity style={styles.cartButton} onPress={() => addToCart(product._id)}>
+                <Text style={styles.cartButtonText}>Add to Cart</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -67,8 +89,9 @@ const styles = StyleSheet.create({
         top: 10,
         right: 10,
         zIndex: 2,
-        width: 30,
-        height: 30,
+        backgroundColor: '#ffffffa0',
+        padding: 5,
+        borderRadius: 20,
     },
     productImage: {
         width: '100%',
@@ -77,9 +100,9 @@ const styles = StyleSheet.create({
         marginBottom: 7,
     },
     productName: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'bold',
-        color: '#333',
+        color: '#1c2022',
         marginBottom: 3,
         textAlign: 'center',
     },
@@ -88,22 +111,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    currentPrice: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#000',
-        marginRight: 10,
-    },
-    originalPrice: {
-        fontSize: 12,
-        color: '#777',
-        textDecorationLine: 'line-through',
-    },
     discountText: {
         color: 'green',
         fontWeight: 'bold',
         fontSize: 12,
         paddingRight: 7,
+    },
+    currentPrice: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#000',
+        marginLeft: 10,
+    },
+    originalPrice: {
+        fontSize: 12,
+        color: '#777',
+        textDecorationLine: 'line-through',
     },
     ratingContainer: {
         flexDirection: 'row',
@@ -115,10 +138,24 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
         fontWeight: 'bold',
     },
-    discountAmount: {
-        color: 'red',
+    size: {
+        paddingLeft: 5,
+        color: '#424748',
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    cartButton: {
+        marginTop: 10,
+        backgroundColor: 'green',
+        paddingVertical: 5,
+        paddingHorizontal: 12,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    cartButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 14,
     },
 });
 

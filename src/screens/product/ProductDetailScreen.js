@@ -13,18 +13,19 @@ import { Icon, Rating } from 'react-native-elements';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ProductCardMini from '../components/product/ProductCardMini';
-import RatingComponent from '../components/rating/Rating';
-import customFetch from '../utils/axios';
+import ProductCardMini from '../../components/product/ProductCardMini';
+import RatingComponent from '../../components/rating/Rating';
+import customFetch from '../../utils/axios';
 import { ActivityIndicator } from 'react-native-paper';
 import { WebView } from 'react-native-webview';
-import ProductReviews from '../components/rating/Review';
-import ProductList from '../components/product/ProductList';
-import SellerInfo from '../components/productDetail/SellerInfo';
-import ProductImages from '../components/productDetail/Images';
-import ProductInfo from '../components/productDetail/ProductInfo';
-import SizeSelector from '../components/productDetail/SizeSelector';
-import QuantitySelector from '../components/productDetail/QuantitySelector';
+import ProductReviews from '../../components/rating/Review';
+import ProductList from '../../components/product/ProductList';
+import SellerInfo from '../../components/productDetail/SellerInfo';
+import ProductImages from '../../components/productDetail/Images';
+import ProductInfo from '../../components/productDetail/ProductInfo';
+import SizeSelector from '../../components/productDetail/SizeSelector';
+import QuantitySelector from '../../components/productDetail/QuantitySelector';
+import WishlistButton from '../../components/productDetail/Wishlist';
 
 const ProductDetailScreen = ({ navigation, route }) => {
     const { productId } = route.params; // Product ID passed from route
@@ -155,14 +156,15 @@ const ProductDetailScreen = ({ navigation, route }) => {
                     <Ionicons name="arrow-back" size={28} color="black" />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.wishlistIcon} >
-                    {/* onPress={toggleWishlist} */}
+                {/* <TouchableOpacity style={styles.wishlistIcon} >
+                    onPress={toggleWishlist}
                     <Ionicons
                         name={wishlist.has(product._id) ? "heart" : "heart-outline"}
                         size={28}
                         color="#E53935"
                     />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+                <WishlistButton productId={product._id} />
 
                 {/* Product Info Section */}
                 <View style={styles.productDetail}>
