@@ -20,6 +20,11 @@ import { ActivityIndicator } from 'react-native-paper';
 import { WebView } from 'react-native-webview';
 import ProductReviews from '../components/rating/Review';
 import ProductList from '../components/product/ProductList';
+import SellerInfo from '../components/productDetail/SellerInfo';
+import ProductImages from '../components/productDetail/Images';
+import ProductInfo from '../components/productDetail/ProductInfo';
+import SizeSelector from '../components/productDetail/SizeSelector';
+import QuantitySelector from '../components/productDetail/QuantitySelector';
 
 const ProductDetailScreen = ({ navigation, route }) => {
     const { productId } = route.params; // Product ID passed from route
@@ -143,11 +148,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 {/* Product Images */}
-                <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false}>
-                    {product.images.map((url, index) => (
-                        <Image key={index} source={{ uri: url }} style={styles.productImage} />
-                    ))}
-                </ScrollView>
+                <ProductImages images={product.images} />
 
                 {/* Back and Wishlist Icons */}
                 <TouchableOpacity style={styles.backIcon} onPress={() => navigation.goBack()}>
@@ -164,19 +165,20 @@ const ProductDetailScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
 
                 {/* Product Info Section */}
-                <View style={styles.productInfo}>
-                    <Text style={styles.productName}>{product.name}</Text>
-                    {/* <View style={styles.ratingRow}>
+                <View style={styles.productDetail}>
+                    <ProductInfo product={product} selectedSize={selectedSize} />
+                    <View style={styles.divider} />
+                    {/*<Text style={styles.productName}>{product.name}</Text>
+                    <View style={styles.ratingRow}>
                         <Rating
                             imageSize={20}
                             readonly
                             startingValue={product.ratings.average}
                             style={styles.rating}
-                            tintColor="#fff"
                             type="star"
                         />
                         <Text style={styles.ratingCount}>({product.ratings.count} reviews)</Text>
-                    </View> */}
+                    </View>
                     <View style={styles.priceSection}>
                         <Text style={styles.originalPrice}>₹{product.price_size[selectedSize]?.price}</Text>
                         <Text style={styles.currentPrice}>₹{product.price_size[selectedSize]?.discountedPrice}</Text>
@@ -188,10 +190,16 @@ const ProductDetailScreen = ({ navigation, route }) => {
                             )}
                             % OFF
                         </Text>
-                    </View>
+                    </View> */}
 
                     {/* Size Selector Section */}
-                    <View style={styles.sizeSection}>
+                    <SizeSelector
+                        priceSize={product.price_size}
+                        selectedSize={selectedSize}
+                        setSelectedSize={setSelectedSize}
+                    />
+                    <View style={styles.divider} />
+                    {/* <View style={styles.sizeSection}>
                         <Text style={styles.sectionLabel}>Select Size:</Text>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.sizeContainer}>
                             {product.price_size.map((size, index) => (
@@ -216,19 +224,16 @@ const ProductDetailScreen = ({ navigation, route }) => {
                                 </TouchableOpacity>
                             ))}
                         </ScrollView>
-                    </View>
+                    </View> */}
 
-                    {/* Quantity Selector Section */}
-                    <Text style={styles.sectionLabel}>Order Quantity:</Text>
-                    <View style={styles.quantitySection}>
-                        <TouchableOpacity onPress={() => handleQuantityChange('dec')}>
-                            <Ionicons name="remove-circle-outline" size={26} color="#333" />
-                        </TouchableOpacity>
-                        <TextInput value={String(quantity)} style={styles.quantityInput} editable={false} />
-                        <TouchableOpacity onPress={() => handleQuantityChange('inc')}>
-                            <Ionicons name="add-circle-outline" size={26} color="#333" />
-                        </TouchableOpacity>
-                    </View>
+                    <QuantitySelector
+                        quantity={quantity}
+                        setQuantity={setQuantity}
+                        maxQuantity={product.price_size[selectedSize]?.quantity}
+                    />
+
+                    <View style={styles.divider} />
+
                 </View>
 
                 {/* Product Description Section */}
@@ -263,20 +268,12 @@ const ProductDetailScreen = ({ navigation, route }) => {
                 </ScrollView>
 
                 {/* Seller Info Section */}
-                <View style={styles.sellerInfo}>
-                    <Text style={styles.sellerLabel}>Seller Information</Text>
-                    <Text style={styles.sellerName}>{product.fullShopDetails}</Text>
-                    {/* <Text style={styles.sellerAddress}>
-                        Address: {`${seller.streetAddress}, ${seller.city}, ${seller.state}, ${seller.zipCode}`}
-                    </Text> */}
-                </View>
+                <SellerInfo shopDetails={product.fullShopDetails} />
                 {/* Customer Reviews Section */}
                 <Text style={styles.sectionTitle}>Ratings & Reviews</Text>
-                {/* <View style={styles.reviewSection}> */}
                 <RatingComponent ratings={product.ratings} />
                 <ProductReviews productId={product._id} />
 
-                {/* </View> */}
                 {/* Similar Products Section */}
                 {similarProducts && <ProductList title="Similar Products" products={similarProducts} navigation={navigation} />}
             </ScrollView>
@@ -322,9 +319,7 @@ const styles = StyleSheet.create({
         left: 7,
 
     },
-    productInfo: {
-        marginHorizontal: 5,
-        padding: 10,
+    productDetail: {
         backgroundColor: '#fff',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
@@ -450,27 +445,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#555',
     },
-    sellerInfo: {
-        padding: 10,
-        backgroundColor: '#f5f5f5',
-        borderRadius: 10,
-        marginHorizontal: 5,
-        marginVertical: 15,
-    },
-    sellerLabel: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    sellerName: {
-        fontSize: 16,
-        color: '#555',
-        marginTop: 4,
-    },
-    sellerAddress: {
-        fontSize: 14,
-        color: '#888',
-        marginTop: 4,
-    },
     reviewSection: {
         paddingBottom: 30,
     },
@@ -508,18 +482,18 @@ const styles = StyleSheet.create({
         right: 0,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 16,
+        padding: 7,
         backgroundColor: '#fff',
     },
     addToCartButton: {
-        backgroundColor: 'green',
+        backgroundColor: 'orange',
         padding: 16,
         borderRadius: 8,
         flex: 1,
         marginRight: 8,
     },
     buyNowButton: {
-        backgroundColor: 'orange',
+        backgroundColor: 'green',
         padding: 16,
         borderRadius: 8,
         flex: 1,
@@ -527,6 +501,11 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         textAlign: 'center',
+    },
+    divider: {
+        height: 1,             // Thin line
+        backgroundColor: '#ddd', // Light grey
+        marginVertical: 5,    // Space above and below
     },
 });
 

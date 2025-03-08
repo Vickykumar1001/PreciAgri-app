@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#2E7D32',
         marginBottom: 10,
     },
     reviewCard: {
