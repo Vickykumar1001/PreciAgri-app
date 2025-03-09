@@ -76,12 +76,22 @@ export const CartProvider = ({ children }) => {
     };
 
     //  Increase or decrease quantity (calls addToCart)
-    const updateQuantity = async (itemId, newQuantity) => {
-        const item = cart.items.find((item) => item._id === itemId);
-        if (!item) return;
+    const updateQuantity = async (item, newQuantity) => {
+        const product = {
+            _id: item.productId,
+            name: item.productName,
+            price_size: [
+                {
+                    size: item.selectedsize, // wrong camel casing 
+                    price: item.selectedPrice,
+                    discountedPrice: item.selecetedDiscountedPrice // wrong spelling in backend so here also :-/
+                }
+            ]
+        };
 
         try {
-            await addToCart(item.product, newQuantity, item.selectedsize);
+
+            await addToCart(product, newQuantity, 0);
             Toast.show({
                 type: 'success',
                 text1: 'Cart Updated',
@@ -101,10 +111,26 @@ export const CartProvider = ({ children }) => {
     const removeFromCart = async (itemId) => {
         try {
             await customFetch.delete(`products/removeitem/${itemId}`);
+            // Filter out the removed item
+            const updatedItems = cart.items.filter((item) => item._id !== itemId);
+
+            // Recalculate the total price and total discounted price
+            const newTotalPrice = updatedItems.reduce(
+                (sum, item) => sum + (item.selectedPrice * item.quantity), 0
+            );
+
+            const newTotalDiscountedPrice = updatedItems.reduce(
+                (sum, item) => sum + (item.selecetedDiscountedPrice * item.quantity), 0
+            );
+
+            // Update the cart with new items and recalculated totals
             const updatedCart = {
                 ...cart,
-                items: cart.items.filter((item) => item._id !== itemId),
+                items: updatedItems,
+                totalPrice: newTotalPrice,
+                totalDiscountedPrice: newTotalDiscountedPrice
             };
+
             setCart(updatedCart);
             await AsyncStorage.setItem('cart', JSON.stringify(updatedCart));
 
