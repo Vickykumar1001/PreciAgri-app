@@ -3,7 +3,6 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const ProductCardMini = ({ navigation, product }) => {
-    // console.log(product)
     const defaultSize = product.price_size;
     const primaryImageUrl = product.images;
 

@@ -38,7 +38,7 @@ const WishlistPage = ({ navigation }) => {
 
     const MemoizedProductCard = memo(({ item }) => (
         <TouchableOpacity onPress={() => navigation.navigate('ProductDetail', { productId: item._id })}>
-            <ProductCardWishlist product={item} onRemove={removeFromWishlist} />
+            <ProductCardWishlist product={item} navigation={navigation} onRemove={removeFromWishlist} />
         </TouchableOpacity>
     ));
 
@@ -48,7 +48,7 @@ const WishlistPage = ({ navigation }) => {
             <View style={styles.container}>
                 {loading ? (
                     <View style={styles.loadingContainer}>
-                        <ActivityIndicator size="large" color="#E53935" />
+                        <ActivityIndicator size="large" color="green" />
                         <Text style={styles.loadingText}>Loading wishlist...</Text>
                     </View>
                 ) : error ? (

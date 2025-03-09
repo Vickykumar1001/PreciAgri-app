@@ -1,45 +1,40 @@
-import React, { useContext } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useContext, useMemo } from 'react';
+import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { WishlistContext } from '../../context/WishlistContext';
 import { CartContext } from '../../context/CartContext';
 
 const ProductCardWishlist = ({ product, navigation }) => {
-    console.log(product)
     const { wishlist, toggleWishlist } = useContext(WishlistContext);
-    const { addToCart } = useContext(CartContext);
+    const { isProductInCart, addToCart } = useContext(CartContext);
 
-    const isWishlisted = wishlist.has(product._id);
+    const isWishlisted = useMemo(() => wishlist.has(product._id), [wishlist, product._id]);
+    const isInCart = useMemo(() => isProductInCart(product._id), [isProductInCart, product._id]);
     const size = product.price_size; // First size
     const discount = Math.ceil(((size.price - size.discountedPrice) / size.price) * 100);
-    const discountAmount = size.price - size.discountedPrice;
 
-    const handleRemove = () => {
-        Alert.alert(
-            'Remove Product',
-            'Are you sure you want to remove this product from your wishlist?',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Remove', onPress: () => toggleWishlist(product._id) },
-            ]
-        );
+    const handleAddToCart = () => {
+        addToCart({
+            _id: product._id,
+            name: product.name,
+            price_size: [product.price_size]
+        }, 1, 0);
     };
+    const navigateToCart = () => {
+        navigation.navigate('Cart')
+    }
 
     return (
         <View style={styles.card}>
             {/* Wishlist Icon */}
-            <TouchableOpacity style={styles.wishlistIcon} onPress={() => toggleWishlist(product._id)}>
-                <Ionicons
-                    name={isWishlisted ? "heart" : "heart-outline"}
-                    size={28}
-                    color="red"
-                />
-            </TouchableOpacity>
+            <Pressable style={styles.wishlistIcon} onPress={() => toggleWishlist(product._id)}>
+                <Ionicons name={isWishlisted ? "heart" : "heart-outline"} size={28} color="red" />
+            </Pressable>
 
             {/* Product Image */}
-            <TouchableOpacity onPress={() => navigation.navigate('ProductDetail', { productId: product._id })}>
+            <Pressable onPress={() => navigation.navigate('ProductDetail', { productId: product._id })}>
                 <Image source={{ uri: product.images }} style={styles.productImage} />
-            </TouchableOpacity>
+            </Pressable>
 
             {/* Product Name */}
             <Text style={styles.productName}>
@@ -54,7 +49,7 @@ const ProductCardWishlist = ({ product, navigation }) => {
                 <Text style={styles.originalPrice}>₹{size.price}</Text>
             </View>
 
-            {/* Ratings and Discount Amount */}
+            {/* Ratings */}
             <View style={styles.ratingContainer}>
                 <Ionicons name="star" size={16} color="#FFD700" />
                 <Text style={styles.rating}>{product.avgRating.toFixed(1)}</Text>
@@ -62,9 +57,12 @@ const ProductCardWishlist = ({ product, navigation }) => {
             </View>
 
             {/* Add to Cart Button */}
-            <TouchableOpacity style={styles.cartButton} onPress={() => addToCart(product._id)}>
-                <Text style={styles.cartButtonText}>Add to Cart</Text>
-            </TouchableOpacity>
+            <Pressable
+                style={[styles.cartButton, { backgroundColor: isInCart ? 'orange' : 'green' }]}
+                onPress={() => isInCart ? navigateToCart() : handleAddToCart()}
+            >
+                <Text style={styles.cartButtonText}>{isInCart ? "Go to Cart" : "Add to Cart"}</Text>
+            </Pressable>
         </View>
     );
 };
@@ -146,7 +144,6 @@ const styles = StyleSheet.create({
     },
     cartButton: {
         marginTop: 10,
-        backgroundColor: 'green',
         paddingVertical: 5,
         paddingHorizontal: 12,
         borderRadius: 5,

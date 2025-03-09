@@ -12,7 +12,6 @@ export const WishlistProvider = ({ children }) => {
         const fetchWishlist = async () => {
             try {
                 const response = await customFetch("products/wishlistid");
-                console.log(response.data)
                 setWishlist(new Set(response.data));
             } catch (error) {
                 console.error('Error loading wishlist:', error);
