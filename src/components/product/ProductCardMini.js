@@ -25,10 +25,14 @@ const ProductCardMini = ({ navigation, product }) => {
 
             {/* Price and Discount */}
             <View style={styles.priceContainer}>
-                <Ionicons name="arrow-down" size={16} color="green" />
-                <Text style={styles.discountText}>{discountPercentage}%</Text>
-                <Text style={styles.originalPrice}>₹{defaultSize.price}</Text>
-                <Text style={styles.currentPrice}>₹{defaultSize.discountedPrice}</Text>
+
+                {discountPercentage > 0 ? <>
+                    <Ionicons name="arrow-down" size={16} color="green" />
+                    <Text style={styles.discountText}>{discountPercentage}%</Text>
+                    <Text style={styles.originalPrice}>₹{defaultSize.price}</Text>
+                    <Text style={styles.currentPrice}>₹{defaultSize.discountedPrice}</Text></> : <>
+                    <Text style={styles.currentPrice}>₹{defaultSize.discountedPrice}</Text>
+                </>}
             </View>
 
             {/* Rating and Discount Amount */}

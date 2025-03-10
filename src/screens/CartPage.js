@@ -53,7 +53,7 @@ const CartPage = ({ navigation }) => {
             } catch (err) {
                 Alert.alert('Error', 'Failed to update quantity. Please try again.');
             }
-        }, 500),
+        }, 300),
         [updateQuantity]
     );
 
