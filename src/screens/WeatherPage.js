@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, FlatList } from 'react-native';
 import * as Location from 'expo-location';
 import axios from 'axios';
-import WeatherTopBar from '../components/WeatherTopBar';
-const API_KEY = '4847a8e8b971aada91d76b104b8b2c7c'; // Replace with your API key
+import WeatherTopBar from '../components/topBar/WeatherTopBar';
+const API_KEY = '4847a8e8b971aada91d76b104b8b2c7c';
 
 export default function WeatherPage({ navigation }) {
     const [location, setLocation] = useState(null);

@@ -3,7 +3,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator }
 import { Ionicons } from '@expo/vector-icons';
 import ProductCard from './ProductCard2';
 import { Picker } from '@react-native-picker/picker';
-import SearchTopBar from '../components/SearchTopBar';
+import SearchTopBar from '../components/topBar/SearchTopBar';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Text } from 'react-native-paper';
 import axios from 'axios';
-import Background from '../components/Background';
-import Header from '../components/Header';
-import TextInput from '../components/TextInput';
-import BackButton from '../components/BackButton';
-import Logo from '../components/Logo';
+import Background from '../components/auth/Background';
+import Header from '../components/auth/Header';
+import TextInput from '../components/auth/TextInput';
+import BackButton from '../components/auth/BackButton';
+import Logo from '../components/auth/Logo';
 import { theme } from '../core/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

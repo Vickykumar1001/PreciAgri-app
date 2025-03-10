@@ -11,12 +11,12 @@ import {
 import { Text } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { Dropdown } from 'react-native-element-dropdown';
-import Background from '../../components/Background';
-import Logo from '../../components/Logo';
-import Header from '../../components/Header';
-import Button from '../../components/Button';
-import TextInput from '../../components/TextInput';
-import BackButton from '../../components/BackButton';
+import Background from '../../components/auth/Background';
+import Logo from '../../components/auth/Logo';
+import Header from '../../components/auth/Header';
+import Button from '../../components/auth/Button';
+import TextInput from '../../components/auth/TextInput';
+import BackButton from '../../components/auth/BackButton';
 import { theme } from '../../core/theme';
 
 import { nameValidator } from '../../helpers/nameValidator';

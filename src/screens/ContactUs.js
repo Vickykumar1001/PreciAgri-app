@@ -9,7 +9,6 @@ import {
     ScrollView,
     ToastAndroid
 } from "react-native";
-import ContactTopBar from "../components/ContactTopBar";
 import CustomTopBar from '../components/topBar/CustomTopBar';
 const ContactUs = ({ navigation }) => {
     const [name, setName] = useState("");

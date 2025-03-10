@@ -3,11 +3,11 @@ import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, Scr
 import { Text } from 'react-native-paper';
 import Toast from 'react-native-toast-message'
 
-import Background from '../../components/Background';
-import Header from '../../components/Header';
-import TextInput from '../../components/TextInput';
-import BackButton from '../../components/BackButton';
-import Logo from '../../components/Logo';
+import Background from '../../components/auth/Background';
+import Header from '../../components/auth/Header';
+import TextInput from '../../components/auth/TextInput';
+import BackButton from '../../components/auth/BackButton';
+import Logo from '../../components/auth/Logo';
 import customFetch from '../../utils/axios';
 import { addUserToLocalStorage } from '../../utils/localStorage'
 
