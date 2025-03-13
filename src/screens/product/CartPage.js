@@ -254,14 +254,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f8f9fa',
-        paddingTop: 10
     },
     headerContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 15,
-        marginBottom: 10
     },
     clearCartButton: {
         padding: 8
@@ -305,9 +303,9 @@ const styles = StyleSheet.create({
     cartItem: {
         flexDirection: 'row',
         backgroundColor: '#fff',
-        padding: 10,
+        padding: 6,
         marginVertical: 6,
-        borderRadius: 10,
+        borderRadius: 4,
         shadowColor: '#000',
         shadowOpacity: 0.1,
         shadowOffset: { width: 0, height: 2 },
@@ -317,7 +315,7 @@ const styles = StyleSheet.create({
     productImage: {
         width: 90,
         height: 90,
-        borderRadius: 10
+        borderRadius: 4
     },
     productDetails: {
         flex: 1,
@@ -347,14 +345,14 @@ const styles = StyleSheet.create({
     quantityContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 10
+        marginTop: 5
     },
     quantityButton: {
         borderWidth: 1,
         borderColor: '#888',
-        borderRadius: 5,
-        paddingHorizontal: 8,
-        paddingVertical: 4,
+        borderRadius: 4,
+        paddingHorizontal: 6,
+        paddingVertical: 2,
         backgroundColor: '#f1f1f1'
     },
     quantityButtonDisabled: {
@@ -362,14 +360,14 @@ const styles = StyleSheet.create({
         borderColor: '#ccc'
     },
     quantityButtonText: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'bold'
     },
     quantityButtonTextDisabled: {
         color: '#aaa'
     },
     quantityText: {
-        marginHorizontal: 12,
+        marginHorizontal: 10,
         fontSize: 14,
         fontWeight: 'bold'
     },

@@ -32,13 +32,14 @@ import {
   LogoutScreen,
   UserProducts,
   ResetForgotPassword,
-  EditProfilePage
+  EditProfilePage,
+  EditAddress
 
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
 import AppNavigator from './AppNavigator';
 import WeatherPage from './src/screens/WeatherPage';
-import ShowAddressPage from './src/screens/ShowAddressPage';
+import ShowAddressPage from './src/screens/address/ShowAddress';
 import AddPost from './src/screens/AddPost';
 import EditPost from './src/screens/EditPost';
 import SelectAddressPage from './src/screens/SelectAddressPage';
@@ -86,6 +87,7 @@ const StackNav = ({ route }) => {
       <Stack.Screen name="Cart" component={CartPage} />
       <Stack.Screen name="AddAddress" component={AddAddressPage} />
       <Stack.Screen name="ShowAddress" component={ShowAddressPage} />
+      <Stack.Screen name="EditAddress" component={EditAddress} />
       <Stack.Screen name="Weather" component={WeatherPage} />
       <Stack.Screen name="Profile" component={ProfilePage} />
       <Stack.Screen name="EditProfile" component={EditProfilePage} />

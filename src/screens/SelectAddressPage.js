@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import CustomTopBar from '../components/topBar/CustomTopBar';
+import customFetch from '../utils/axios';
 const SelectAddressPage = ({ navigation }) => {
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
@@ -22,14 +23,9 @@ const SelectAddressPage = ({ navigation }) => {
     useEffect(() => {
         const fetchAddresses = async () => {
             try {
-                const token = await AsyncStorage.getItem('token');
-                const response = await axios.get(
-                    'http://172.16.1.240:4000/api/users/address',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
+
+                const response = await customFetch.get('/auth/getaddress',
+
                 );
                 setAddresses(response.data);
             } catch (error) {
@@ -55,8 +51,7 @@ const SelectAddressPage = ({ navigation }) => {
     const handleContinue = async () => {
         if (selectedAddress) {
             try {
-                const token = await AsyncStorage.getItem('token'); // Retrieve token from AsyncStorage
-                const response = await axios.post(
+                const response = await customFetch.post(
                     'http://172.16.1.240:4000/api/orders', // Replace with your API endpoint
                     { address: selectedAddress }, // Sending the selected address in the request body
                     {
