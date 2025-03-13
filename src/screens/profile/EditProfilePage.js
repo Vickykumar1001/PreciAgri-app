@@ -4,11 +4,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { FontAwesome } from '@expo/vector-icons';
-import CustomTopBar from '../components/topBar/CustomTopBar';
-const profileIcon = require('../assets/images/user-icon.png');
+import CustomTopBar from '../../components/topBar/CustomTopBar';
+const profileIcon = require('../../assets/images/placeholder/user_icon.png');
 export default function EditProfilePage({ route, navigation }) {
     const { profileData } = route.params
-    const [firstName, setFirstName] = useState(profileData.firstName);
+    const [Name, setName] = useState(profileData.Name);
     const [lastName, setLastName] = useState(profileData.lastName);
     const [email, setEmail] = useState(profileData.email);
     const [category, setCategory] = useState('Farmer');
@@ -42,32 +42,32 @@ export default function EditProfilePage({ route, navigation }) {
                         source={profileIcon}
                         style={styles.profileImage}
                     />
-                    {/* <View style={styles.imageButtons}>
-                    <TouchableOpacity style={styles.cameraButton}>
-                        <FontAwesome name="camera" size={16} color="white" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.deleteButton}>
-                        <FontAwesome name="trash" size={16} color="white" />
-                    </TouchableOpacity>
-                </View> */}
+                    <View style={styles.imageButtons}>
+                        <TouchableOpacity style={styles.cameraButton}>
+                            <FontAwesome name="edit" size={16} color="white" />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.deleteButton}>
+                            <FontAwesome name="trash" size={16} color="white" />
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 {/* Form */}
                 <View style={styles.formContainer}>
-                    <Text style={styles.label}>First Name</Text>
+                    <Text style={styles.label}>Name</Text>
                     <TextInput
                         style={styles.input}
-                        value={firstName}
-                        onChangeText={setFirstName}
+                        value={Name}
+                        onChangeText={Name}
                         placeholder="Enter full name"
                     />
-                    <Text style={styles.label}>Last Name</Text>
+                    {/* <Text style={styles.label}>Last Name</Text>
                     <TextInput
                         style={styles.input}
                         value={lastName}
                         onChangeText={setLastName}
                         placeholder="Enter full name"
-                    />
+                    /> */}
 
                     <Text style={styles.label}>Email Address*</Text>
                     <View style={styles.emailContainer}>
@@ -92,14 +92,14 @@ export default function EditProfilePage({ route, navigation }) {
                     </Picker>
                 </View> */}
 
-                    <Text style={styles.label}>Contact Number*</Text>
+                    {/* <Text style={styles.label}>Contact Number*</Text>
                     <TextInput
                         style={styles.input}
                         value={contactNumber}
                         onChangeText={setContactNumber}
                         placeholder="Enter contact number"
                         keyboardType="phone-pad"
-                    />
+                    /> */}
                 </View>
 
                 {/* Save Changes Button */}

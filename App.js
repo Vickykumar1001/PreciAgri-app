@@ -31,13 +31,13 @@ import {
   NewsAndSchemesTabView,
   LogoutScreen,
   UserProducts,
-  ResetForgotPassword
+  ResetForgotPassword,
+  EditProfilePage
 
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
 import AppNavigator from './AppNavigator';
 import WeatherPage from './src/screens/WeatherPage';
-import EditProfilePage from './src/screens/EditProfilePage';
 import ShowAddressPage from './src/screens/ShowAddressPage';
 import AddPost from './src/screens/AddPost';
 import EditPost from './src/screens/EditPost';

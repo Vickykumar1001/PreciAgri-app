@@ -91,7 +91,7 @@ const AboutUsPage = ({ navigation }) => {
                 <Text style={styles.sectionTitle}>What Farmers Are Saying</Text>
                 <View style={styles.testimonialCard}>
                     <Image
-                        source={require('../assets/images/user-icon.png')} // Replace with the appropriate image
+                        source={require('../assets/images/placeholder/user_icon.png')} // Replace with the appropriate image
                         style={styles.testimonialImage}
                     />
                     <Text style={styles.testimonialText}>

@@ -2,7 +2,7 @@ import axios from 'axios'
 import { getUserFromLocalStorage } from './localStorage'
 
 const customFetch = axios.create({
-    baseURL: 'http://172.16.3.120:4000/api/v1',
+    baseURL: 'http://192.168.111.195:4000/api/v1',
 })
 
 // Request Interceptor: Attach Authorization Token

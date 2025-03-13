@@ -1,7 +1,7 @@
 import React, { useMemo, useContext, useCallback } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, ActivityIndicator, StyleSheet, Alert } from 'react-native';
-import CustomTopBar from '../components/topBar/CustomTopBar';
-import { CartContext } from '../context/CartContext';
+import CustomTopBar from '../../components/topBar/CustomTopBar';
+import { CartContext } from '../../context/CartContext';
 import { debounce } from 'lodash';
 
 /**
