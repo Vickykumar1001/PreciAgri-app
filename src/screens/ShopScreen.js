@@ -42,7 +42,7 @@ const ShopScreen = ({ navigation, route }) => {
         discountRange: null,
         minDiscount: 0,
         minRating: 0,
-        categories: [{ _id: "67add5e410da846fb49ce7c8", name: "vicky" }],
+        categories: [{ _id: "67add1e010da846fb49ce78a", name: "vicky" }],
         selectedCategories: new Set(),
     });
     const [activeFiltersCount, setActiveFiltersCount] = useState(0);
