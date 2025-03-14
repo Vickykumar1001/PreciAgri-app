@@ -13,7 +13,7 @@ const categories = [
 
 const Categories = ({ navigation }) => {
     const handlePress = (category) => {
-        navigation.navigate('Shop', { category: category.name });
+        navigation.navigate('Shop', { search: category.name });
     };
 
     return (

@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { CartContext } from '../../context/CartContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SearchTopBar = ({ navigation, setCategory, inputRef }) => {
+const SearchTopBar = ({ navigation, setSearch, inputRef }) => {
+    const { cartSize } = useContext(CartContext);
     const [searchText, setSearchText] = useState('');
     const handleSearch = (text) => {
         setSearchText(text);
-        setCategory(text); // Update category state in ShopPage
+        setSearch(text); // Update category state in ShopPage
+    };
+    const handleDone = async () => {
+        try {
+            if (searchText.trim() !== "") {
+                await AsyncStorage.setItem("lastSearch", searchText);
+            }
+        } catch (error) {
+            console.error("Failed to save search text", error);
+        }
     };
     return (
         <View style={styles.topBar}>
@@ -24,6 +36,7 @@ const SearchTopBar = ({ navigation, setCategory, inputRef }) => {
                     placeholder="Search for items..."
                     value={searchText}
                     onChangeText={handleSearch}
+                    onSubmitEditing={handleDone}
                     placeholderTextColor="#999"
                 />
             </View>
@@ -33,8 +46,16 @@ const SearchTopBar = ({ navigation, setCategory, inputRef }) => {
                 <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Wishlist')}>
                     <Ionicons name="heart" size={28} color="#333" />
                 </TouchableOpacity>
+                {/* Cart Icon with Badge */}
                 <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => navigation.navigate('Cart')}>
-                    <Ionicons name="cart" size={28} color="#333" />
+                    <View>
+                        <Ionicons name="cart" size={28} color="#333" />
+                        {cartSize() > 0 && (
+                            <View style={styles.badge}>
+                                <Text style={styles.badgeText}>{cartSize()}</Text>
+                            </View>
+                        )}
+                    </View>
                 </TouchableOpacity>
             </View>
         </View>
@@ -75,5 +96,23 @@ const styles = StyleSheet.create({
     icons: {
         flexDirection: 'row', // Arrange icons in a row
         alignItems: 'center', // Align icons vertically
+    },
+    badge: {
+        position: 'absolute',
+        right: -3,
+        top: -3,
+        backgroundColor: 'red',
+        borderRadius: 10,
+        width: 16,
+        height: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#fff'
+    },
+    badgeText: {
+        color: 'white',
+        fontSize: 10,
+        fontWeight: 'bold',
     },
 });

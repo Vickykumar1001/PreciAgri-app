@@ -6,6 +6,7 @@ import OnboardingScreen from './src/screens/OnBoradingScreen.js';
 import HomeScreen from './src/screens/Dashboard.js';
 import LoginScreen from './src/screens/auth/LoginScreen.js';
 import RegisterScreen from './src/screens/auth/SignUpScreen.js';
+import AuthChecker from './src/screens/auth/AuthChecker.js';
 
 const Stack = createStackNavigator();
 
@@ -19,7 +20,10 @@ const AppNavigator = ({ isFirstLaunch, setIsFirstLaunch, isAuthenticated }) => {
           )}
         </Stack.Screen>
       ) : isAuthenticated ? (
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <>
+          <AuthChecker />
+          <Stack.Screen name="Home" component={HomeScreen} />
+        </>
       ) : (
         <>
           <Stack.Screen name="Login" component={LoginScreen} />

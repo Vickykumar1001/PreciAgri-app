@@ -43,8 +43,8 @@ const ProductDetailScreen = ({ navigation, route }) => {
             try {
                 const response = await customFetch.get(`/products/getproductbyId/${productId}`);
                 setProduct(response.data.product);
-                const similarResponse = await customFetch.get(`/products/filterandSortProducts?category=${response.data.product.category}`);
-                setSimilarProducts(similarResponse.data.products);
+                const similarResponse = await customFetch.get(`/products/filteredproducts?category=${response.data.product.category}`);
+                setSimilarProducts(similarResponse.data.data.products);
             } catch (err) {
                 setError('Failed to load product details. Please try again.');
             } finally {

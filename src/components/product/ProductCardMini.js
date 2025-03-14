@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const ProductCardMini = ({ navigation, product }) => {
-    const defaultSize = product.price_size;
+    const defaultSize = product.price_size[0];
     const primaryImageUrl = product.images;
 
     // Calculating discount percentage and amount
@@ -39,7 +39,7 @@ const ProductCardMini = ({ navigation, product }) => {
             <View style={styles.ratingContainer}>
                 <Ionicons name="star" size={16} color="#FFD700" />
                 <Text style={styles.rating}>{product.avgRating.toFixed(1)}</Text>
-                <Text style={styles.size}>({product.price_size.size})</Text>
+                <Text style={styles.size}>({defaultSize.size})</Text>
                 {/* <Text style={styles.discountAmount}>Discount: ₹{discountAmount}</Text> */}
             </View>
         </TouchableOpacity>

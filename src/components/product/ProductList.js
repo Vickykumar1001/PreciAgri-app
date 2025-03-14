@@ -8,7 +8,7 @@ const ProductList = ({ title, products, navigation }) => {
             <Text style={styles.sectionTitle}>{title}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {products.map((product) => (
-                    <TouchableOpacity key={product.price_size._id} onPress={() => navigation.navigate('ProductDetail', { product })}>
+                    <TouchableOpacity key={product.price_size[0]._id} onPress={() => navigation.navigate('ProductDetail', { product })}>
                         <ProductCardMini product={product} navigation={navigation} />
                     </TouchableOpacity>
                 ))}

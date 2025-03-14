@@ -7,6 +7,7 @@ import Categories from '../components/home/Categories';
 import Services from '../components/home/Services';
 import ProductList from '../components/product/ProductList';
 import customFetch from '../utils/axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomePage = ({ navigation }) => {
     const [productSections, setProductSections] = useState({
@@ -20,17 +21,18 @@ const HomePage = ({ navigation }) => {
     // Optimized fetching function using Promise.all
     const fetchProducts = useCallback(async () => {
         try {
+            const lastSearched = await AsyncStorage.getItem("lastSearch");
             const urls = {
-                featured: '/products/filterandSortProducts?maxPrice=1000&page=4',
-                mostSelling: '/products/filterandSortProducts?page=2',
-                newArrival: '/products/filterandSortProducts?sortBy=-createdAt',
-                deals: '/products/filterandSortProducts?maxDiscount=30',
-                searched: '/products/filterandSortProducts?page=5'
+                featured: '/products/filteredproducts?sort=rating',
+                mostSelling: '/products/filteredproducts?sort=popularity',
+                newArrival: '/products/filteredproducts?sort=newest',
+                deals: '/products/filteredproducts?sort=discount',
+                searched: lastSearched ? `/products/filteredproducts?search=${lastSearched}` : null
             };
 
             const requests = Object.entries(urls).map(async ([key, url]) => {
                 const response = await customFetch.get(url);
-                return { key, products: response.data.products || [] };
+                return { key, products: response.data.data.products || [] };
             });
 
             const results = await Promise.all(requests);

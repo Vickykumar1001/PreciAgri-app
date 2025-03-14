@@ -89,6 +89,8 @@ const styles = {
         height: 16,
         justifyContent: 'center',
         alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#fff'
     },
     badgeText: {
         color: 'white',
