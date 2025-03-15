@@ -5,10 +5,9 @@ const categories = [
     { id: '1', name: 'Seeds', image: require('../../assets/images/seed.png') },
     { id: '2', name: 'Fertilizer', image: require('../../assets/images/fertilizer.png') },
     { id: '3', name: 'Pesticide', image: require('../../assets/images/pesticide.png') },
-    { id: '4', name: 'Irrigation', image: require('../../assets/images/irrigation.png') },
-    { id: '5', name: 'Tools', image: require('../../assets/images/tools.png') },
-    { id: '6', name: 'Machinery', image: require('../../assets/images/machinery.png') },
-    { id: '7', name: 'Mulch', image: require('../../assets/images/mulch.png') },
+    { id: '4', name: 'Pump', image: require('../../assets/images/icons/category/water-pump.png') },
+    { id: '5', name: 'Trowel', image: require('../../assets/images/tools.png') },
+    { id: '6', name: 'Machine', image: require('../../assets/images/icons/category/machine.png') },
 ];
 
 const Categories = ({ navigation }) => {
@@ -18,7 +17,7 @@ const Categories = ({ navigation }) => {
 
     return (
         <View >
-            <Text style={styles.sectionTitle}>Shop by Category</Text>
+            <Text style={styles.sectionTitle}>Find What You Need</Text>
             <FlatList
                 horizontal
                 showsHorizontalScrollIndicator={false}

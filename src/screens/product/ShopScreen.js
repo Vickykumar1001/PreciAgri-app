@@ -30,6 +30,7 @@ const ShopScreen = ({ navigation, route }) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [search, setSearch] = useState(route.params?.search || '');
+    const [subCategory, setSubCategory] = useState('');
 
     // Filter and sort state
     const [showSortModal, setShowSortModal] = useState(false);
@@ -58,7 +59,7 @@ const ShopScreen = ({ navigation, route }) => {
     // Initial data fetch
     useEffect(() => {
         fetchInitialData();
-    }, [search, sortOption]);
+    }, [search, sortOption, subCategory]);
 
     // Update category when route params change
     useEffect(() => {
@@ -68,6 +69,21 @@ const ShopScreen = ({ navigation, route }) => {
             setProducts([]);
         }
     }, [route.params?.search]);
+
+    useEffect(() => {
+        if (route.params?.subcategory) {
+            setFilterOptions(prevOptions => ({
+                ...prevOptions,
+                selectedSubcategories: new Set(prevOptions.selectedSubcategories).add(route.params.subcategory)
+            }));
+            setPage(1);
+            setProducts([]);
+            setTimeout(() => {
+                setSubCategory(route.params.subcategory);
+            }, 100);
+        }
+    }, [route.params?.subcategory]);
+
 
     // Focus input if requested
     useEffect(() => {

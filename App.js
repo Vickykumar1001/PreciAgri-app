@@ -33,7 +33,8 @@ import {
   UserProducts,
   ResetForgotPassword,
   EditProfilePage,
-  EditAddress
+  EditAddress,
+  CategoryScreen
 
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
@@ -48,7 +49,6 @@ import SellerOrdersPage from './src/screens/SellerOrderPage';
 import FarmingTipsPage from './src/screens/FarmingTipsPage';
 import AboutUs from './src/screens/AboutUs';
 import ContactUs from './src/screens/ContactUs';
-import CategoryScreen from './src/screens/CategoryScreen';
 
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
