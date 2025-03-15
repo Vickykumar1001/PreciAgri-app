@@ -34,7 +34,8 @@ import {
   ResetForgotPassword,
   EditProfilePage,
   EditAddress,
-  CategoryScreen
+  CategoryScreen,
+  LoanPage
 
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
@@ -85,6 +86,7 @@ const StackNav = ({ route }) => {
       <Stack.Screen name="ProductDetail" component={ProductDetailPage} />
       <Stack.Screen name="Wishlist" component={Wishlist} />
       <Stack.Screen name="Cart" component={CartPage} />
+      <Stack.Screen name="Loan" component={LoanPage} />
       <Stack.Screen name="AddAddress" component={AddAddressPage} />
       <Stack.Screen name="ShowAddress" component={ShowAddressPage} />
       <Stack.Screen name="EditAddress" component={EditAddress} />

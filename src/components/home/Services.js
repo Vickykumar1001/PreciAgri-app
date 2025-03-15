@@ -3,10 +3,10 @@ import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react
 
 const services = [
     { id: '1', name: 'Weather', image: require('../../assets/images/weather.png') },
-    { id: '2', name: 'Loans', image: require('../../assets/images/loan.png') },
-    { id: '3', name: 'Market Price', image: require('../../assets/images/market.png') },
-    { id: '4', name: 'Farming Tips', image: require('../../assets/images/tips.png') },
     { id: '5', name: 'Shop', image: require('../../assets/images/shop.png') },
+    { id: '3', name: 'News', image: require('../../assets/images/icons/article.png') },
+    { id: '4', name: 'Farming Tips', image: require('../../assets/images/tips.png') },
+    { id: '2', name: 'Loan', image: require('../../assets/images/loan.png') },
 ];
 
 const Services = ({ navigation }) => {
