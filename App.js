@@ -40,14 +40,14 @@ import {
 } from './src/screens';
 // import { ProductContainer } from "./src/screens/Products/ProductContainer"
 import AppNavigator from './AppNavigator';
-import WeatherPage from './src/screens/WeatherPage';
+import WeatherPage from './src/screens/services/WeatherPage';
 import ShowAddressPage from './src/screens/address/ShowAddress';
 import AddPost from './src/screens/AddPost';
 import EditPost from './src/screens/EditPost';
 import SelectAddressPage from './src/screens/SelectAddressPage';
 import OrderSummaryPage from './src/screens/OrderSummaryPage';
 import SellerOrdersPage from './src/screens/SellerOrderPage';
-import FarmingTipsPage from './src/screens/FarmingTipsPage';
+import FarmingTipsPage from './src/screens/services/FarmingTipsPage';
 import AboutUs from './src/screens/AboutUs';
 import ContactUs from './src/screens/ContactUs';
 

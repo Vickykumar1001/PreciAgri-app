@@ -12,7 +12,7 @@ import {
     Animated
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import CustomTopBar from '../components/topBar/CustomTopBar';
+import CustomTopBar from '../../components/topBar/CustomTopBar';
 
 const FarmingTipsPage = ({ navigation }) => {
 
@@ -142,7 +142,7 @@ const FarmingTipsPage = ({ navigation }) => {
                     <Image
                         source={{ uri: item.imageUrl }}
                         style={styles.tipImage}
-                        defaultSource={require('../assets/images/placeholder/product.png')}
+                        defaultSource={require('../../assets/images/placeholder/product.png')}
                     />
                     <View style={styles.tipContent}>
                         <Text style={styles.tipTitle}>{item.title}</Text>
@@ -179,7 +179,7 @@ const FarmingTipsPage = ({ navigation }) => {
                 <Image
                     source={{ uri: selectedTip.imageUrl }}
                     style={styles.detailImage}
-                    defaultSource={require('../assets/images/placeholder/product.png')}
+                    defaultSource={require('../../assets/images/placeholder/product.png')}
                 />
 
                 <View style={styles.detailContent}>

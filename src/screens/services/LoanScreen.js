@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Image } from "react-native";
-import CustomTopBar from "../components/topBar/CustomTopBar"
+import CustomTopBar from "../../components/topBar/CustomTopBar"
 const LoanPage = ({ navigation }) => {
     return (
         <>
@@ -8,7 +8,7 @@ const LoanPage = ({ navigation }) => {
 
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f5f5f5" }}>
                 <Image
-                    source={require("../assets/images/loan.png")}
+                    source={require("../../assets/images/loan.png")}
                     style={{ width: 120, height: 120, marginBottom: 20, borderRadius: 10 }}
                     resizeMode="contain"
                 />
