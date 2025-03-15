@@ -13,9 +13,9 @@ import {
     Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import ProductCard from '../components/product/ProductCardMini';
-import SearchTopBar from '../components/topBar/SearchTopBar';
-import customFetch from '../utils/axios';
+import ProductCard from '../../components/product/ProductCardMini';
+import SearchTopBar from '../../components/topBar/SearchTopBar';
+import customFetch from '../../utils/axios';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 
@@ -42,8 +42,9 @@ const ShopScreen = ({ navigation, route }) => {
         discountRange: null,
         minDiscount: 0,
         minRating: 0,
-        categories: [{ _id: "67add1e010da846fb49ce78a", name: "vicky" }],
-        selectedCategories: new Set(),
+        categories: [], // Will store parent categories
+        expandedCategories: new Set(), // Track which parent categories are expanded
+        selectedSubcategories: new Set(), // Store selected subcategory IDs
     });
     const [activeFiltersCount, setActiveFiltersCount] = useState(0);
 
@@ -83,7 +84,7 @@ const ShopScreen = ({ navigation, route }) => {
         if (filterOptions.maxPrice < 50000) count++;
         if (filterOptions.minDiscount > 0) count++;
         if (filterOptions.minRating > 0) count++;
-        if (filterOptions.selectedCategories.size > 0) count++;
+        if (filterOptions.selectedSubcategories.size > 0) count++;
 
         setActiveFiltersCount(count);
     }, [filterOptions]);
@@ -107,9 +108,9 @@ const ShopScreen = ({ navigation, route }) => {
         if (filterOptions.minRating > 0) params.append('minRating', filterOptions.minRating);
 
         // Add selected categories (if no main category is selected)
-        if (!search && filterOptions.selectedCategories.size > 0) {
-            params.append('category', Array.from(filterOptions.selectedCategories).join(','));
-            console.log(Array.from(filterOptions.selectedCategories).join(','));
+        if (!search && filterOptions.selectedSubcategories.size > 0) {
+            params.append('category', Array.from(filterOptions.selectedSubcategories).join(','));
+            console.log(Array.from(filterOptions.selectedSubcategories).join(','));
         }
 
         params.append('page', page);
@@ -249,26 +250,43 @@ const ShopScreen = ({ navigation, route }) => {
             minRating: 0,
             discountRange: null,
             minDiscount: 0,
-            selectedCategories: new Set(),
+            selectedSubcategories: new Set(),
         }));
     };
 
-    // Toggle category selection in filter
-    const toggleCategory = (categoryId) => {
-        const newSelectedCategories = new Set(filterOptions.selectedCategories);
 
-        if (newSelectedCategories.has(categoryId)) {
-            newSelectedCategories.delete(categoryId);
+    // Toggle category expansion to show/hide subcategories
+
+    const toggleCategoryExpansion = (categoryId) => {
+        const newExpandedCategories = new Set(filterOptions.expandedCategories);
+
+        if (newExpandedCategories.has(categoryId)) {
+            newExpandedCategories.delete(categoryId);
         } else {
-            newSelectedCategories.add(categoryId);
+            newExpandedCategories.add(categoryId);
         }
 
         setFilterOptions(prev => ({
             ...prev,
-            selectedCategories: newSelectedCategories
+            expandedCategories: newExpandedCategories
         }));
     };
 
+    // Toggle subcategory selection
+    const toggleSubcategory = (subcategoryId) => {
+        const newSelectedSubcategories = new Set(filterOptions.selectedSubcategories);
+
+        if (newSelectedSubcategories.has(subcategoryId)) {
+            newSelectedSubcategories.delete(subcategoryId);
+        } else {
+            newSelectedSubcategories.add(subcategoryId);
+        }
+
+        setFilterOptions(prev => ({
+            ...prev,
+            selectedSubcategories: newSelectedSubcategories
+        }));
+    };
 
     // Render loading indicator at bottom when fetching more products
     const renderFooter = () => {
@@ -794,22 +812,50 @@ const ShopScreen = ({ navigation, route }) => {
                                     <View style={styles.filterSection}>
                                         <Text style={styles.filterSectionTitle}>Categories</Text>
                                         <View style={styles.categoriesContainer}>
-                                            {filterOptions.categories.map(cat => (
-                                                <TouchableOpacity
-                                                    key={cat._id}
-                                                    style={[
-                                                        styles.categoryChip,
-                                                        filterOptions.selectedCategories.has(cat._id) && styles.categoryChipSelected
-                                                    ]}
-                                                    onPress={() => toggleCategory(cat._id)}
-                                                >
-                                                    <Text style={[
-                                                        styles.categoryChipText,
-                                                        filterOptions.selectedCategories.has(cat._id) && styles.categoryChipTextSelected
-                                                    ]}>
-                                                        {cat.name}
-                                                    </Text>
-                                                </TouchableOpacity>
+                                            {filterOptions.categories.map(category => (
+                                                <View key={category._id} style={styles.categoryGroup}>
+                                                    <TouchableOpacity
+                                                        style={[
+                                                            styles.parentCategoryChip,
+                                                            filterOptions.expandedCategories.has(category._id) && styles.expandedCategoryChip
+                                                        ]}
+                                                        onPress={() => toggleCategoryExpansion(category._id)}
+                                                    >
+                                                        <Text style={styles.parentCategoryText}>
+                                                            {category.name}
+                                                        </Text>
+                                                        <Text style={styles.expandIcon}>
+                                                            {filterOptions.expandedCategories.has(category._id) ? '▼' : '►'}
+                                                        </Text>
+                                                    </TouchableOpacity>
+
+                                                    {/* Subcategories */}
+                                                    {filterOptions.expandedCategories.has(category._id) && (
+                                                        <View style={styles.subcategoriesContainer}>
+                                                            {category.subcategories && category.subcategories.length > 0 ? (
+                                                                category.subcategories.map(subcat => (
+                                                                    <TouchableOpacity
+                                                                        key={subcat._id}
+                                                                        style={[
+                                                                            styles.subcategoryChip,
+                                                                            filterOptions.selectedSubcategories.has(subcat._id) && styles.subcategoryChipSelected
+                                                                        ]}
+                                                                        onPress={() => toggleSubcategory(subcat._id)}
+                                                                    >
+                                                                        <Text style={[
+                                                                            styles.subcategoryChipText,
+                                                                            filterOptions.selectedSubcategories.has(subcat._id) && styles.subcategoryChipTextSelected
+                                                                        ]}>
+                                                                            {subcat.name}
+                                                                        </Text>
+                                                                    </TouchableOpacity>
+                                                                ))
+                                                            ) : (
+                                                                <Text style={styles.noSubcategoriesText}>No subcategories available</Text>
+                                                            )}
+                                                        </View>
+                                                    )}
+                                                </View>
                                             ))}
                                         </View>
                                     </View>
@@ -1231,27 +1277,52 @@ const styles = StyleSheet.create({
     },
 
     // Categories Filter
-    categoriesContainer: {
+    parentCategoryChip: {
         flexDirection: 'row',
-        flexWrap: 'wrap',
-    },
-    categoryChip: {
-        paddingVertical: 6,
-        paddingHorizontal: 12,
-        borderRadius: 16,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        borderRadius: 5,
         backgroundColor: '#f0f0f0',
-        marginRight: 8,
-        marginBottom: 8,
+        marginBottom: 5,
     },
-    categoryChipSelected: {
+    expandedCategoryChip: {
+        backgroundColor: '#e0e0e0',
+    },
+    parentCategoryText: {
+        fontWeight: '600',
+    },
+    expandIcon: {
+        fontSize: 10,
+    },
+    subcategoriesContainer: {
+        marginLeft: 15,
+        marginBottom: 10,
+    },
+    subcategoryChip: {
+        padding: 8,
+        borderRadius: 5,
+        backgroundColor: '#f8f8f8',
+        marginVertical: 3,
+        marginRight: 5,
+    },
+    subcategoryChipSelected: {
         backgroundColor: '#4CAF50',
     },
-    categoryChipText: {
-        fontSize: 14,
-        color: '#333',
+    subcategoryChipText: {
+        fontSize: 12,
     },
-    categoryChipTextSelected: {
-        color: '#fff',
+    subcategoryChipTextSelected: {
+        color: 'white',
+    },
+    categoryGroup: {
+        marginBottom: 5,
+    },
+    noSubcategoriesText: {
+        fontSize: 12,
+        fontStyle: 'italic',
+        color: '#999',
+        paddingLeft: 5,
     },
 
     // Filter Actions
