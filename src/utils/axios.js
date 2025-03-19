@@ -2,8 +2,9 @@ import axios from 'axios'
 import { getUserFromLocalStorage } from './localStorage'
 
 const customFetch = axios.create({
-    baseURL: 'http://172.16.0.187:4000/api/v1',
+    baseURL: 'https://preciagribackend.onrender.com/api/v1',
 })
+// https://preciagribackend.onrender.com
 
 // Request Interceptor: Attach Authorization Token
 customFetch.interceptors.request.use(

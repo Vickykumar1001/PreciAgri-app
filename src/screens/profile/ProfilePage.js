@@ -74,7 +74,7 @@ export default function ProfilePage({ navigation }) {
                 <ScrollView style={styles.optionsContainer}>
                     <ProfileOption icon="user-edit" label="Edit Profile" onPress={() => navigation.navigate('EditProfile', { profileData })} />
                     <ProfileOption icon="map-marker-alt" label="My Address" onPress={() => navigation.navigate('ShowAddress', { addresses: profileData?.addresses })} />
-                    <ProfileOption icon="shopping-bag" label="My Orders" onPress={() => navigation.navigate('Orders')} />
+                    <ProfileOption icon="shopping-bag" label="My Orders" onPress={() => navigation.navigate('MyOrders')} />
                     {role === 'Seller' && <ProfileOption icon="store" label="My Products" onPress={() => navigation.navigate('UserProducts')} />}
                     {role === 'Seller' && <ProfileOption icon="clipboard-list" label="Orders Received" onPress={() => navigation.navigate('SellerOrder')} />}
                     <ProfileOption icon="shopping-cart" label="My Cart" onPress={() => navigation.navigate('Cart')} />

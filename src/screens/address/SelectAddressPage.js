@@ -9,71 +9,59 @@ import {
     Alert,
     ActivityIndicator,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { Ionicons } from '@expo/vector-icons';
-import CustomTopBar from '../components/topBar/CustomTopBar';
-import customFetch from '../utils/axios';
-const SelectAddressPage = ({ navigation }) => {
+import Toast from 'react-native-toast-message';
+import CustomTopBar from '../../components/topBar/CustomTopBar';
+import customFetch from '../../utils/axios';
+
+const SelectAddressPage = ({ navigation, route }) => {
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
+    const cart = route.params?.cart || []; // Ensure cart is defined
+
+    // Fetch addresses from API
     useEffect(() => {
         const fetchAddresses = async () => {
+            setLoading(true);
+            setError(null);
             try {
-
-                const response = await customFetch.get('/auth/getaddress',
-
-                );
+                const response = await customFetch.get('/auth/getaddress');
                 setAddresses(response.data);
             } catch (error) {
                 console.error('Error fetching addresses:', error);
-                Alert.alert('Error', 'Failed to load addresses.');
+                setError('Failed to load addresses. Please try again.');
             } finally {
                 setLoading(false);
             }
         };
 
-        const unsubscribe = navigation.addListener('focus', () => {
-            setLoading(true); // Show loader
-            fetchAddresses(); // Refetch addresses
-        });
-
-        return unsubscribe; // Cleanup the listener on unmount
+        // Fetch addresses when screen is focused
+        const unsubscribe = navigation.addListener('focus', fetchAddresses);
+        return unsubscribe;
     }, [navigation]);
 
+    // Select an address
     const handleSelectAddress = (address) => {
         setSelectedAddress(address);
     };
 
-    const handleContinue = async () => {
+    // Proceed to order summary
+    const handleContinue = () => {
         if (selectedAddress) {
-            try {
-                const response = await customFetch.post(
-                    'http://172.16.1.240:4000/api/orders', // Replace with your API endpoint
-                    { address: selectedAddress }, // Sending the selected address in the request body
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`, // Include the token in headers for authentication
-                        },
-                    }
-                );
-
-                const createdOrder = response.data; // Assume the response contains the created order
-                console.log(createdOrder);
-                navigation.navigate('OrderSummary', { order: createdOrder }); // Navigate to OrderSummary with order details
-            } catch (error) {
-                console.error('Error creating order:', error);
-                Alert.alert('Error', 'Failed to create order. Please try again.');
-            }
+            console.log(cart)
+            console.log(selectedAddress)
+            navigation.navigate('OrderSummary', { cart, selectedAddress });
         } else {
-            Alert.alert('Error', 'Please select an address.');
+            Toast.show({
+                type: 'error',
+                text1: 'Please select an address',
+            });
         }
     };
 
-
+    // Show loading state
     if (loading) {
         return (
             <View style={styles.loaderContainer}>
@@ -82,8 +70,20 @@ const SelectAddressPage = ({ navigation }) => {
         );
     }
 
+    // Show error message if fetching fails
+    if (error) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{error}</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.retryButton}>
+                    <Text style={styles.retryButtonText}>Go Back</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
     return (
-        <><CustomTopBar navigation={navigation} title={"Select Delivery Address"} />
+        <><CustomTopBar navigation={navigation} title="Select Delivery Address" />
             <SafeAreaView style={styles.safeArea}>
                 {/* Address List */}
                 <FlatList
@@ -98,13 +98,9 @@ const SelectAddressPage = ({ navigation }) => {
                             ]}
                             onPress={() => handleSelectAddress(item)}
                         >
-                            <Text style={styles.nameText}>
-                                {item.firstName} {item.lastName}
-                            </Text>
+                            <Text style={styles.nameText}>{item.Name}</Text>
                             <Text style={styles.addressText}>{item.streetAddress}</Text>
-                            <Text style={styles.addressText}>
-                                {item.city}, {item.state} - {item.zipCode}
-                            </Text>
+                            <Text style={styles.addressText}>{item.city}, {item.state} - {item.zipCode}</Text>
                             <Text style={styles.phoneText}>Mobile: {item.mobile}</Text>
                         </TouchableOpacity>
                     )}
@@ -129,20 +125,6 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: '#f9f9f9',
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 16,
-        backgroundColor: '#4CAF50',
-    },
-    backButton: {
-        marginRight: 16,
-    },
-    headerTitle: {
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
     },
     listContainer: {
         paddingHorizontal: 16,
@@ -182,7 +164,7 @@ const styles = StyleSheet.create({
     addButton: {
         margin: 16,
         padding: 12,
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#FFA726',
         borderRadius: 4,
         alignItems: 'center',
     },
@@ -195,7 +177,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
         marginBottom: 16,
         padding: 12,
-        backgroundColor: '#FFA726',
+        backgroundColor: '#4CAF50',
         borderRadius: 4,
         alignItems: 'center',
     },
@@ -209,6 +191,29 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f9f9f9',
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+    },
+    errorText: {
+        fontSize: 16,
+        color: 'red',
+        textAlign: 'center',
+        marginBottom: 10,
+    },
+    retryButton: {
+        padding: 12,
+        backgroundColor: '#FF5733',
+        borderRadius: 4,
+        alignItems: 'center',
+    },
+    retryButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
 

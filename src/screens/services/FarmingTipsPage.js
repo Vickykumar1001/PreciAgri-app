@@ -217,12 +217,12 @@ const FarmingTipsPage = ({ navigation }) => {
                     renderSelectedTip()
                 ) : (
                     <>
-                        <View style={styles.headerContainer}>
+                        {/* <View style={styles.headerContainer}>
                             <Text style={styles.pageTitle}>Farming Tips</Text>
                             <Text style={styles.pageSubtitle}>
                                 Expert farming advice tailored for Mizoram
                             </Text>
-                        </View>
+                        </View> */}
 
                         {/* Search container removed as requested */}
 
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     categoriesContainer: {
-        marginBottom: 10,
+        marginVertical: 10,
     },
     categoryList: {
         paddingHorizontal: 12,

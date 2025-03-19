@@ -156,11 +156,11 @@ export const CartProvider = ({ children }) => {
             setCart({ _id: null, totalPrice: 0, totalDiscountedPrice: 0, items: [] });
             await AsyncStorage.removeItem('cart');
 
-            Toast.show({
-                type: 'success',
-                text1: 'Cart Cleared',
-                text2: 'Your cart is now empty.',
-            });
+            // Toast.show({
+            //     type: 'success',
+            //     text1: 'Cart Cleared',
+            //     text2: 'Your cart is now empty.',
+            // });
         } catch (error) {
             console.error('Error clearing cart:', error);
             Toast.show({

@@ -17,7 +17,7 @@ const CartPage = ({ navigation }) => {
 
     // Constants for shipping and other fees
     const SHIPPING_CHARGE = 40;
-    const FREE_SHIPPING_THRESHOLD = 500;
+    const FREE_SHIPPING_THRESHOLD = 0;
 
     const priceDetails = useMemo(() => {
         // Calculate if user gets free shipping
@@ -223,11 +223,11 @@ const CartPage = ({ navigation }) => {
                             </Text>
                         </View>
 
-                        {priceDetails.isFreeShipping && (
+                        {/* {priceDetails.isFreeShipping && (
                             <Text style={styles.freeShippingNote}>
                                 Free shipping on orders above ₹ {FREE_SHIPPING_THRESHOLD}
                             </Text>
-                        )}
+                        )} */}
 
                         <View style={styles.divider} />
 
@@ -238,7 +238,7 @@ const CartPage = ({ navigation }) => {
 
                         <TouchableOpacity
                             style={styles.checkoutButton}
-                            onPress={() => navigation.navigate('SelectAddress')}>
+                            onPress={() => navigation.navigate('SelectAddress', { cart: cart })}>
                             <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
                         </TouchableOpacity>
                     </View>

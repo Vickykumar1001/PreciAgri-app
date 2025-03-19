@@ -44,12 +44,15 @@ import WeatherPage from './src/screens/services/WeatherPage';
 import ShowAddressPage from './src/screens/address/ShowAddress';
 import AddPost from './src/screens/AddPost';
 import EditPost from './src/screens/EditPost';
-import SelectAddressPage from './src/screens/SelectAddressPage';
+import SelectAddressPage from './src/screens/address/SelectAddressPage';
 import OrderSummaryPage from './src/screens/OrderSummaryPage';
 import SellerOrdersPage from './src/screens/SellerOrderPage';
 import FarmingTipsPage from './src/screens/services/FarmingTipsPage';
 import AboutUs from './src/screens/AboutUs';
 import ContactUs from './src/screens/ContactUs';
+import OrderSuccessScreen from './src/screens/OrderSuccessScreen';
+import OrderFailedScreen from './src/screens/OrderFailedScreen';
+import OrderHistoryScreen from './src/screens/MyOrdersPage';
 
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -105,6 +108,9 @@ const StackNav = ({ route }) => {
       <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{ headerShown: false }} />
       <Stack.Screen name="SelectAddress" component={SelectAddressPage} />
       <Stack.Screen name="OrderSummary" component={OrderSummaryPage} />
+      <Stack.Screen name="OrderSuccess" component={OrderSuccessScreen} />
+      <Stack.Screen name="OrderFailed" component={OrderFailedScreen} />
+      <Stack.Screen name="MyOrders" component={OrderHistoryScreen} />
       <Stack.Screen name="SellerOrder" component={SellerOrdersPage} />
       <Stack.Screen name="FarmingTips" component={FarmingTipsPage} />
     </Stack.Navigator>
