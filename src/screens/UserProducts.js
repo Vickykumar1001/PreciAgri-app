@@ -13,11 +13,12 @@ export default function UserProducts({ navigation }) {
 
     const fetchProducts = async () => {
         try {
-            const token = await AsyncStorage.getItem('token');
-            const response = await axios.get('http://172.16.1.240:4000/api/users/my-products', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setProducts(response.data.products);
+            // const token = await AsyncStorage.getItem('token');
+            // const response = await axios.get('http://172.16.1.240:4000/api/users/my-products', {
+            //     headers: { Authorization: `Bearer ${token}` },
+            // });
+            // setProducts(response.data.products);
+
         } catch (error) {
             console.error(error);
             Alert.alert('Error', 'Failed to fetch products.');

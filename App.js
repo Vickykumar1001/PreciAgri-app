@@ -53,6 +53,8 @@ import ContactUs from './src/screens/ContactUs';
 import OrderSuccessScreen from './src/screens/OrderSuccessScreen';
 import OrderFailedScreen from './src/screens/OrderFailedScreen';
 import OrderHistoryScreen from './src/screens/MyOrdersPage';
+import AuthChecker from './src/screens/auth/AuthChecker';
+import customFetch from './src/utils/axios';
 
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -100,10 +102,7 @@ const StackNav = ({ route }) => {
       <Stack.Screen name="EditPost" component={EditPost} />
       <Stack.Screen name="Logout" component={LogoutScreen} />
       <Stack.Screen name="UserProducts" component={UserProducts} />
-      <Stack.Screen
-        name="ResetPasswordScreen"
-        component={ResetPasswordScreen}
-      />
+      <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
       <Stack.Screen name="News" component={NewsAndSchemesTabView} options={{ title: 'News & Schemes' }} />
       <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{ headerShown: false }} />
       <Stack.Screen name="SelectAddress" component={SelectAddressPage} />
@@ -139,10 +138,14 @@ const App = () => {
           setIsFirstLaunch(false);
         }
 
-        // Check authentication status (you can also use an API callr if needed)
         const user = await AsyncStorage.getItem('user');
         if (user) {
-          setIsAuthenticated(true); // Set based on the token presence
+          const resp = await customFetch.get("/auth/getuserbytoken")
+          if (resp.status === 200) {
+            setIsAuthenticated(true);
+          } else {
+            setIsAuthenticated(false);
+          }
         } else {
           setIsAuthenticated(false);
         }
@@ -169,6 +172,7 @@ const App = () => {
         <Provider theme={theme}>
           <AppProviders>
             <NavigationContainer>
+              <AuthChecker />
               {isFirstLaunch ? (
                 <AppNavigator
                   isFirstLaunch={isFirstLaunch}
