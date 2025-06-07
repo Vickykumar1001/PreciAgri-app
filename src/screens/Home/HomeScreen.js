@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import TopBar from '../components/topBar/HomeTopBar';
-import FooterNavigation from '../components/FooterNavigation';
-import Banner from '../components/home/Banner';
-import Categories from '../components/home/Categories';
-import Services from '../components/home/Services';
-import ProductList from '../components/product/ProductList';
-import customFetch from '../utils/axios';
+import TopBar from '../../components/topBar/HomeTopBar';
+import FooterNavigation from '../../components/FooterNavigation';
+import Banner from '../../components/home/Banner';
+import Categories from '../../components/home/Categories';
+import Services from '../../components/home/Services';
+import ProductList from '../../components/product/ProductList';
+import customFetch from '../../utils/axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomePage = ({ navigation }) => {
@@ -30,16 +30,20 @@ const HomePage = ({ navigation }) => {
                 searched: lastSearched ? `/products/filteredproducts?search=${lastSearched}` : null
             };
 
-            const requests = Object.entries(urls).map(async ([key, url]) => {
-                const response = await customFetch.get(url);
-                return { key, products: response.data.data.products || [] };
-            });
+            const requests = Object.entries(urls)
+                .filter(([, url]) => url !== null)
+                .map(async ([key, url]) => {
+                    const response = await customFetch.get(url);
+                    return { key, products: response.data.data.products || [] };
+                });
 
             const results = await Promise.all(requests);
             const updatedSections = results.reduce((acc, { key, products }) => {
                 acc[key] = products;
                 return acc;
             }, {});
+
+            if (!updatedSections.searched) updatedSections.searched = [];
 
             setProductSections(updatedSections);
         } catch (error) {

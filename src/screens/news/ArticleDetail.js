@@ -34,7 +34,7 @@ const ArticleDetail = ({ route, navigation }) => {
     const handleShare = async (item) => {
         try {
             await Share.share({
-                message: `${item.title}\n\n${item.description}\n\nShared from Farming App`,
+                message: `${item.title}\n\n${item.description}\n\nShared from PreciAgri App`,
                 title: item.title,
             });
         } catch (error) {

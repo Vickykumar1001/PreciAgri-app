@@ -2,9 +2,9 @@ import React, { useState, useContext } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, SafeAreaView } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay';
 import Toast from 'react-native-toast-message';
-import CustomTopBar from '../components/topBar/CustomTopBar';
-import customFetch from '../utils/axios';
-import { CartContext } from '../context/CartContext';
+import CustomTopBar from '../../components/topBar/CustomTopBar';
+import customFetch from '../../utils/axios';
+import { CartContext } from '../../context/CartContext';
 
 // Component for individual order items
 const OrderItem = ({ item }) => (

@@ -6,9 +6,9 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 // import { actions, RichEditor, RichToolbar } from 'react-native-pell-rich-editor';
 // import HTML from 'react-native-render-html'
-import CustomTopBar from '../components/topBar/CustomTopBar';
+import CustomTopBar from '../../components/topBar/CustomTopBar';
 // import QuillEditor, { QuillToolbar } from 'react-native-cn-quill';
-import customFetch from '../utils/axios';
+import customFetch from '../../utils/axios';
 import Toast from 'react-native-toast-message';
 
 export default function AddPost({ navigation }) {

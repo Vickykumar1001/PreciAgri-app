@@ -16,7 +16,7 @@ const AuthChecker = () => {
         };
 
         verifyAuth();
-    }, []);
+    }, [navigation]);
 
     return null; // No UI needed
 };

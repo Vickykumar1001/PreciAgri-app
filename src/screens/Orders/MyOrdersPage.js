@@ -13,7 +13,7 @@ import {
     Alert,
 } from 'react-native';
 import { format } from 'date-fns';
-import customFetch from '../utils/axios';
+import customFetch from '../../utils/axios';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const OrderHistoryScreen = ({ navigation }) => {
@@ -114,7 +114,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                         <Image
                             source={{ uri: item.items[0].imageUrl }}
                             style={styles.previewImage}
-                            defaultSource={require('../assets/images/placeholder/product.png')}
+                            defaultSource={require('../../assets/images/placeholder/product.png')}
                         />
                         <View style={styles.previewInfo}>
                             <Text style={styles.previewProduct} numberOfLines={1}>
@@ -139,7 +139,7 @@ const OrderHistoryScreen = ({ navigation }) => {
                                     <Image
                                         source={{ uri: product.imageUrl }}
                                         style={styles.productImage}
-                                        defaultSource={require('../assets/images/placeholder/product.png')}
+                                        defaultSource={require('../../assets/images/placeholder/product.png')}
                                     />
                                     <View style={styles.productInfo}>
                                         <Text style={styles.productName} numberOfLines={2}>{product.productName}</Text>
@@ -237,7 +237,7 @@ const OrderHistoryScreen = ({ navigation }) => {
             {orders.length === 0 ? (
                 <View style={styles.emptyContainer}>
                     <Image
-                        source={require('../assets/images/placeholder/empty-box.png')}
+                        source={require('../../assets/images/placeholder/empty-box.png')}
                         style={styles.emptyImage}
                     />
                     <Text style={styles.emptyTitle}>No Orders Yet</Text>

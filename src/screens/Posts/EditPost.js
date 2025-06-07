@@ -5,7 +5,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CustomTopBar from '../components/topBar/CustomTopBar';
+import CustomTopBar from '../../components/topBar/CustomTopBar';
 
 export default function EditProduct({ route, navigation }) {
     const { productId } = route.params; // Product ID passed from the product list or details page

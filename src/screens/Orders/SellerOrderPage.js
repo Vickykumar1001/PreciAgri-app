@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import CustomTopBar from '../components/topBar/CustomTopBar';
+import CustomTopBar from '../../components/topBar/CustomTopBar';
 const SellerOrdersPage = (navigation) => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);

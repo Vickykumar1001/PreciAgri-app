@@ -29,7 +29,7 @@ const OrderFailedScreen = ({ route }) => {
                 <View style={styles.failedContainer}>
                     <View style={styles.errorCircle}>
                         <Image
-                            source={require('../assets/images/placeholder/error.png')}
+                            source={require('../../assets/images/placeholder/error.png')}
                             style={styles.errorIcon}
                             resizeMode="contain"
                         />
@@ -62,7 +62,7 @@ const OrderFailedScreen = ({ route }) => {
                 </View>
 
                 <View style={styles.actionInfo}>
-                    <Image source={require('../assets/images/placeholder/info.png')} style={styles.infoIcon} />
+                    <Image source={require('../../assets/images/placeholder/info.png')} style={styles.infoIcon} />
                     <Text style={styles.infoText}>Don't worry! Your cart items are still saved</Text>
                 </View>
 

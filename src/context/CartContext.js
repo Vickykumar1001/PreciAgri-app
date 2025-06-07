@@ -24,11 +24,11 @@ export const CartProvider = ({ children }) => {
                 }
             } catch (error) {
                 console.error('Error fetching cart:', error);
-                Toast.show({
-                    type: 'error',
-                    text1: 'Cart Sync Failed',
-                    text2: 'Could not load cart from server.',
-                });
+                // Toast.show({
+                //     type: 'error',
+                //     text1: 'Cart Sync Failed',
+                //     text2: 'Could not load cart from server.',
+                // });
 
                 // Load from AsyncStorage if API call fails
                 const savedCart = await AsyncStorage.getItem('cart');

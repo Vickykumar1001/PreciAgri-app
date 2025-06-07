@@ -1,17 +1,27 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import ProductCardMini from './ProductCardMini';
 
-const ProductList = ({ title, products, navigation }) => {
+const ProductList = ({ title = 'Products', products = [], navigation }) => {
     return (
         <View style={styles.productList}>
             <Text style={styles.sectionTitle}>{title}</Text>
+
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {products.map((product) => (
-                    <TouchableOpacity key={product.price_size[0]._id} onPress={() => navigation.navigate('ProductDetail', { product })}>
-                        <ProductCardMini product={product} navigation={navigation} />
-                    </TouchableOpacity>
-                ))}
+                {Array.isArray(products) && products.length > 0 ? (
+                    products.map((product, index) => {
+                        const key = product?.price_size?.[0]?._id || `${product?._id || 'unknown'}-${index}`;
+                        return (
+                            <ProductCardMini
+                                key={key}
+                                product={product}
+                                navigation={navigation}
+                            />
+                        );
+                    })
+                ) : (
+                    <Text style={{ marginLeft: 10, color: 'gray' }}>No products available</Text>
+                )}
             </ScrollView>
         </View>
     );
@@ -29,7 +39,7 @@ const styles = StyleSheet.create({
         shadowRadius: 1,
     },
     sectionTitle: {
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         marginLeft: 10,
         marginTop: 5,
         marginBottom: 5,

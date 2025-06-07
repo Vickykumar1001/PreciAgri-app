@@ -9,7 +9,7 @@ import {
     ScrollView,
     ToastAndroid
 } from "react-native";
-import CustomTopBar from '../components/topBar/CustomTopBar';
+import CustomTopBar from '../../components/topBar/CustomTopBar';
 const ContactUs = ({ navigation }) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -43,21 +43,21 @@ const ContactUs = ({ navigation }) => {
                     <Text style={styles.sectionTitle}>Contact Information</Text>
                     <View style={styles.contactItem}>
                         <Image
-                            source={require("../assets/images/contact.png")}
+                            source={require("../../assets/images/contact.png")}
                             style={styles.icon}
                         />
                         <Text style={styles.contactText}>+91 9876543210</Text>
                     </View>
                     <View style={styles.contactItem}>
                         <Image
-                            source={require("../assets/images/email.png")}
+                            source={require("../../assets/images/email.png")}
                             style={styles.icon}
                         />
                         <Text style={styles.contactText}>support@preciargi.com</Text>
                     </View>
                     <View style={styles.contactItem}>
                         <Image
-                            source={require("../assets/images/location.png")}
+                            source={require("../../assets/images/location.png")}
                             style={styles.icon}
                         />
                         <Text style={styles.contactText}>
@@ -99,15 +99,15 @@ const ContactUs = ({ navigation }) => {
                     <Text style={styles.sectionTitle}>Follow Us</Text>
                     <View style={styles.socialIcons}>
                         <Image
-                            source={require("../assets/images/twitter.png")}
+                            source={require("../../assets/images/twitter.png")}
                             style={styles.socialIcon}
                         />
                         <Image
-                            source={require("../assets/images/insta.png")}
+                            source={require("../../assets/images/insta.png")}
                             style={styles.socialIcon}
                         />
                         <Image
-                            source={require("../assets/images/fb.png")}
+                            source={require("../../assets/images/fb.png")}
                             style={styles.socialIcon}
                         />
                     </View>

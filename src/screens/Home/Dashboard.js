@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Banner from "../components/home/Banner"
+import Banner from "../../components/home/Banner"
 import { ScrollView } from 'react-native-gesture-handler';
 import { Container, Header, Icon, Item, Input, Text } from 'native-base';
 const HomeScreen = ({ navigation }) => {

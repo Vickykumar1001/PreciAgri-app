@@ -3,50 +3,76 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const ProductCardMini = ({ navigation, product }) => {
-    const defaultSize = product.price_size[0];
-    const primaryImageUrl = product.images;
+    if (!product) return null; // Handle if product is null or undefined
 
-    // Calculating discount percentage and amount
-    const discountPercentage = Math.ceil(
-        ((defaultSize.price - defaultSize.discountedPrice) / defaultSize.price) * 100
-    );
-    const discountAmount = defaultSize.price - defaultSize.discountedPrice;
+    const defaultSize = product?.price_size?.[0];
+
+    if (!defaultSize) {
+        return (
+            <View style={styles.card}>
+                <Text style={{ color: 'red', textAlign: 'center' }}>Product info unavailable</Text>
+            </View>
+        );
+    }
+
+    const primaryImageUrl = product?.images || 'https://via.placeholder.com/150';
+    const discountPercentage = defaultSize.discountedPrice && defaultSize.price
+        ? Math.ceil(((defaultSize.price - defaultSize.discountedPrice) / defaultSize.price) * 100)
+        : 0;
+
+    const discountAmount = defaultSize.price && defaultSize.discountedPrice
+        ? defaultSize.price - defaultSize.discountedPrice
+        : 0;
 
     return (
         <TouchableOpacity
             style={styles.card}
-            onPress={() => navigation.navigate('ProductDetail', { productId: product._id })}
+            onPress={() => navigation?.navigate?.('ProductDetail', { productId: product?._id })}
         >
             {/* Product Image */}
-            <Image source={{ uri: primaryImageUrl }} style={styles.productImage} />
+            <Image
+                source={{ uri: primaryImageUrl }}
+                style={styles.productImage}
+                defaultSource={require('../../assets/images/image.png')} // Use a default image if needed
+            />
 
             {/* Product Name */}
-            <Text style={styles.productName}>{product.name.length > 20 ? (product.name.slice(0, 18) + "...") : product.name}</Text>
+            <Text style={styles.productName}>
+                {product?.name
+                    ? product.name.length > 20
+                        ? product.name.slice(0, 18) + '...'
+                        : product.name
+                    : 'No Name'}
+            </Text>
 
             {/* Price and Discount */}
             <View style={styles.priceContainer}>
-
-                {discountPercentage > 0 ? <>
-                    <Ionicons name="arrow-down" size={16} color="green" />
-                    <Text style={styles.discountText}>{discountPercentage}%</Text>
-                    <Text style={styles.originalPrice}>₹{defaultSize.price}</Text>
-                    <Text style={styles.currentPrice}>₹{defaultSize.discountedPrice}</Text></> : <>
-                    <Text style={styles.currentPrice}>₹{defaultSize.discountedPrice}</Text>
-                </>}
+                {discountPercentage > 0 ? (
+                    <>
+                        <Ionicons name="arrow-down" size={16} color="green" />
+                        <Text style={styles.discountText}>{discountPercentage}%</Text>
+                        <Text style={styles.originalPrice}>₹{defaultSize.price}</Text>
+                        <Text style={styles.currentPrice}>₹{defaultSize.discountedPrice}</Text>
+                    </>
+                ) : (
+                    <Text style={styles.currentPrice}>₹{defaultSize.discountedPrice || 'N/A'}</Text>
+                )}
             </View>
 
-            {/* Rating and Discount Amount */}
+            {/* Rating and Size */}
             <View style={styles.ratingContainer}>
                 <Ionicons name="star" size={16} color="#FFD700" />
-                <Text style={styles.rating}>{product.avgRating.toFixed(1)}</Text>
-                <Text style={styles.size}>({defaultSize.size})</Text>
-                {/* <Text style={styles.discountAmount}>Discount: ₹{discountAmount}</Text> */}
+                <Text style={styles.rating}>
+                    {product?.avgRating !== undefined ? product.avgRating.toFixed(1) : 'N/A'}
+                </Text>
+                <Text style={styles.size}>({defaultSize?.size || 'Size N/A'})</Text>
             </View>
         </TouchableOpacity>
     );
 };
 
 export default ProductCardMini;
+
 
 const styles = StyleSheet.create({
     card: {

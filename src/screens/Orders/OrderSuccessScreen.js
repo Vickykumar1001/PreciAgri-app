@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
-import { formatDate } from '../utils/dateFormatter';
+import { formatDate } from '../../utils/dateFormatter';
 
 const OrderSuccessScreen = ({ navigation, route }) => {
     const { orderId, amount, paymentId, orderDate } = route.params || {};
@@ -15,7 +15,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
                 <View style={styles.successContainer}>
                     <View style={styles.checkmarkCircle}>
                         <Image
-                            source={require('../assets/images/placeholder/checkIcon.png')}
+                            source={require('../../assets/images/placeholder/checkIcon.png')}
                             style={styles.checkmark}
                             resizeMode="contain"
                         />
@@ -62,7 +62,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
                 </View>
 
                 <View style={styles.deliveryInfo}>
-                    <Image source={require('../assets/images/truck.png')} style={styles.deliveryIcon} />
+                    <Image source={require('../../assets/images/truck.png')} style={styles.deliveryIcon} />
                     <Text style={styles.deliveryText}>Estimated delivery in 3-4 business days</Text>
                 </View>
 

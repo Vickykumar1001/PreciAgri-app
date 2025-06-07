@@ -38,23 +38,23 @@ import {
   LoanPage
 
 } from './src/screens';
-// import { ProductContainer } from "./src/screens/Products/ProductContainer"
 import AppNavigator from './AppNavigator';
-import WeatherPage from './src/screens/services/WeatherPage';
-import ShowAddressPage from './src/screens/address/ShowAddress';
-import AddPost from './src/screens/AddPost';
-import EditPost from './src/screens/EditPost';
-import SelectAddressPage from './src/screens/address/SelectAddressPage';
-import OrderSummaryPage from './src/screens/OrderSummaryPage';
-import SellerOrdersPage from './src/screens/SellerOrderPage';
-import FarmingTipsPage from './src/screens/services/FarmingTipsPage';
-import AboutUs from './src/screens/AboutUs';
-import ContactUs from './src/screens/ContactUs';
-import OrderSuccessScreen from './src/screens/OrderSuccessScreen';
-import OrderFailedScreen from './src/screens/OrderFailedScreen';
-import OrderHistoryScreen from './src/screens/MyOrdersPage';
-import AuthChecker from './src/screens/auth/AuthChecker';
+import WeatherPage from './src/screens/Services/WeatherPage';
+import ShowAddressPage from './src/screens/Address/ShowAddress';
+import AddPost from './src/screens/Posts/AddPost';
+import EditPost from './src/screens/Posts/EditPost';
+import SelectAddressPage from './src/screens/Address/SelectAddressPage';
+import OrderSummaryPage from './src/screens/Orders/OrderSummaryPage';
+import SellerOrdersPage from './src/screens/Orders/SellerOrderPage';
+import FarmingTipsPage from './src/screens/Services/FarmingTipsPage';
+import AboutUs from './src/screens/General/AboutUs';
+import ContactUs from './src/screens/General/ContactUs';
+import OrderSuccessScreen from './src/screens/Orders/OrderSuccessScreen';
+import OrderFailedScreen from './src/screens/Orders/OrderFailedScreen';
+import OrderHistoryScreen from './src/screens/Orders/MyOrdersPage';
+import AuthChecker from './src/screens/Auth/AuthChecker';
 import customFetch from './src/utils/axios';
+import SensorDropdownScreen from './src/screens/Sensor/Sensor';
 
 // Keep splash screen visible until fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -112,6 +112,7 @@ const StackNav = ({ route }) => {
       <Stack.Screen name="MyOrders" component={OrderHistoryScreen} />
       <Stack.Screen name="SellerOrder" component={SellerOrdersPage} />
       <Stack.Screen name="FarmingTips" component={FarmingTipsPage} />
+      <Stack.Screen name="Sensor" component={SensorDropdownScreen} />
     </Stack.Navigator>
   )
 }
@@ -141,7 +142,9 @@ const App = () => {
         const user = await AsyncStorage.getItem('user');
         if (user) {
           const resp = await customFetch.get("/auth/getuserbytoken")
+          console.log(resp.status)
           if (resp.status === 200) {
+            console.log("Logged innn..")
             setIsAuthenticated(true);
           } else {
             setIsAuthenticated(false);
@@ -188,7 +191,6 @@ const App = () => {
                 <Drawer.Screen name="Contact-Us" component={ContactUs} />
                 <Drawer.Screen name="Logout" component={LogoutScreen} />
               </Drawer.Navigator>
-
               )}
               <Toast />
             </NavigationContainer>

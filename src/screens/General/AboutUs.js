@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
-import CustomTopBar from '../components/topBar/CustomTopBar';
+import CustomTopBar from '../../components/topBar/CustomTopBar';
 
 const AboutUsPage = ({ navigation }) => {
     return (
@@ -30,7 +30,7 @@ const AboutUsPage = ({ navigation }) => {
                         markets, and financial services conveniently through a user-friendly platform.
                     </Text>
                     <Image
-                        source={require('../assets/images/image.png')} // Replace with the appropriate image
+                        source={require('../../assets/images/image.png')} // Replace with the appropriate image
                         style={styles.sectionImage}
                     />
                 </View>
@@ -42,7 +42,7 @@ const AboutUsPage = ({ navigation }) => {
                 <View style={styles.featuresGrid}>
                     <View style={styles.featureCard}>
                         <Image
-                            source={require('../assets/images/market.png')} // Replace with the appropriate image
+                            source={require('../../assets/images/market.png')} // Replace with the appropriate image
                             style={styles.featureIcon}
                         />
                         <Text style={styles.featureTitle}>Online Marketplace</Text>
@@ -53,7 +53,7 @@ const AboutUsPage = ({ navigation }) => {
 
                     <View style={styles.featureCard}>
                         <Image
-                            source={require('../assets/images/weather.png')} // Replace with the appropriate image
+                            source={require('../../assets/images/weather.png')} // Replace with the appropriate image
                             style={styles.featureIcon}
                         />
                         <Text style={styles.featureTitle}>Farming Insights</Text>
@@ -64,7 +64,7 @@ const AboutUsPage = ({ navigation }) => {
 
                     <View style={styles.featureCard}>
                         <Image
-                            source={require('../assets/images/loan.png')} // Replace with the appropriate image
+                            source={require('../../assets/images/loan.png')} // Replace with the appropriate image
                             style={styles.featureIcon}
                         />
                         <Text style={styles.featureTitle}>Loan Assistance</Text>
@@ -75,7 +75,7 @@ const AboutUsPage = ({ navigation }) => {
 
                     <View style={styles.featureCard}>
                         <Image
-                            source={require('../assets/images/tips.png')} // Replace with the appropriate image
+                            source={require('../../assets/images/tips.png')} // Replace with the appropriate image
                             style={styles.featureIcon}
                         />
                         <Text style={styles.featureTitle}>AI-Driven Solutions</Text>
@@ -91,7 +91,7 @@ const AboutUsPage = ({ navigation }) => {
                 <Text style={styles.sectionTitle}>What Farmers Are Saying</Text>
                 <View style={styles.testimonialCard}>
                     <Image
-                        source={require('../assets/images/placeholder/user_icon.png')} // Replace with the appropriate image
+                        source={require('../../assets/images/placeholder/user_icon.png')} // Replace with the appropriate image
                         style={styles.testimonialImage}
                     />
                     <Text style={styles.testimonialText}>

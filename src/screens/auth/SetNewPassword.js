@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Text } from 'react-native-paper';
-import Background from '../components/auth/Background';
-import Header from '../components/auth/Header';
-import TextInput from '../components/auth/TextInput';
-import Button from '../components/auth/Button';
-import BackButton from '../components/auth/BackButton';
-import Logo from '../components/auth/Logo';
+import Background from '../../components/auth/Background';
+import Header from '../../components/auth/Header';
+import TextInput from '../../components/auth/TextInput';
+import Button from '../../components/auth/Button';
+import BackButton from '../../components/auth/BackButton';
+import Logo from '../../components/auth/Logo';
 import axios from 'axios';
 
 export default function ResetForgotPassword({ route, navigation }) {
